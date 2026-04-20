@@ -16,6 +16,8 @@ import { toast } from "react-toastify";
 import Modal from "../../../components/admin/Modal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import Pagination from "../../../components/admin/Pagination";
+
 import {
   getWBKWBBM,
   createWBKWBBM,
@@ -25,6 +27,12 @@ import {
 
 const KegiatanWBKWBBM = () => {
   const [kegiatanData, setKegiatanData] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10,
+  });
   const [formData, setFormData] = useState({
     judul: "",
     tanggal: "",
@@ -42,19 +50,34 @@ const KegiatanWBKWBBM = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchKegiatan = async () => {
+  const fetchKegiatan = async (page = 1) => {
     try {
-      const response = await getWBKWBBM();
-      setKegiatanData(response.data);
+      const response = await getWBKWBBM({ page, per_page: pagination.itemsPerPage });
+      const data = response.data?.data || response.data || [];
+      setKegiatanData(Array.isArray(data) ? data : []);
+      
+      if (response.data && response.data.current_page) {
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total,
+        }));
+      }
     } catch (error) {
       console.error("Error fetching kegiatan:", error);
       toast.error("Gagal mengambil data kegiatan WBK/WBBM");
+      setKegiatanData([]);
     }
   };
 
   useEffect(() => {
-    fetchKegiatan();
-  }, []);
+    fetchKegiatan(pagination.currentPage);
+  }, [pagination.currentPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -267,6 +290,16 @@ const KegiatanWBKWBBM = () => {
             </tbody>
           </table>
         </div>
+
+        {kegiatanData.length > 0 && (
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            totalItems={pagination.totalItems}
+            itemsPerPage={pagination.itemsPerPage}
+          />
+        )}
 
         {kegiatanData.length === 0 && (
           <div className="py-24 text-center font-sans">

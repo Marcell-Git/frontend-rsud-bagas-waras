@@ -419,16 +419,29 @@ const BerkasPPID = () => {
             {/* Kelompok Dokumen */}
             <div className="space-y-3 font-sans">
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 font-sans">
-                Sub-Kelompok Dokumen
+                Kelompok Dokumen
               </label>
-              <input
-                type="text"
+              <select
                 name="kelompok_dokumen"
                 value={formData.kelompok_dokumen}
                 onChange={handleChange}
-                placeholder="Contoh: Laporan Keuangan"
-                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none font-bold text-slate-700 font-sans"
-              />
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none font-bold text-slate-700 font-sans appearance-none cursor-pointer"
+              >
+                <option value="">Pilih Kelompok Dokumen</option>
+                <option value="Profil">Profil</option>
+                <option value="LKJIP dan Laporan Tahunan">LKJIP dan Laporan Tahunan</option>
+                <option value="Program dan Rencana Kerja (RKA, DPA, Renstra, Renja)">Program dan Rencana Kerja (RKA, DPA, Renstra, Renja)</option>
+                <option value="KAK">KAK</option>
+                <option value="Laporan Kinerja">Laporan Kinerja</option>
+                <option value="Laporan Keuangan">Laporan Keuangan</option>
+                <option value="Peraturan dan Kebijakan">Peraturan dan Kebijakan</option>
+                <option value="Kode Kedaruratan">Kode Kedaruratan</option>
+                <option value="Pengadaan">Pengadaan</option>
+                <option value="Data Aset">Data Aset</option>
+                <option value="Standar Prosedur Pelayanan">Standar Prosedur Pelayanan</option>
+                <option value="Pengaduan">Pengaduan</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
             </div>
           </div>
 

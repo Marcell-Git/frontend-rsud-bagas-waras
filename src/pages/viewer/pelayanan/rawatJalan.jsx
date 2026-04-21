@@ -1,32 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../../components/viewer/Navbar";
 import Footer from "../../../components/viewer/Footer";
 import EmergencyCall from "../../../components/viewer/EmergencyCall";
 import { FaCheckCircle } from "react-icons/fa";
 import Header from "../../../components/viewer/Header";
 
-const daftarKlinik = [
-  "Klinik Bedah",
-  "Klinik Syaraf",
-  "Klinik Penyakit Dalam",
-  "Klinik Anak",
-  "Klinik Obstetri dan Ginekologi",
-  "Klinik Kulit dan Kelamin",
-  "Klinik Mata",
-  "Klinik THT-KL",
-  "Klinik Paru",
-  "Klinik Jantung dan Pembuluh Darah",
-  "Klinik Orthophaedi dan Traumatologi",
-  "Klinik Konservasi Gigi",
-  "Klinik Gigi dan Mulut",
-  "Klinik MCU",
-  "Klinik Jiwa",
-  "Klinik Geriatri",
-];
+import { getPoli } from "../../../api/pelayanan/rawatJalan";
 
 const RawatJalan = () => {
+  const [poli, setPoli] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getPoli();
+      setPoli(res.data?.data || res.data || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchData();
   }, []);
 
   return (
@@ -83,11 +82,11 @@ const RawatJalan = () => {
               Daftar Klinik Rawat Jalan
             </h2>
             <p className="text-gray-500 text-sm mb-6 md:mb-8">
-              Tersedia {daftarKlinik.length} klinik spesialis yang siap melayani
+              Tersedia {poli.length} klinik spesialis yang siap melayani
               kebutuhan kesehatan Anda.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-              {daftarKlinik.map((klinik, idx) => (
+              {poli.map((klinik, idx) => (
                 <div
                   key={idx}
                   className="flex items-center gap-3 p-3 md:p-4 rounded-2xl border border-gray-100 hover:border-primary-blue/40 hover:bg-light-blue/30 hover:shadow-md transition-all duration-300 group cursor-default"
@@ -96,7 +95,7 @@ const RawatJalan = () => {
                     <FaCheckCircle className="text-sm text-primary-blue group-hover:text-white transition-colors duration-300" />
                   </div>
                   <span className="text-sm md:text-base font-medium text-dark-blue leading-tight">
-                    {klinik}
+                    {klinik.nama_poli}
                   </span>
                 </div>
               ))}

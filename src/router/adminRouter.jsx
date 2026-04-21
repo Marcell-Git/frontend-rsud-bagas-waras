@@ -29,11 +29,13 @@ import BerkasPPID from "../pages/admin/publik/BerkasPPID";
 import KegiatanWBKWBBM from "../pages/admin/publik/KegiatanWBKWBBM";
 
 import SurveyKepuasan from "../pages/admin/pengaduan/SurveyKepuasan";
+import IndexKepuasanMasyarakat from "../pages/admin/pengaduan/IndexKepuasanMasyarakat";
 import LaporanTindakLanjut from "../pages/admin/pengaduan/LaporanTindakLanjut";
 import PengaduanKorupsi from "../pages/admin/pengaduan/PengaduanKorupsi";
 import LaporanGratifikasi from "../pages/admin/pengaduan/LaporanGratifikasi";
 import LaporanBenturanKepentingan from "../pages/admin/pengaduan/LaporanBenturanKepentingan";
 import PengaduanMasyarakat from "../pages/admin/pengaduan/PengaduanMasyarakat";
+
 import User from "../pages/admin/userManajemen/User";
 
 import ProtectedRoute from "../components/auth/ProtectedRoute";
@@ -145,6 +147,10 @@ const adminRoutes = [
       {
         path: "survey-kepuasan",
         element: <SurveyKepuasan />
+      },
+      {
+        path: "index-kepuasan-masyarakat",
+        element: <IndexKepuasanMasyarakat />
       },
       {
         path: "laporan-tindak-lanjut",

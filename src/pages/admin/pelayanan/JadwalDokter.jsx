@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import Pagination from "../../../components/admin/Pagination";
 
 import {
   getJadwalDokter,
@@ -29,6 +30,13 @@ const JadwalDokter = () => {
     jam: "",
   });
 
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10,
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,11 +45,24 @@ const JadwalDokter = () => {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     setIsLoading(true);
     try {
-      const response = await getJadwalDokter();
-      setJadwalData(response.data?.data || response.data || []);
+      const response = await getJadwalDokter({
+        page,
+        per_page: pagination.itemsPerPage,
+      });
+      const data = response.data?.data || response.data || [];
+      setJadwalData(data);
+
+      if (response.data && response.data.current_page) {
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total,
+        }));
+      }
     } catch (error) {
       toast.error("Gagal mengambil data jadwal dokter");
     } finally {
@@ -49,9 +70,13 @@ const JadwalDokter = () => {
     }
   };
 
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(pagination.currentPage);
+  }, [pagination.currentPage]);
 
   const handleDelete = (id) => {
     setItemToDelete(id);
@@ -217,7 +242,7 @@ const JadwalDokter = () => {
                     className="hover:bg-slate-50/50 transition-colors"
                   >
                     <td className="px-8 py-6 align-middle text-center font-bold text-slate-400 text-sm">
-                      #{index + 1}
+                      #{(pagination.currentPage - 1) * pagination.itemsPerPage + (index + 1)}
                     </td>
                     <td className="px-8 py-6 align-middle">
                       <div className="flex items-center gap-4">
@@ -276,6 +301,18 @@ const JadwalDokter = () => {
             <p className="text-slate-500 font-bold">
               Belum ada jadwal dokter yang terdata.
             </p>
+          </div>
+        )}
+
+        {jadwalData.length > 0 && (
+          <div className="border-t border-slate-100">
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              totalItems={pagination.totalItems}
+              itemsPerPage={pagination.itemsPerPage}
+            />
           </div>
         )}
       </div>

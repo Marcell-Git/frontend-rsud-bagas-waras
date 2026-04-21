@@ -1,6 +1,7 @@
 import api from "../axios";
 
 export const getGaleri = (params) => api.get("/galeri", { params });
+export const getGaleriGambar = () => api.get("/galeri/gambar");
 export const createGaleri = (data) =>
   api.post("/galeri", data, {
     headers: {

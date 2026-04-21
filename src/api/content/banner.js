@@ -1,6 +1,7 @@
 import api from "../axios";
 
 export const getBanner = () => api.get("/banner");
+export const getBannerActive = () => api.get("/banner/active");
 export const createBanner = (data) =>
   api.post("/banner", data, {
     headers: {

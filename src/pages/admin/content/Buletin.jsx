@@ -16,6 +16,7 @@ const Buletin = () => {
   const [formData, setFormData] = useState({
     gambar: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -27,12 +28,15 @@ const Buletin = () => {
   const fileInputRef = useRef(null);
 
   const fetchBuletin = async () => {
+    setIsLoading(true);
     try {
       const response = await getBuletin();
       setBuletins(response.data);
     } catch (error) {
       console.error("Error fetching buletin:", error);
       toast.error("Gagal mengambil data buletin");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -142,40 +146,58 @@ const Buletin = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {buletins.map((item) => (
-          <div
-            key={item.id}
-            className="group bg-white rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden"
-          >
-            {/* Cover Preview Area */}
-            <div className="aspect-3/4 bg-slate-100 relative overflow-hidden">
-              <img
-                src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
-                alt=""
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
+        {isLoading ? (
+          // Skeleton Grid Loader (Non-Circular)
+          [...Array(4)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-[32px] border border-slate-100 shadow-sm animate-pulse overflow-hidden"
+            >
+              <div className="aspect-3/4 bg-slate-100 flex items-center justify-center">
+                <ImageIcon className="text-slate-200" size={32} />
+              </div>
+              <div className="p-4 flex items-center gap-2 border-t border-slate-50 bg-white">
+                <div className="h-10 bg-slate-50 rounded-xl flex-1"></div>
+                <div className="h-10 bg-slate-50 rounded-xl w-12"></div>
+              </div>
             </div>
+          ))
+        ) : (
+          buletins.map((item) => (
+            <div
+              key={item.id}
+              className="group bg-white rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden"
+            >
+              {/* Cover Preview Area */}
+              <div className="aspect-3/4 bg-slate-100 relative overflow-hidden">
+                <img
+                  src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
+                  alt=""
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
 
-            {/* Actions Bar */}
-            <div className="p-4 flex items-center gap-2 border-t border-slate-50 bg-white">
-              <button
-                onClick={() => openModal(item)}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-50 text-slate-600 font-bold text-[10px] uppercase tracking-widest hover:bg-primary-blue hover:text-white transition-all border border-slate-100 font-sans"
-              >
-                <Edit2 size={14} />
-                Ganti Kover
-              </button>
-              <button
-                onClick={() => handleDelete(item.id)}
-                className="px-4 py-2.5 rounded-xl bg-slate-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all border border-slate-100"
-              >
-                <Trash2 size={16} />
-              </button>
+              {/* Actions Bar */}
+              <div className="p-4 flex items-center gap-2 border-t border-slate-50 bg-white">
+                <button
+                  onClick={() => openModal(item)}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-50 text-slate-600 font-bold text-[10px] uppercase tracking-widest hover:bg-primary-blue hover:text-white transition-all border border-slate-100 font-sans"
+                >
+                  <Edit2 size={14} />
+                  Ganti Kover
+                </button>
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all border border-slate-100"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
 
-        {buletins.length === 0 && (
+        {buletins.length === 0 && !isLoading && (
           <div className="col-span-full py-40 text-center space-y-4">
             <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-200">
               <Images size={40} />

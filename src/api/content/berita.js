@@ -1,6 +1,7 @@
 import api from "../axios";
 
-export const getBerita = () => api.get("/berita");
+export const getBerita = (params) => api.get("/berita", { params });
+export const getBeritaTerbaru = () => api.get("/berita/terbaru");
 export const getBeritaById = (id) => api.get(`/berita/${id}`);
 export const createBerita = (data) =>
   api.post("/berita", data, {

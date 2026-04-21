@@ -22,10 +22,12 @@ const SurveyKepuasan = () => {
     totalItems: 0,
     itemsPerPage: 10,
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [statistik, setStatistik] = useState({});
 
   const fetchStatistik = async () => {
+    setIsLoading(true);
     try {
       const response = await getStatistik();
       setStatistik(response.data);
@@ -36,6 +38,7 @@ const SurveyKepuasan = () => {
   };
 
   const fetchSurvey = async (page = 1) => {
+    setIsLoading(true);
     try {
       const response = await getSurveyKepuasan({
         page,
@@ -55,6 +58,8 @@ const SurveyKepuasan = () => {
     } catch (error) {
       console.error("Error fetching survey:", error);
       toast.error("Gagal mengambil data survey kepuasan");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -135,12 +140,21 @@ const SurveyKepuasan = () => {
             </p>
           </div>
           <div className="font-sans">
-            <h2 className="text-5xl font-black text-slate-900 tracking-tighter font-sans">
-              {totalResponses}
-            </h2>
-            <p className="text-slate-400 font-medium text-xs mt-1 font-sans">
-              Umpan balik diterima
-            </p>
+            {isLoading ? (
+              <div className="space-y-2">
+                <div className="h-10 bg-slate-100 rounded-xl w-24 animate-pulse"></div>
+                <div className="h-4 bg-slate-50 rounded-lg w-32 animate-pulse"></div>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-5xl font-black text-slate-900 tracking-tighter font-sans">
+                  {totalResponses}
+                </h2>
+                <p className="text-slate-400 font-medium text-xs mt-1 font-sans">
+                  Umpan balik diterima
+                </p>
+              </>
+            )}
           </div>
         </div>
 
@@ -157,20 +171,29 @@ const SurveyKepuasan = () => {
               </p>
             </div>
             <div className="relative z-10 font-sans">
-              <div className="flex items-end gap-3 font-sans">
-                <h2 className="text-5xl font-black tracking-tighter font-sans">
-                  {sangatInformatifPerc}%
-                </h2>
-                <p className="font-bold text-emerald-100 mb-1 font-sans text-xs">
-                  ({sangatInformatifCount})
-                </p>
-              </div>
-              <div className="w-full h-1.5 bg-emerald-600 rounded-full mt-4 overflow-hidden font-sans">
-                <div
-                  className="h-full bg-white rounded-full transition-all duration-1000 font-sans"
-                  style={{ width: `${sangatInformatifPerc}%` }}
-                ></div>
-              </div>
+              {isLoading ? (
+                <div className="space-y-4">
+                  <div className="h-10 bg-white/20 rounded-xl w-32 animate-pulse"></div>
+                  <div className="w-full h-1.5 bg-emerald-600 rounded-full mt-4"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-end gap-3 font-sans">
+                    <h2 className="text-5xl font-black tracking-tighter font-sans">
+                      {sangatInformatifPerc}%
+                    </h2>
+                    <p className="font-bold text-emerald-100 mb-1 font-sans text-xs">
+                      ({sangatInformatifCount})
+                    </p>
+                  </div>
+                  <div className="w-full h-1.5 bg-emerald-600 rounded-full mt-4 overflow-hidden font-sans">
+                    <div
+                      className="h-full bg-white rounded-full transition-all duration-1000 font-sans"
+                      style={{ width: `${sangatInformatifPerc}%` }}
+                    ></div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -185,20 +208,29 @@ const SurveyKepuasan = () => {
               </p>
             </div>
             <div className="relative z-10 font-sans">
-              <div className="flex items-end gap-3 font-sans">
-                <h2 className="text-5xl font-black tracking-tighter font-sans">
-                  {cukupInformatifPerc}%
-                </h2>
-                <p className="font-bold text-amber-100 mb-1 font-sans text-xs">
-                  ({cukupInformatifCount})
-                </p>
-              </div>
-              <div className="w-full h-1.5 bg-amber-600 rounded-full mt-4 overflow-hidden font-sans">
-                <div
-                  className="h-full bg-white rounded-full transition-all duration-1000 font-sans"
-                  style={{ width: `${cukupInformatifPerc}%` }}
-                ></div>
-              </div>
+              {isLoading ? (
+                <div className="space-y-4">
+                  <div className="h-10 bg-white/20 rounded-xl w-32 animate-pulse"></div>
+                  <div className="w-full h-1.5 bg-amber-600 rounded-full mt-4"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-end gap-3 font-sans">
+                    <h2 className="text-5xl font-black tracking-tighter font-sans">
+                      {cukupInformatifPerc}%
+                    </h2>
+                    <p className="font-bold text-amber-100 mb-1 font-sans text-xs">
+                      ({cukupInformatifCount})
+                    </p>
+                  </div>
+                  <div className="w-full h-1.5 bg-amber-600 rounded-full mt-4 overflow-hidden font-sans">
+                    <div
+                      className="h-full bg-white rounded-full transition-all duration-1000 font-sans"
+                      style={{ width: `${cukupInformatifPerc}%` }}
+                    ></div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -216,20 +248,29 @@ const SurveyKepuasan = () => {
               </p>
             </div>
             <div className="relative z-10 font-sans">
-              <div className="flex items-end gap-3 font-sans">
-                <h2 className="text-5xl font-black tracking-tighter font-sans">
-                  {kurangLengkapPerc}%
-                </h2>
-                <p className="font-bold text-rose-100 mb-1 font-sans text-xs">
-                  ({kurangLengkapCount})
-                </p>
-              </div>
-              <div className="w-full h-1.5 bg-rose-600 rounded-full mt-4 overflow-hidden font-sans">
-                <div
-                  className="h-full bg-white rounded-full transition-all duration-1000 font-sans"
-                  style={{ width: `${kurangLengkapPerc}%` }}
-                ></div>
-              </div>
+              {isLoading ? (
+                <div className="space-y-4">
+                  <div className="h-10 bg-white/20 rounded-xl w-32 animate-pulse"></div>
+                  <div className="w-full h-1.5 bg-rose-600 rounded-full mt-4"></div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-end gap-3 font-sans">
+                    <h2 className="text-5xl font-black tracking-tighter font-sans">
+                      {kurangLengkapPerc}%
+                    </h2>
+                    <p className="font-bold text-rose-100 mb-1 font-sans text-xs">
+                      ({kurangLengkapCount})
+                    </p>
+                  </div>
+                  <div className="w-full h-1.5 bg-rose-600 rounded-full mt-4 overflow-hidden font-sans">
+                    <div
+                      className="h-full bg-white rounded-full transition-all duration-1000 font-sans"
+                      style={{ width: `${kurangLengkapPerc}%` }}
+                    ></div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -248,58 +289,74 @@ const SurveyKepuasan = () => {
         </div>
 
         <div className="overflow-x-auto font-sans">
-          <table className="w-full text-left border-collapse font-sans font-sans">
-            <thead>
-              <tr className="bg-white border-b border-slate-100 font-sans">
-                <th className="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest w-24 font-sans">
-                  No.
-                </th>
-                <th className="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest font-sans">
-                  Tanggal Penilaian
-                </th>
-                <th className="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest font-sans">
-                  Indikator Kepuasan
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-sans text-sm">
-              {surveyData.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-slate-50/50 transition-colors font-sans"
-                >
-                  <td className="px-8 py-6 align-middle font-sans">
-                    <span className="font-bold text-slate-400 font-sans">
-                      #{item.id}
-                    </span>
-                  </td>
-
-                  <td className="px-8 py-6 align-middle font-sans">
-                    <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 text-slate-600 font-bold text-[11px] rounded-lg border border-slate-200 font-sans uppercase tracking-tight">
-                      <CalendarDays size={14} className="font-sans" />
-                      {new Date(item.tanggal).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </td>
-
-                  <td className="px-8 py-6 align-middle font-sans">
-                    <span
-                      className={`inline-flex items-center px-4 py-2 font-bold rounded-xl border text-[11px] tracking-wide shadow-sm font-sans ${getBadgeStyle(item.indikator)}`}
-                    >
-                      {getIcon(item.indikator)}
-                      {item.indikator}
-                    </span>
-                  </td>
+            <table className="w-full text-left border-collapse font-sans">
+              <thead>
+                <tr className="bg-white border-b border-slate-100 font-sans">
+                  <th className="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest w-24 font-sans">
+                    No.
+                  </th>
+                  <th className="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest font-sans">
+                    Tanggal Penilaian
+                  </th>
+                  <th className="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-widest font-sans">
+                    Indikator Kepuasan
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-sans text-sm">
+                {isLoading ? (
+                  // Skeleton Table Rows
+                  [...Array(5)].map((_, index) => (
+                    <tr key={index} className="animate-pulse">
+                      <td className="px-8 py-6">
+                        <div className="h-4 bg-slate-100 rounded-lg w-12 text-transparent">#</div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="h-8 bg-slate-50 rounded-lg w-40"></div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="h-10 bg-slate-50 rounded-xl w-48"></div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  surveyData.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-slate-50/50 transition-colors font-sans"
+                    >
+                      <td className="px-8 py-6 align-middle font-sans">
+                        <span className="font-bold text-slate-400 font-sans">
+                          #{(pagination.currentPage - 1) * pagination.itemsPerPage + (index + 1)}
+                        </span>
+                      </td>
 
-        {surveyData.length === 0 && (
+                      <td className="px-8 py-6 align-middle font-sans">
+                        <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-50 text-slate-600 font-bold text-[11px] rounded-lg border border-slate-200 font-sans uppercase tracking-tight">
+                          <CalendarDays size={14} className="font-sans" />
+                          {new Date(item.tanggal).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </td>
+
+                      <td className="px-8 py-6 align-middle font-sans">
+                        <span
+                          className={`inline-flex items-center px-4 py-2 font-bold rounded-xl border text-[11px] tracking-wide shadow-sm font-sans ${getBadgeStyle(item.indikator)}`}
+                        >
+                          {getIcon(item.indikator)}
+                          {item.indikator}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        {surveyData.length === 0 && !isLoading && (
           <div className="py-24 text-center font-sans">
             <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 mb-4 font-sans shadow-inner">
               <Smile size={40} className="font-sans" />
@@ -310,13 +367,15 @@ const SurveyKepuasan = () => {
           </div>
         )}
 
-        <Pagination
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          onPageChange={handlePageChange}
-          totalItems={pagination.totalItems}
-          itemsPerPage={pagination.itemsPerPage}
-        />
+        {!isLoading && (
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            totalItems={pagination.totalItems}
+            itemsPerPage={pagination.itemsPerPage}
+          />
+        )}
       </div>
     </div>
   );

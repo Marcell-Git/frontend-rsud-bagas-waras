@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import {
   FaMapMarkerAlt,
   FaWhatsapp,
@@ -8,7 +9,30 @@ import {
 } from "react-icons/fa";
 import logoRsud from "../../assets/logo-rsud.png";
 
+import { createSurveyKepuasan } from "../../api/pengaduan/surveyKepuasan";
+import { toast } from "react-toastify";
+
 const Footer = () => {
+  const [surveyKepuasan, setSurveyKepuasan] = useState({
+    tanggal: new Date().toISOString().split("T")[0],
+    indikator: "",
+  });
+
+  const handleSurveyKepuasan = async () => {
+    try {
+      const response = await createSurveyKepuasan(surveyKepuasan);
+      console.log(response);
+      toast.success("Terima kasih atas tanggapan Anda!");
+      setSurveyKepuasan({
+        tanggal: new Date().toISOString().split("T")[0],
+        indikator: "",
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Gagal mengirim tanggapan!");
+    }
+  };
+
   return (
     <footer className="bg-white border-t-4 md:border-t-8 border-primary-blue pt-12 md:pt-20 pb-6 md:pb-8 shadow-[0_-10px_30px_rgba(0,0,0,0.03)] mt-auto">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -29,6 +53,13 @@ const Footer = () => {
               <select
                 defaultValue=""
                 className="w-full p-2.5 md:p-3 rounded-xl border border-gray-200 outline-none focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20 text-xs md:text-sm text-gray-700 bg-white transition-all cursor-pointer shadow-sm appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-size-[0.7rem_auto] bg-no-repeat bg-position-[right_1rem_center] pr-10"
+                value={surveyKepuasan.indikator}
+                onChange={(e) =>
+                  setSurveyKepuasan({
+                    ...surveyKepuasan,
+                    indikator: e.target.value,
+                  })
+                }
               >
                 <option value="" disabled>
                   -- Pilih tanggapan Anda --
@@ -42,11 +73,7 @@ const Footer = () => {
               <button
                 type="button"
                 className="w-full mt-3 bg-primary-blue text-white py-2 md:py-2.5 rounded-xl font-bold hover:bg-dark-blue transition-colors shadow-sm text-xs md:text-sm active:scale-[0.98]"
-                onClick={() =>
-                  alert(
-                    "Terima kasih atas tanggapan Anda yang sangat berharga!",
-                  )
-                }
+                onClick={handleSurveyKepuasan}
               >
                 Kirim Tanggapan
               </button>

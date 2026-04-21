@@ -1,13 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../../components/viewer/Navbar";
 import Footer from "../../../components/viewer/Footer";
 import EmergencyCall from "../../../components/viewer/EmergencyCall";
 import { FaEye, FaBullseye } from "react-icons/fa";
 import Header from "../../../components/viewer/Header";
 
+import { getVisiTerbaru } from "../../../api/tentang/visi";  
+import { getMisi } from "../../../api/tentang/misi";
+
 const VisiMisi = () => {
+
+  const [visi, setVisi] = useState([]);
+  const [misi, setMisi] = useState([]);
+
+  const fetchVisi = async () => {
+    try {
+      const response = await getVisiTerbaru();
+      setVisi(response.data);
+    } catch (error) {
+      console.error("Error fetching visi:", error);
+    }
+  };
+
+  const fetchMisi = async () => {
+    try {
+      const response = await getMisi();
+      setMisi(response.data);
+    } catch (error) {
+      console.error("Error fetching misi:", error);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchVisi();
+    fetchMisi();
   }, []);
 
   const missions = [
@@ -47,8 +74,7 @@ const VisiMisi = () => {
                 </h3>
                 <div className="relative inline-block md:block px-4 md:px-0">
                   <p className="text-base md:text-lg lg:text-xl text-gray-700 leading-relaxed font-medium relative z-10 w-full">
-                    Mewujudkan rumah sakit yang unggul dalam pelayanan,
-                    paripurna, dan berkeadilan.
+                    {visi.visi}
                   </p>
                 </div>
               </div>
@@ -82,7 +108,7 @@ const VisiMisi = () => {
               {/* Vertical Line Connecting Steps */}
               <div className="absolute left-6 md:left-7 lg:left-9 top-10 bottom-10 w-1 bg-gray-200 rounded-full hidden md:block"></div>
 
-              {missions.map((misi, idx) => (
+              {misi.map((misi, idx) => (
                 <div
                   key={idx}
                   className="bg-white p-5 md:p-6 lg:p-8 rounded-2xl shadow-sm hover:shadow-md md:hover:shadow-xl border border-gray-100 flex flex-row gap-4 md:gap-6 hover:translate-x-1 md:hover:-translate-y-1 md:hover:translate-x-0 transition-all duration-300 relative group z-10 items-stretch"
@@ -96,7 +122,7 @@ const VisiMisi = () => {
                   </div>
                   <div className="flex items-center w-full">
                     <p className="text-gray-600 text-sm md:text-lg leading-relaxed md:leading-relaxed font-medium">
-                      {misi}
+                      {misi.misi}
                     </p>
                   </div>
                 </div>

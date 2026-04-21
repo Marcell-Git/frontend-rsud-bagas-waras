@@ -35,13 +35,16 @@ import {
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import { FaPeopleGroup } from "react-icons/fa6";
 
-const SidebarItem = ({ icon: Icon, label, to, collapsed }) => {
+const SidebarItem = ({ icon: Icon, label, to, collapsed, end }) => {
   return (
     <NavLink
       to={to}
+      end={end}
       className={({ isActive }) => `
-        w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group relative
+        w-full flex items-center rounded-xl transition-all duration-300 group relative
+        ${collapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-2.5"}
         ${
           isActive
             ? "bg-linear-to-r from-primary-blue to-secondary-blue text-white shadow-lg shadow-primary-blue/20"
@@ -89,6 +92,7 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       icon: LayoutDashboard,
       category: "Main",
       to: "/admin",
+      end: true,
     },
 
     // Content
@@ -236,6 +240,12 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       to: "/admin/survey-kepuasan",
     },
     {
+      label: "Index Kepuasan Masyarakat",
+      icon: FaPeopleGroup,
+      category: "Pengaduan",
+      to: "/admin/index-kepuasan-masyarakat",
+    },
+    {
       label: "Pengaduan Masyarakat",
       icon: MessageSquare,
       category: "Pengaduan",
@@ -305,13 +315,13 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       }`}
     >
       {/* Logo Section */}
-      <div className="p-6 flex items-center justify-between font-sans">
+      <div className={`flex items-center font-sans ${collapsed ? "p-4 justify-center" : "p-6 justify-between"}`}>
         {!collapsed && (
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-blue to-secondary-blue flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary-blue/30">
               B
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col text-nowrap overflow-hidden">
               <span className="text-white font-black leading-none tracking-tight">
                 BAGAS WARAS
               </span>
@@ -322,7 +332,7 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
           </div>
         )}
         {collapsed && (
-          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-blue to-secondary-blue flex items-center justify-center text-white font-black text-xl mx-auto">
+          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-blue to-secondary-blue flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary-blue/30 cursor-pointer hover:scale-105 transition-transform" onClick={onToggle}>
             B
           </div>
         )}
@@ -339,7 +349,7 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       )}
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-8 scrollbar-hide font-sans">
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-8 custom-scrollbar">
         {categories.map((category) => (
           <div key={category} className="space-y-2">
             {!collapsed && (
@@ -365,7 +375,9 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       {/* User Section */}
       <div className="p-4 border-t border-slate-900 bg-slate-950/50 font-sans">
         <div
-          className={`flex items-center gap-3 p-3 rounded-2xl bg-slate-900 border border-slate-800 transition-all ${collapsed ? "justify-center" : ""}`}
+          className={`flex items-center rounded-2xl bg-slate-900 border border-slate-800 transition-all ${
+            collapsed ? "justify-center p-2" : "gap-3 p-3"
+          }`}
         >
           <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-500 border border-slate-700 font-sans">
             <User size={20} />

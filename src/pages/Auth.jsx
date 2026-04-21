@@ -25,6 +25,14 @@ const Auth = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      navigate("/admin");
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.password) {
@@ -34,12 +42,20 @@ const Auth = () => {
 
     setIsLoading(true);
 
-    // Simulate API Call for design demo
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Use the actual login API function
+      await login(formData);
       toast.success("Login Berhasil! Selamat datang di Dashboard Admin.");
       navigate("/admin");
-    }, 1000);
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(
+        error.response?.data?.message || 
+        "Login gagal. Periksa kembali username dan password Anda."
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

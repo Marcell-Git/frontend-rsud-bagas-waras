@@ -32,15 +32,6 @@ h1, h2, h3, h4, h5, h6 {
   pointer-events: auto;
 }
 
-.carousel-bg {
-  transform: scale(1.05);
-  transition: transform 10s linear;
-}
-
-.carousel-slide.active .carousel-bg {
-  transform: scale(1);
-}
-
 .carousel-content {
   transform: translateY(20px);
   opacity: 0;
@@ -75,4 +66,28 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* Custom Scrollbar for Sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e293b; /* slate-800 */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #334155; /* slate-700 */
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b transparent;
 }

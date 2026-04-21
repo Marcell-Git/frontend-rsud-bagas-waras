@@ -2,6 +2,10 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import Auth from "../pages/Auth";
 
 import Home from "../pages/viewer/home";
+import Berita from "../pages/viewer/Berita";
+import DetailBerita from "../pages/DetailBerita";
+import Galeri from "../pages/viewer/Galeri";
+
 import AlurPelayanan from "../pages/viewer/AlurPelayanan";
 import Pengaduan from "../pages/viewer/pengaduan/Pengaduan";
 import FormPengaduan from "../pages/viewer/pengaduan/FormPengaduan";
@@ -48,6 +52,18 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/berita",
+    element: <Berita />,
+  },
+  {
+    path: "/berita/:id",
+    element: <DetailBerita />,
+  },
+  {
+    path: "/galeri",
+    element: <Galeri />,
   },
   {
     path: "/auth",

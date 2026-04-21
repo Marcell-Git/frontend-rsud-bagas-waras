@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import Modal from "../../../components/admin/Modal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import Pagination from "../../../components/admin/Pagination";
+
 import {
   getPPID,
   createPPID,
@@ -23,11 +25,18 @@ import {
 
 const BerkasPPID = () => {
   const [ppidData, setPpidData] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10,
+  });
   const [formData, setFormData] = useState({
     judul: "",
-    kategori: "Berkala",
+    kategori: "Informasi Berkala",
     kelompok_dokumen: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -39,19 +48,37 @@ const BerkasPPID = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchPPID = async () => {
+  const fetchPPID = async (page = 1) => {
+    setIsLoading(true);
     try {
-      const response = await getPPID();
-      setPpidData(response.data);
+      const response = await getPPID({ page, per_page: pagination.itemsPerPage });
+      const data = response.data?.data || response.data || [];
+      setPpidData(Array.isArray(data) ? data : []);
+      
+      if (response.data && response.data.current_page) {
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total,
+        }));
+      }
     } catch (error) {
       console.error("Error fetching PPID:", error);
       toast.error("Gagal mengambil data PPID");
+      setPpidData([]); // Ensure it stays an array on error
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPPID();
-  }, []);
+    fetchPPID(pagination.currentPage);
+  }, [pagination.currentPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -158,13 +185,13 @@ const BerkasPPID = () => {
 
   const getKategoriColor = (kategori) => {
     switch (kategori) {
-      case "Berkala":
+      case "Informasi Berkala":
         return "bg-blue-50 text-blue-700 border-blue-200";
-      case "Serta Merta":
+      case "Informasi Serta Merta":
         return "bg-rose-50 text-rose-700 border-rose-200";
-      case "Setiap Saat":
+      case "Informasi Setiap Saat":
         return "bg-emerald-50 text-emerald-700 border-emerald-200";
-      case "Dikecualikan":
+      case "Informasi Dikecualikan":
         return "bg-slate-100 text-slate-700 border-slate-300";
       default:
         return "bg-slate-50 text-slate-700 border-slate-200";
@@ -218,7 +245,32 @@ const BerkasPPID = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans text-sm">
-              {ppidData.map((item) => (
+              {isLoading ? (
+                // Skeleton Loader (Non-Circular)
+                [...Array(5)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-8 py-6">
+                      <div className="space-y-3">
+                        <div className="h-5 bg-slate-100 rounded-full w-full"></div>
+                        <div className="h-4 bg-slate-50 rounded-full w-2/3"></div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-center">
+                      <div className="w-24 h-6 rounded-lg bg-slate-100"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="w-32 h-10 rounded-xl bg-slate-50"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                ppidData.map((item) => (
                 <tr
                   key={item.id}
                   className="hover:bg-slate-50/50 transition-colors font-sans"
@@ -277,22 +329,33 @@ const BerkasPPID = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {ppidData.length === 0 && (
-          <div className="py-24 text-center font-sans">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 shadow-sm mb-4 font-sans">
-              <FolderOpen size={40} />
-            </div>
-            <p className="text-slate-500 font-bold font-sans">
-              Data dokumen PPID masih kosong.
-            </p>
-          </div>
-        )}
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
+
+      {ppidData.length > 0 && !isLoading && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+          totalItems={pagination.totalItems}
+          itemsPerPage={pagination.itemsPerPage}
+        />
+      )}
+
+      {ppidData.length === 0 && !isLoading && (
+        <div className="py-24 text-center font-sans">
+          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 shadow-sm mb-4 font-sans">
+            <FolderOpen size={40} />
+          </div>
+          <p className="text-slate-500 font-bold font-sans">
+            Data dokumen PPID masih kosong.
+          </p>
+        </div>
+      )}
+    </div>
 
       {/* CRUD Modal */}
       <Modal
@@ -346,10 +409,10 @@ const BerkasPPID = () => {
                 onChange={handleChange}
                 className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none font-bold text-slate-700 font-sans appearance-none cursor-pointer"
               >
-                <option value="Berkala">Informasi Berkala</option>
-                <option value="Serta Merta">Informasi Serta Merta</option>
-                <option value="Setiap Saat">Informasi Setiap Saat</option>
-                <option value="Dikecualikan">Informasi Dikecualikan</option>
+                <option value="Informasi Berkala">Informasi Berkala</option>
+                <option value="Informasi Serta Merta">Informasi Serta Merta</option>
+                <option value="Informasi Setiap Saat">Informasi Setiap Saat</option>
+                <option value="Informasi Dikecualikan">Informasi Dikecualikan</option>
               </select>
             </div>
 

@@ -22,6 +22,7 @@ const PengaduanMasyarakat = () => {
     totalItems: 0,
     itemsPerPage: 10
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedLaporan, setSelectedLaporan] = useState(null);
@@ -31,6 +32,7 @@ const PengaduanMasyarakat = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchLaporan = async (page = 1) => {
+    setIsLoading(true);
     try {
       const response = await getPengaduanMasyarakat({ page, per_page: pagination.itemsPerPage });
       if (response.data && response.data.data) {
@@ -45,6 +47,8 @@ const PengaduanMasyarakat = () => {
     } catch (error) {
       console.error("Error fetching pengaduan:", error);
       toast.error("Gagal mengambil data pengaduan");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -105,58 +109,96 @@ const PengaduanMasyarakat = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 transition-all font-sans">
-              {laporan.map((item) => (
-                <tr key={item.id} className="transition-colors group hover:bg-slate-50/50 font-sans text-sm">
-                  <td className="px-8 py-5">
-                    <div className="flex flex-col gap-1.5 font-sans">
-                      <div className="flex items-center gap-2 text-sm font-bold text-slate-900 font-sans">
-                        <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 font-sans">
-                          <Mail size={14} />
+              {isLoading ? (
+                // Skeleton Rows
+                [...Array(5)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-8 py-5">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-slate-100"></div>
+                          <div className="h-4 bg-slate-100 rounded-full w-32 font-sans"></div>
                         </div>
-                        <span className="truncate max-w-[180px] font-sans">{item.email}</span>
+                        <div className="h-3 bg-slate-50 rounded-full w-24 ml-10 font-sans text-transparent">phone</div>
                       </div>
-                      <div className="flex items-center gap-2 text-xs font-bold text-slate-400 font-sans">
-                        <Phone size={14} className="opacity-40" />
-                        {item.no_telp}
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="space-y-2">
+                        <div className="h-4 bg-slate-50 rounded-full w-full"></div>
+                        <div className="h-4 bg-slate-50 rounded-full w-2/3"></div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-5">
-                    <p className="text-sm line-clamp-2 w-full font-medium text-slate-600 leading-relaxed font-sans">
-                      {item.isi_pengaduan}
-                    </p>
-                  </td>
-                  <td className="px-8 py-5 font-sans">
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500 font-sans uppercase tracking-tight">
-                      <Clock size={14} className="text-slate-300 font-sans" />
-                      {new Date(item.tanggal).toLocaleDateString("id-ID", { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                  </td>
-                  <td className="px-8 py-5 font-sans">
-                    <div className="flex justify-center gap-2">
-                      <button 
-                        onClick={() => openViewModal(item)}
-                        className="p-3 rounded-xl transition-all bg-white border border-slate-200 text-slate-400 hover:text-teal-600 hover:bg-teal-50 hover:border-teal-100 shadow-sm"
-                        title="Lihat Detail"
-                      >
-                        <Eye size={18} />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(item.id)}
-                        className="p-3 rounded-xl transition-all bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 shadow-sm"
-                        title="Hapus Pengaduan"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="h-8 bg-slate-50 rounded-lg w-40 font-sans"></div>
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="flex justify-center gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                laporan.map((item) => (
+                  <tr key={item.id} className="transition-colors group hover:bg-slate-50/50 font-sans text-sm">
+                    <td className="px-8 py-5">
+                      <div className="flex flex-col gap-1.5 font-sans">
+                        <div className="flex items-center gap-2 text-sm font-bold text-slate-900 font-sans">
+                          <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 font-sans">
+                            <Mail size={14} />
+                          </div>
+                          <span className="truncate max-w-[180px] font-sans">{item.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 font-sans">
+                          <Phone size={14} className="opacity-40" />
+                          {item.no_telp}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-5">
+                      <p className="text-sm line-clamp-2 w-full font-medium text-slate-600 leading-relaxed font-sans">
+                        {item.isi_pengaduan}
+                      </p>
+                    </td>
+                    <td className="px-8 py-5 font-sans">
+                      <div className="flex items-center gap-2 text-xs font-bold text-slate-500 font-sans uppercase tracking-tight">
+                        <Clock size={14} className="text-slate-300 font-sans" />
+                        {new Date(item.tanggal).toLocaleDateString("id-ID", { 
+                          day: 'numeric', 
+                          month: 'short', 
+                          year: 'numeric', 
+                          hour: '2-digit', 
+                          minute: '2-digit' 
+                        })}
+                      </div>
+                    </td>
+                    <td className="px-8 py-5 font-sans">
+                      <div className="flex justify-center gap-2">
+                        <button 
+                          onClick={() => openViewModal(item)}
+                          className="p-3 rounded-xl transition-all bg-white border border-slate-200 text-slate-400 hover:text-teal-600 hover:bg-teal-50 hover:border-teal-100 shadow-sm"
+                          title="Lihat Detail"
+                        >
+                          <Eye size={18} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(item.id)}
+                          className="p-3 rounded-xl transition-all bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 shadow-sm"
+                          title="Hapus Pengaduan"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
         
-        {laporan.length === 0 && (
+        {laporan.length === 0 && !isLoading && (
           <div className="py-24 text-center font-sans">
             <div className="w-20 h-20 bg-slate-50 rounded-[28px] flex items-center justify-center mx-auto mb-6 border border-dashed border-slate-200 shadow-inner font-sans">
               <MessageSquare size={32} className="text-slate-200" />
@@ -165,13 +207,15 @@ const PengaduanMasyarakat = () => {
           </div>
         )}
 
-        <Pagination 
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages}
-          onPageChange={handlePageChange}
-          totalItems={pagination.totalItems}
-          itemsPerPage={pagination.itemsPerPage}
-        />
+        {!isLoading && (
+          <Pagination 
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            totalItems={pagination.totalItems}
+            itemsPerPage={pagination.itemsPerPage}
+          />
+        )}
       </div>
 
       {/* View Detail Modal */}

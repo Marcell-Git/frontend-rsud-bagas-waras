@@ -9,105 +9,50 @@ import {
   FaChevronUp,
   FaGavel,
   FaFileAlt,
+  FaHistory,
 } from "react-icons/fa";
 import Header from "../../../components/viewer/Header";
 import rsudBuilding from "../../../assets/rsud-building.png";
 
-// Data Landasan Hukum
-const landasanHukumData = [
-  {
-    kategori: "Peraturan Daerah Kabupaten Klaten",
-    icon: <FaLandmark />,
-    color: "from-primary-blue to-light-blue",
-    bgLight: "bg-blue-50",
-    borderColor: "border-blue-200",
-    textColor: "text-blue-700",
-    items: [
-      {
-        nomor: "Perda Kab. Klaten No. 8 Tahun 2014",
-        judul: "Tentang Rumah Sakit Umum Daerah Bagas Waras Kabupaten Klaten",
-        desc: "RSUD Bagas Waras Kabupaten Klaten telah berdiri sejak tanggal 7 Agustus 2014 dan beralamatkan di Jln. Ir. Soekarno Km.2 Buntalan, Klaten Tengah Klaten Jawa Tengah, Telp. (0272) 3359188, Fax (0272) 335966 dengan luas tanah seluas 55.000 m² dan luas bangunan seluas ±10.415 m².",
-      },
-      {
-        nomor: "Perda Kab. Klaten No. 10 Tahun 2014",
-        judul:
-          "Tentang Organisasi dan Tata Kerja Rumah Sakit Umum Daerah Kelas C Kabupaten Klaten",
-        desc: "Rumah Sakit Umum Daerah selanjutnya disingkat RSUD adalah Rumah Sakit Umum Daerah Kelas C Kabupaten Klaten dengan status kepemilikan merupakan milik Pemerintah Daerah Kabupaten Klaten. RSUD Bagas Waras Kabupaten Klaten merupakan Satuan Kerja Perangkat Daerah (SKPD) yang dipimpin oleh direktur.",
-      },
-    ],
-  },
-  {
-    kategori: "Keputusan Kepala Dinas Penanaman Modal",
-    icon: <FaFileAlt />,
-    color: "from-primary-blue to-light-blue",
-    bgLight: "bg-indigo-50",
-    borderColor: "border-indigo-200",
-    textColor: "text-indigo-700",
-    items: [
-      {
-        nomor: "SK No. 503.24/002/OP/2015/29",
-        judul: "Tentang Pemberian Izin Operasional Rumah Sakit",
-        desc: "Kepala Kantor Penanaman Modal dan Perizinan Terpadu memutuskan memberikan Izin Operasional Rumah Sakit Umum Kelas C kepada RSUD Bagas Waras pada tanggal 30 September 2015. Masa berlaku Izin Operasional selama 5 (lima) tahun (30 September 2015 s/d 30 September 2020).",
-      },
-      {
-        nomor: "SK No. 503.24/004/OP Tahun 2020",
-        judul: "Tentang Pemberian Perpanjangan Izin Operasional Rumah Sakit",
-        desc: "Terhitung mulai tanggal 23 Juli 2015, RSUD Bagas Waras Kabupaten Klaten menerima pola penetapan pola tata kelola keuangan Badan Layanan Umum Daerah (BLUD). Pola tata kelola keuangan BLUD di RSUD Bagas Waras Kabupaten Klaten pada Tahun 2015 dalam masa transisi sedangkan penggunaan BLUD penuh akan dilaksanakan pada Tahun 2016.",
-      },
-    ],
-  },
-  {
-    kategori: "Keputusan Bupati Klaten",
-    icon: <FaGavel />,
-    color: "from-primary-blue to-light-blue",
-    bgLight: "bg-sky-50",
-    borderColor: "border-sky-200",
-    textColor: "text-sky-700",
-    items: [
-      {
-        nomor: "Keputusan Bupati Klaten No. 445/301 Tahun 2015",
-        judul:
-          "Tentang Penerapan Pola Pengelolaan Keuangan Badan Layanan Umum Daerah (BLUD) RSUD Bagas Waras Kabupaten Klaten",
-        desc: "Terhitung mulai tanggal 23 Juli 2015, RSUD Bagas Waras Kabupaten Klaten menerima pola penetapan pola tata kelola keuangan Badan Layanan Umum Daerah (BLUD). Pola tata kelola keuangan BLUD di RSUD Bagas Waras Kabupaten Klaten pada Tahun 2015 dalam masa transisi sedangkan penggunaan BLUD penuh akan dilaksanakan pada Tahun 2016.",
-      },
-    ],
-  },
-];
+import { getSejarah } from "../../../api/tentang/sejarah";
+import { getLandasanHukum } from "../../../api/tentang/landasanHukum";
 
 const HukumItem = ({ item }) => {
   const [open, setOpen] = useState(false);
   return (
     <div
-      className={`border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 ${open ? "shadow-md" : "shadow-sm hover:shadow-md"}`}
+      className={`border border-gray-100 rounded-2xl overflow-hidden transition-all duration-300 ${
+        open ? "shadow-md bg-white" : "shadow-sm hover:shadow-md bg-white/80"
+      }`}
     >
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between gap-4 p-4 md:p-5 bg-white hover:bg-gray-50 transition-colors text-left"
+        className="w-full flex items-center justify-between gap-4 p-4 md:p-5 hover:bg-gray-50 transition-colors text-left"
       >
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          <FaFileAlt className="text-primary-blue mt-0.5 shrink-0 text-sm" />
+          <div className={`mt-0.5 shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${open ? 'bg-primary-blue text-white' : 'bg-blue-50 text-primary-blue'}`}>
+            <FaFileAlt className="text-sm" />
+          </div>
           <div className="min-w-0">
-            <span className="block text-xs font-bold text-primary-blue uppercase tracking-wide mb-0.5">
-              {item.nomor}
+            <span className="block text-[10px] md:text-xs font-black text-primary-blue uppercase tracking-widest mb-1">
+              {item.nama_peraturan}
             </span>
             <span className="block text-sm md:text-base font-bold text-dark-blue leading-snug">
               {item.judul}
             </span>
           </div>
         </div>
-        <div className="shrink-0 text-gray-400">
-          {open ? (
-            <FaChevronUp className="text-xs" />
-          ) : (
-            <FaChevronDown className="text-xs" />
-          )}
+        <div className={`shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}>
+          <FaChevronDown className="text-xs text-gray-400" />
         </div>
       </button>
       {open && (
-        <div className="px-4 md:px-5 pb-4 md:pb-5 bg-gray-50 border-t border-gray-100">
-          <p className="text-gray-600 text-sm leading-relaxed pt-3">
-            {item.desc}
-          </p>
+        <div className="px-5 md:px-7 pb-5 md:pb-7 bg-white border-t border-gray-50 animate-[fadeIn_0.3s_ease-out]">
+          <div className="pt-4 border-l-4 border-primary-blue/20 pl-4">
+             <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+              {item.deskripsi}
+            </p>
+          </div>
         </div>
       )}
     </div>
@@ -115,8 +60,29 @@ const HukumItem = ({ item }) => {
 };
 
 const SejarahLandasanHukum = () => {
+  const [sejarah, setSejarah] = useState([]);
+  const [landasanHukum, setLandasanHukum] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const [sejarahRes, hukumRes] = await Promise.all([
+        getSejarah(),
+        getLandasanHukum()
+      ]);
+      setSejarah(sejarahRes.data?.data || sejarahRes.data || []);
+      setLandasanHukum(hukumRes.data?.data || hukumRes.data || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchData();
   }, []);
 
   return (
@@ -124,15 +90,13 @@ const SejarahLandasanHukum = () => {
       <Navbar />
 
       <main className="grow">
-        {/* Hero Section */}
         <Header
           subtitle="Tentang Kami"
           title="Sejarah & Landasan Hukum"
-          description="Sejarah singkat RSUD Bagas Waras dan landasan hukum yang mendasarinya."
+          description="Jejak perjalanan RSUD Bagas Waras dan regulasi yang menjadi landasan operasional kami."
         />
 
-        {/* Main Content */}
-        <div className="max-w-7xl mx-auto px-4 md:px-6 -mt-10 md:-mt-16 lg:-mt-24 relative z-20 pb-16 md:pb-24">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 -mt-12 md:-mt-20 relative z-20 pb-16 md:pb-24">
           {/* ===== SEJARAH SECTION ===== */}
           <section className="bg-white rounded-3xl md:rounded-4xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden mb-10 md:mb-16">
             <div className="bg-linear-to-r from-primary-blue to-light-blue p-6 md:p-8 relative overflow-hidden">
@@ -160,43 +124,24 @@ const SejarahLandasanHukum = () => {
             <div className="p-6 md:p-10">
               <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-center">
                 <div className="flex-1">
-                  <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-4">
-                    <strong className="text-primary-blue">
-                      RSUD Bagas Waras
-                    </strong>
-                    {""}
-                    merupakan Rumah Sakit Umum Daerah milik Pemerintah Kabupaten
-                    Klaten yang berdiri sejak <strong>7 Agustus 2014</strong>
-                    {""}
-                    berdasarkan Peraturan Daerah Kabupaten Klaten Nomor 8 Tahun
-                    2014. Rumah sakit ini beralamat di{""}
-                    <strong>
-                      Jln. Ir. Soekarno Km.2 Buntalan, Klaten Tengah, Jawa
-                      Tengah (57419)
-                    </strong>
-                    , dengan Telp. (0272) 3359188 dan Fax (0272) 335966.
-                  </p>
-                  <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-4">
-                    RSUD Bagas Waras merupakan Rumah Sakit Umum Daerah Kelas C
-                    dengan luas tanah seluas{""}
-                    <strong className="text-primary-blue">55.000 m²</strong> dan
-                    luas bangunan seluas{""}
-                    <strong className="text-primary-blue">±10.415 m²</strong>.
-                    Sebagai Satuan Kerja Perangkat Daerah (SKPD) Kabupaten
-                    Klaten, rumah sakit ini dipimpin oleh seorang direktur dan
-                    bertanggung jawab langsung kepada Pemerintah Daerah
-                    Kabupaten Klaten.
-                  </p>
-                  <p className="text-gray-600 text-base md:text-lg leading-relaxed">
-                    Nama{""}
-                    <strong className="text-primary-blue">"Bagas Waras"</strong>
-                    {""}
-                    berasal dari bahasa Jawa yang bermakna{""}
-                    <em>"Sehat Sejahtera"</em>, mencerminkan harapan dan tekad
-                    bersama untuk mewujudkan masyarakat Klaten yang sehat, kuat,
-                    dan sejahtera melalui layanan kesehatan yang bermutu,
-                    terjangkau, dan berkeadilan.
-                  </p>
+                  {isLoading ? (
+                    <div className="space-y-4 animate-pulse">
+                      <div className="h-4 bg-gray-100 rounded-full w-full"></div>
+                      <div className="h-4 bg-gray-100 rounded-full w-full"></div>
+                      <div className="h-4 bg-gray-100 rounded-full w-3/4"></div>
+                    </div>
+                  ) : sejarah.length > 0 ? (
+                    sejarah.map((item, idx) => (
+                      <p
+                        key={idx}
+                        className="text-gray-600 text-base md:text-lg leading-relaxed mb-6 whitespace-pre-line"
+                      >
+                        {item.sejarah}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 italic">Data sejarah belum tersedia.</p>
+                  )}
                 </div>
 
                 {/* Gambar Gedung - Clean Frame Side-by-Side */}
@@ -216,46 +161,43 @@ const SejarahLandasanHukum = () => {
 
           {/* ===== LANDASAN HUKUM SECTION ===== */}
           <section>
-            <div className="flex items-center gap-4 mb-8 md:mb-10">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-primary-blue rounded-2xl flex items-center justify-center shrink-0 shadow-md transform -rotate-3">
-                <FaScroll className="text-white text-xl md:text-3xl" />
+            <div className="text-center mb-12 md:mb-16">
+              <div className="inline-flex items-center gap-3 bg-white px-6 py-2 rounded-full shadow-sm border border-gray-100 mb-4">
+                <FaScroll className="text-primary-blue" />
+                <span className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-[0.2em]">Regulasi & Dasar Hukum</span>
               </div>
-              <div>
-                <p className="text-xs md:text-sm font-bold text-primary-blue uppercase tracking-widest mb-1">
-                  Dasar & Regulasi
-                </p>
-                <h2 className="text-2xl md:text-4xl font-primary font-bold text-dark-blue">
-                  Landasan Hukum
-                </h2>
-              </div>
+              <h2 className="text-3xl md:text-5xl font-primary font-bold text-dark-blue">
+                Dasar Hukum <span className="text-primary-blue">Operasional</span>
+              </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {landasanHukumData.map((kategori, kIdx) => (
-                <div
-                  key={kIdx}
-                  className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden flex flex-col"
-                >
-                  {/* Kategori Header */}
-                  <div
-                    className={`bg-linear-to-r ${kategori.color} p-5 md:p-6 flex items-center gap-3`}
-                  >
-                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white text-lg backdrop-blur-sm">
-                      {kategori.icon}
-                    </div>
-                    <h3 className="font-primary font-bold text-white text-lg md:text-xl">
-                      {kategori.kategori}
-                    </h3>
+            <div className="max-w-4xl mx-auto">
+               <div className="grid grid-cols-1 gap-6">
+                {isLoading ? (
+                  Array(4).fill(0).map((_, i) => (
+                    <div key={i} className="h-24 bg-white rounded-3xl border border-gray-100 animate-pulse"></div>
+                  ))
+                ) : landasanHukum.length > 0 ? (
+                  landasanHukum.map((item) => (
+                    <HukumItem key={item.id} item={item} />
+                  ))
+                ) : (
+                  <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-gray-200">
+                    <p className="text-gray-400 font-medium">Data landasan hukum belum tersedia.</p>
                   </div>
-
-                  {/* Peraturan List */}
-                  <div className="p-4 md:p-5 flex flex-col gap-3 flex-1">
-                    {kategori.items.map((item, iIdx) => (
-                      <HukumItem key={iIdx} item={item} />
-                    ))}
+                )}
+              </div>
+              
+              {!isLoading && landasanHukum.length > 0 && (
+                <div className="mt-12 p-8 bg-linear-to-br from-gray-50 to-white rounded-[32px] border border-gray-100 shadow-inner flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary-blue/10 flex items-center justify-center text-primary-blue shrink-0">
+                    <FaGavel />
                   </div>
+                  <p className="text-sm text-gray-500 leading-relaxed italic">
+                    Dokumen-dokumen di atas merupakan landasan legalitas formal bagi RSUD Bagas Waras dalam menjalankan operasional sebagai Rumah Sakit Umum Daerah Kelas C milik Pemerintah Kabupaten Klaten dengan Pola Pengelolaan Keuangan Badan Layanan Umum Daerah (PPK-BLUD).
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
           </section>
         </div>

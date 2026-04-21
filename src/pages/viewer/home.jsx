@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   FaClipboardList,
   FaRoute,
@@ -9,9 +9,6 @@ import {
   FaArrowRight,
   FaMobileAlt,
 } from "react-icons/fa";
-import hero1 from "../../assets/img/hero1.png";
-import hero2 from "../../assets/img/hero2.png";
-import hero3 from "../../assets/img/Banner_Web_Aktif.png";
 import sketchRsud from "../../assets/sketch_rsud_blue.png";
 import partnerBpjsKes from "../../assets/partner/BPJS_kesehatan.jpg";
 import partnerBpjsKet from "../../assets/partner/BPJS_ketenagakerjaan.png";
@@ -23,21 +20,86 @@ import Navbar from "../../components/viewer/Navbar";
 import Footer from "../../components/viewer/Footer";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
 
+import { getBannerActive } from "../../api/content/banner";
+import { getGaleriGambar } from "../../api/content/galeri";
+import { getAllDokter } from "../../api/pelayanan/jadwalDokter";
+import { getBeritaTerbaru } from "../../api/content/berita";
+import { getLinkEksternal } from "../../api/content/linkEksternal";
+
 const Home = () => {
+  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
   const galleryRef = useRef(null);
   const [activeTab, setActiveTab] = useState("ruangan");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [banners, setBanners] = useState([]);
+  const [galeri, setGaleri] = useState([]);
+  const [dokter, setDokter] = useState([]);
+  const [berita, setBerita] = useState([]);
+  const [linkEksternal, setLinkEksternal] = useState([]);
+
+  const fetchBanner = async () => {
+    try {
+      const response = await getBannerActive();
+      setBanners(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchGaleriGambar = async () => {
+    try {
+      const response = await getGaleriGambar();
+      setGaleri(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchDokter = async () => {
+    try {
+      const response = await getAllDokter();
+      setDokter(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchBeritaTerbaru = async () => {
+    try {
+      const response = await getBeritaTerbaru();
+      setBerita(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchLinkEksternal = async () => {
+    try {
+      const response = await getLinkEksternal();
+      setLinkEksternal(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev >= 2 ? 0 : prev + 1));
-    }, 5000);
+    fetchBanner();
+    fetchGaleriGambar();
+    fetchDokter();
+    fetchBeritaTerbaru();
+    fetchLinkEksternal();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
 
     const galleryTimer = setInterval(() => {
       if (galleryRef.current) {
         const itemWidth = galleryRef.current.children[0]?.clientWidth || 0;
-        const gap = 16; // 1rem (gap-4)
+        const gap = 16;
 
         galleryRef.current.scrollBy({
           left: itemWidth + gap,
@@ -46,28 +108,30 @@ const Home = () => {
       }
     }, 3000);
 
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-
     window.addEventListener("scroll", handleScroll);
     return () => {
-      clearInterval(timer);
       clearInterval(galleryTimer);
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  const galleryImages = [
-    "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600",
-    "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=600",
-  ];
+
+  useEffect(() => {
+    if (banners.length > 0) {
+      const timer = setInterval(() => {
+        setActiveSlide((prev) => (prev >= banners.length - 1 ? 0 : prev + 1));
+      }, 5000);
+      return () => clearInterval(timer);
+    }
+  }, [banners]);
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString("id-ID", options);
+  };
 
   const ruanganData = [
     {
@@ -104,33 +168,6 @@ const Home = () => {
     },
   ];
 
-  const dokterData = [
-    {
-      no: 1,
-      nama: "dr. Budi Santoso, Sp.PD",
-      spesialisasi: "Penyakit Dalam",
-      jadwal: "Senin - Rabu (08:00 - 14:00)",
-    },
-    {
-      no: 2,
-      nama: "dr. Siti Aminah, Sp.A",
-      spesialisasi: "Anak",
-      jadwal: "Selasa - Kamis (09:00 - 15:00)",
-    },
-    {
-      no: 3,
-      nama: "dr. Candra Wijaya, Sp.B",
-      spesialisasi: "Bedah Umum",
-      jadwal: "Jumat - Sabtu (08:00 - 12:00)",
-    },
-    {
-      no: 4,
-      nama: "dr. Dewi Lestari, Sp.OG",
-      spesialisasi: "Kandungan",
-      jadwal: "Senin, Kamis (10:00 - 16:00)",
-    },
-  ];
-
   return (
     <div className="bg-gray-50 min-h-screen text-gray-700 font-secondary">
       <Navbar />
@@ -139,48 +176,61 @@ const Home = () => {
       <main>
         {/* Carousel Wrapper with Max Width to make it smaller/framed on big screens */}
         <div className="w-full max-w-6xl mx-auto xl:px-8 xl:py-6 relative z-0">
-          <div className="relative w-full bg-[#f8fafc] overflow-hidden group xl:rounded-3xl shadow-xl border border-gray-100/50">
-            {/* Ghost image defining aspect ratio, removed max height to ensure absolutely NO cropping */}
-            <img
-              src={hero3}
-              alt=""
-              className="w-full h-auto invisible pointer-events-none"
-            />
-            <div
-              className={`carousel-slide absolute inset-0 flex items-center justify-center ${activeSlide === 0 ? "active" : ""}`}
-            >
+          <div
+            className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 ${
+              banners.length === 0
+                ? "animate-pulse aspect-video md:aspect-[21/9]"
+                : ""
+            }`}
+          >
+            {/* Ghost image defining aspect ratio */}
+            {banners.length > 0 && (
               <img
-                src={hero1}
-                alt="RSUD Bagas Waras Building"
-                className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
+                src={`${import.meta.env.VITE_STORAGE_URL}/${banners[0].url_gambar}`}
+                alt=""
+                className="w-full h-auto invisible pointer-events-none"
               />
-            </div>
+            )}
 
-            <div
-              className={`carousel-slide absolute inset-0 flex items-center justify-center ${activeSlide === 1 ? "active" : ""}`}
-            >
-              <img
-                src={hero2}
-                alt="Professional Doctor"
-                className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
-              />
-            </div>
+            {banners.map((banner, index) => (
+              <div
+                key={banner.id}
+                className={`carousel-slide absolute inset-0 flex items-center justify-center ${
+                  activeSlide === index ? "active" : ""
+                }`}
+              >
+                <img
+                  src={`${import.meta.env.VITE_STORAGE_URL}/${banner.url_gambar}`}
+                  alt={banner.status}
+                  className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
+                />
+                {/* Subtle overlay for depth */}
+                <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
+              </div>
+            ))}
 
-            <div
-              className={`carousel-slide absolute inset-0 flex items-center justify-center ${activeSlide === 2 ? "active" : ""}`}
-            >
-              <img
-                src={hero3}
-                alt="Professional Doctor"
-                className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
-              />
-            </div>
+            {/* Navigation Dots */}
+            {banners.length > 1 && (
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                {banners.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveSlide(idx)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                      activeSlide === idx
+                        ? "bg-white w-8"
+                        : "bg-white/50 hover:bg-white/80"
+                    }`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-40 -mt-12">
           <div className="bg-white rounded-2xl shadow-xl p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 border border-gray-100">
-            {/* Survey Kepuasan Pasien */}
             <Link
               className="group relative flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 border border-transparent hover:bg-light-blue hover:border-primary-blue hover:shadow-lg hover:-translate-y-2 transition-all cursor-pointer"
               to="https://skm.klaten.go.id/"
@@ -270,10 +320,10 @@ const Home = () => {
             </div>
 
             <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden animate-[fadeIn_0.5s_ease-out]">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-gray-50 border-b-2 border-gray-200 text-sm font-primary font-bold text-gray-600 uppercase tracking-wider">
+              <div className="overflow-x-auto max-h-80 overflow-y-auto custom-scrollbar">
+                <table className="w-full text-left border-collapse relative">
+                  <thead className="sticky top-0 z-10 bg-gray-50 shadow-sm">
+                    <tr className="border-b-2 border-gray-200 text-sm font-primary font-bold text-gray-600 uppercase tracking-wider">
                       {activeTab === "ruangan" ? (
                         <>
                           <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
@@ -307,7 +357,10 @@ const Home = () => {
                             Spesialisasi
                           </th>
                           <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Jadwal Praktik
+                            Hari Praktik
+                          </th>
+                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                            Jam Praktik
                           </th>
                         </>
                       )}
@@ -315,13 +368,13 @@ const Home = () => {
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {activeTab === "ruangan"
-                      ? ruanganData.map((item) => (
+                      ? ruanganData.map((item, index) => (
                           <tr
-                            key={item.no}
+                            key={index}
                             className="hover:bg-light-blue transition-colors text-sm md:text-base"
                           >
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {item.no}
+                              {index + 1}
                             </td>
                             <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
                               {item.nama}
@@ -344,16 +397,16 @@ const Home = () => {
                             </td>
                           </tr>
                         ))
-                      : dokterData.map((item) => (
+                      : dokter.map((item, index) => (
                           <tr
-                            key={item.no}
+                            key={index}
                             className="hover:bg-light-blue transition-colors text-sm md:text-base"
                           >
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {item.no}
+                              {index + 1}
                             </td>
                             <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
-                              {item.nama}
+                              {item.nama_dokter}
                             </td>
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
                               <span className="bg-light-blue text-primary-blue px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold">
@@ -361,7 +414,10 @@ const Home = () => {
                               </span>
                             </td>
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {item.jadwal}
+                              {item.hari}
+                            </td>
+                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap font-bold text-primary-blue">
+                              {item.jam}
                             </td>
                           </tr>
                         ))}
@@ -382,46 +438,27 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  date: "12 Mei 2026",
-                  title: "Peresmian Gedung Rawat Inap Baru RSUD Bagas Waras",
-                  img: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800",
-                },
-                {
-                  date: "08 Mei 2026",
-                  title:
-                    "Edukasi Kesehatan: Pencegahan dan Penanganan Demam Berdarah",
-                  img: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&q=80&w=800",
-                },
-                {
-                  date: "01 Mei 2026",
-                  title: "Layanan Antar Obat ke Rumah Bagi Lansia",
-                  img: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800",
-                },
-              ].map((news, idx) => (
+              {berita.map((news, idx) => (
                 <div
                   key={idx}
                   className="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
                 >
                   <div className="h-52 overflow-hidden">
                     <img
-                      src={news.img}
+                      src={`${import.meta.env.VITE_STORAGE_URL}/${news.url_gambar}`}
                       alt={`News ${idx}`}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
                   <div className="p-6">
                     <span className="text-sm font-semibold text-primary-blue mb-2 block">
-                      {news.date}
+                      {formatDate(news.tanggal)}
                     </span>
                     <h3 className="text-xl font-primary font-bold text-dark-blue mb-4 hover:text-primary-blue transition-colors cursor-pointer">
-                      {news.title}
+                      {news.judul}
                     </h3>
                     <p className="text-gray-600 line-clamp-2">
-                      RSUD Bagas Waras terus meningkatkan kualitas pelayanan
-                      demi kenyamanan dan keselamatan pasien sesuai dengan
-                      standar medis terkini...
+                      {news.isi}
                     </p>
                   </div>
                 </div>
@@ -429,7 +466,7 @@ const Home = () => {
             </div>
 
             <div className="text-center mt-12">
-              <button className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors">
+              <button onClick={() => navigate("/berita")} className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors">
                 Lihat Semua Berita <FaArrowRight />
               </button>
             </div>
@@ -461,10 +498,8 @@ const Home = () => {
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                 onScroll={(e) => {
                   const el = e.currentTarget;
-                  // Total 3 set duplikat, satu set adalah 1/3 dari total panjang.
                   const setWidth = el.scrollWidth / 3;
 
-                  // Jika sudah melewati set pertama (masuk terlalu dalam), kita teleportasi balik sebanyak diam-diam 1 set!
                   if (el.scrollLeft >= setWidth * 2) {
                     el.scrollLeft -= setWidth;
                   } else if (el.scrollLeft <= 0) {
@@ -472,25 +507,22 @@ const Home = () => {
                   }
                 }}
               >
-                {/* Render 3 pasang gambar kembar agar loop transisi perputaran menjadi tidak terhingga & tidak ada jeda rewind */}
-                {[...galleryImages, ...galleryImages, ...galleryImages].map(
-                  (img, idx) => (
-                    <div key={idx} className="shrink-0 snap-start w-64 md:w-80">
-                      <div className="p-1 bg-white border border-gray-200 rounded shadow-sm">
-                        <img
-                          src={img}
-                          alt={`Gallery ${idx}`}
-                          className="w-full h-48 md:h-64 object-cover rounded-sm pointer-events-none"
-                        />
-                      </div>
+                {[...galeri, ...galeri, ...galeri].map((img, idx) => (
+                  <div key={idx} className="shrink-0 snap-start w-64 md:w-80">
+                    <div className="p-1 bg-white border border-gray-200 rounded shadow-sm">
+                      <img
+                        src={`${import.meta.env.VITE_STORAGE_URL}/${img.url_gambar}`}
+                        alt={`Gallery ${idx}`}
+                        className="w-full h-48 md:h-64 object-cover rounded-sm pointer-events-none"
+                      />
                     </div>
-                  ),
-                )}
+                  </div>
+                ))}
               </div>
             </div>
 
             <div className="text-center mt-12">
-              <button className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors shadow-sm">
+              <button onClick={() => navigate("/galeri")} className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors shadow-sm">
                 Lihat Detail Galeri <FaArrowRight />
               </button>
             </div>
@@ -504,22 +536,17 @@ const Home = () => {
               Link Terkait
             </h2>
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
-              {[
-                { img: partnerPemkab, alt: "Pemerintah Kabupaten Klaten" },
-                { img: partnerBpjsKes, alt: "BPJS Kesehatan" },
-                { img: partnerBpjsKet, alt: "BPJS Ketenagakerjaan" },
-                { img: partnerMaturibu, alt: "Matur Ibu" },
-                { img: partnerAwasi, alt: "Awasi Corona" },
-                { img: partnerCovid, alt: "Covid" },
-              ].map((partner, idx) => (
+              {linkEksternal.map((partner, idx) => (
                 <a
                   key={idx}
-                  href="#"
+                  href={partner.url_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-white p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl shadow-sm border border-transparent hover:border-primary-blue hover:shadow-md hover:-translate-y-1 transition-all flex items-center justify-center"
                 >
                   <img
-                    src={partner.img}
-                    alt={partner.alt}
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${partner.url_gambar}`}
+                    alt={partner.nama}
                     className="max-h-full max-w-full object-contain"
                   />
                 </a>

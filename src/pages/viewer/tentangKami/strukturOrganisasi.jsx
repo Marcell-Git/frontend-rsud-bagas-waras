@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import Navbar from "../../../components/viewer/Navbar";
 import Footer from "../../../components/viewer/Footer";
 import EmergencyCall from "../../../components/viewer/EmergencyCall";
-import strukturBaru from "../../../assets/img/Struktur_baru.png";
-import { FaIdCard, FaTasks, FaHospital, FaCogs } from "react-icons/fa";
+import { FaIdCard, FaTasks, FaHospital, FaCogs, FaImage } from "react-icons/fa";
 import Header from "../../../components/viewer/Header";
 
-// ===== DATA TAB =====
+import { getStrukturOrganisasi } from "../../../api/struktur/gambarSo";
+import { getPegawai } from "../../../api/struktur/profilPegawai";
+import { getTugasDivisi } from "../../../api/struktur/tugasPerDivisi";
+import { getTugasRSUD } from "../../../api/struktur/tugasRSUD";
+import { getFungsiRSUD } from "../../../api/struktur/fungsiRSUD";
 
 const tabs = [
   { id: "profil", label: "Profil", icon: <FaIdCard /> },
@@ -15,180 +18,96 @@ const tabs = [
   { id: "fungsi-rsud", label: "Fungsi RSUD", icon: <FaCogs /> },
 ];
 
-const profilData = [
-  {
-    nama: "dr. H. Cahyono Widodo, M.Kes",
-    jabatan: "Direktur",
-    pendidikan: "S2 Kesehatan Masyarakat",
-  },
-  {
-    nama: "dr. Agus Budi Santoso, Sp.PD",
-    jabatan: "Wakil Direktur Pelayanan",
-    pendidikan: "Spesialis Penyakit Dalam",
-  },
-  {
-    nama: "Dra. Retno Hastuti, M.M",
-    jabatan: "Wakil Direktur Umum & Keuangan",
-    pendidikan: "S2 Manajemen",
-  },
-  {
-    nama: "dr. Siti Rahayu, M.Kes",
-    jabatan: "Kepala Bidang Pelayanan Medis",
-    pendidikan: "S2 Kesehatan Masyarakat",
-  },
-  {
-    nama: "Ns. Bambang Susilo, S.Kep",
-    jabatan: "Kepala Bidang Keperawatan",
-    pendidikan: "S1 Keperawatan",
-  },
-  {
-    nama: "apt. Dian Permata, S.Farm",
-    jabatan: "Kepala Bidang Penunjang Medis",
-    pendidikan: "S1 Farmasi",
-  },
-  {
-    nama: "Supriyanto, S.E., M.M",
-    jabatan: "Kepala Bagian Umum & Kepegawaian",
-    pendidikan: "S2 Manajemen",
-  },
-  {
-    nama: "Ika Wahyuni, S.E., Ak",
-    jabatan: "Kepala Bagian Keuangan",
-    pendidikan: "S1 Akuntansi",
-  },
-  {
-    nama: "Teguh Prasetyo, S.Kom",
-    jabatan: "Kepala Bagian Perencanaan & Informasi",
-    pendidikan: "S1 Sistem Informasi",
-  },
-];
-
-const tugasBidangData = [
-  {
-    bagian: "Direktur",
-    rincian:
-      "Memimpin, mengkoordinasikan, dan mengendalikan seluruh kegiatan RSUD Bagas Waras sesuai dengan ketentuan peraturan perundang-undangan yang berlaku.",
-  },
-  {
-    bagian: "Wakil Direktur Pelayanan",
-    rincian:
-      "Membantu Direktur dalam mengkoordinasikan dan mengendalikan kegiatan di bidang pelayanan medis, keperawatan, dan penunjang medis.",
-  },
-  {
-    bagian: "Wakil Direktur Umum & Keuangan",
-    rincian:
-      "Membantu Direktur dalam mengkoordinasikan dan mengendalikan kegiatan di bidang administrasi umum, kepegawaian, keuangan, dan perencanaan.",
-  },
-  {
-    bagian: "Bidang Pelayanan Medis",
-    rincian:
-      "Melaksanakan perencanaan, pengkoordinasian, pembinaan, dan pengendalian kegiatan pelayanan medis rawat jalan, rawat inap, dan rawat darurat.",
-  },
-  {
-    bagian: "Bidang Keperawatan",
-    rincian:
-      "Melaksanakan perencanaan, pengkoordinasian, pembinaan, dan pengendalian kegiatan asuhan keperawatan dan pelayanan keperawatan di seluruh unit.",
-  },
-  {
-    bagian: "Bidang Penunjang Medis",
-    rincian:
-      "Melaksanakan perencanaan, pengkoordinasian, dan pengendalian kegiatan pelayanan penunjang medis meliputi farmasi, laboratorium, radiologi, dan rehabilitasi medis.",
-  },
-  {
-    bagian: "Bagian Umum & Kepegawaian",
-    rincian:
-      "Melaksanakan pengelolaan administrasi umum, ketatausahaan, kepegawaian, logistik, rumah tangga, kehumasan, dan sarana prasarana RSUD.",
-  },
-  {
-    bagian: "Bagian Keuangan",
-    rincian:
-      "Melaksanakan pengelolaan keuangan RSUD yang meliputi penyusunan anggaran, penatausahaan keuangan, akuntansi, dan pelaporan keuangan.",
-  },
-  {
-    bagian: "Bagian Perencanaan & Informasi",
-    rincian:
-      "Melaksanakan penyusunan rencana program dan kegiatan, pengelolaan sistem informasi manajemen rumah sakit (SIMRS), dan pelaporan kinerja RSUD.",
-  },
-  {
-    bagian: "Komite Medik",
-    rincian:
-      "Membantu Direktur dalam menyusun standar pelayanan medis, melakukan pembinaan etika profesi, dan mengatur kewenangan klinis tenaga medis.",
-  },
-  {
-    bagian: "Komite Keperawatan",
-    rincian:
-      "Membantu Direktur dalam menyusun standar asuhan keperawatan, melakukan pembinaan etika profesi, dan mengatur kewenangan klinis tenaga keperawatan.",
-  },
-  {
-    bagian: "Satuan Pengawas Internal (SPI)",
-    rincian:
-      "Membantu Direktur dalam melakukan pengawasan internal terhadap seluruh kegiatan operasional RSUD untuk memastikan kepatuhan terhadap peraturan yang berlaku.",
-  },
-];
-
-const tugasRSUD = [
-  "Melaksanakan upaya kesehatan secara berdaya guna dan berhasil guna dengan mengutamakan upaya penyembuhan dan pemulihan yang dilaksanakan secara serasi dan terpadu dengan upaya peningkatan dan pencegahan serta melaksanakan upaya rujukan.",
-  "Menyelenggarakan pelayanan medis yang berkualitas sesuai standar pelayanan minimal rumah sakit yang ditetapkan oleh peraturan perundang-undangan.",
-  "Menyelenggarakan pelayanan rawat jalan, rawat inap, rawat intensif, rawat darurat, bedah, rehabilitasi medis, dan tindakan medis lainnya.",
-  "Menyelenggarakan pelayanan penunjang medis yang meliputi farmasi, laboratorium klinik, radiologi, gizi klinik, dan sterilisasi.",
-  "Menyelenggarakan pelayanan keperawatan dan asuhan keperawatan yang bermutu kepada seluruh pasien.",
-  "Melaksanakan pendidikan dan pelatihan sumber daya manusia kesehatan dalam rangka peningkatan kemampuan dalam memberikan pelayanan kesehatan.",
-  "Melaksanakan administrasi umum dan keuangan sesuai ketentuan peraturan perundang-undangan yang berlaku.",
-];
-
-const fungsiRSUD = [
-  "Penyelenggaraan pelayanan pengobatan dan pemulihan kesehatan sesuai standar pelayanan rumah sakit.",
-  "Pemeliharaan dan peningkatan kesehatan perorangan melalui pelayanan kesehatan yang paripurna tingkat kedua dan ketiga sesuai kebutuhan medis.",
-  "Penyelenggaraan pendidikan dan pelatihan sumber daya manusia dalam rangka peningkatan kemampuan dalam pemberian pelayanan kesehatan.",
-  "Penyelenggaraan penelitian dan pengembangan serta penapisan teknologi bidang kesehatan dalam rangka peningkatan pelayanan kesehatan dengan memperhatikan etika ilmu pengetahuan bidang kesehatan.",
-  "Penyelenggaraan pelayanan penunjang medis dan non medis guna mendukung mutu pelayanan kesehatan di rumah sakit.",
-  "Penyelenggaraan sistem rujukan pelayanan kesehatan dari fasilitas kesehatan primer ke tingkat lanjutan secara terstruktur.",
-  "Penyelenggaraan administrasi umum dan keuangan rumah sakit yang akuntabel, transparan, dan efisien sesuai ketentuan yang berlaku.",
-];
-
 const StrukturOrganisasi = () => {
   const [activeTab, setActiveTab] = useState("profil");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [strukturOrganisasi, setStrukturOrganisasi] = useState([]);
+  const [pegawai, setPegawai] = useState([]);
+  const [tugasDivisi, setTugasDivisi] = useState([]);
+  const [tugasRSUD, setTugasRSUD] = useState([]);
+  const [fungsiRSUD, setFungsiRSUD] = useState([]);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const [soRes, pegawaiRes, divisiRes, tugasRes, fungsiRes] =
+        await Promise.all([
+          getStrukturOrganisasi(),
+          getPegawai(),
+          getTugasDivisi(),
+          getTugasRSUD(),
+          getFungsiRSUD(),
+        ]);
+
+      setStrukturOrganisasi(soRes.data?.data || soRes.data || []);
+      setPegawai(pegawaiRes.data?.data || pegawaiRes.data || []);
+      setTugasDivisi(divisiRes.data?.data || divisiRes.data || []);
+      setTugasRSUD(tugasRes.data?.data || tugasRes.data || []);
+      setFungsiRSUD(fungsiRes.data?.data || fungsiRes.data || []);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchData();
   }, []);
 
+  // Get the latest SO Image
+  const latestSOImage =
+    strukturOrganisasi.length > 0 ? strukturOrganisasi[0].url_gambar : null;
+
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col">
+    <div className="bg-gray-50 min-h-screen flex flex-col font-secondary">
       <Navbar />
 
       <main className="grow">
-        {/* Hero Section */}
         <Header
           subtitle="Tentang Kami"
           title="Struktur Organisasi"
-          description="Struktur organisasi RSUD Bagas Waras yang menjadi pedoman dalam memberikan pelayanan kesehatan."
+          description="Bagan organisasi dan rincian tugas serta fungsi RSUD Bagas Waras sebagai penyedia layanan kesehatan."
         />
 
-        <div className="max-w-7xl mx-auto px-4 md:px-6 -mt-10 md:-mt-16 relative z-20 pb-16 md:pb-24 space-y-6 md:space-y-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 -mt-12 md:-mt-20 relative z-20 pb-16 md:pb-24 space-y-8 md:space-y-12">
           {/* ===== BAGAN GAMBAR ===== */}
-          <div className="bg-white rounded-3xl md:rounded-4xl shadow-xl border border-gray-100 p-6 md:p-10">
-            <div className="text-center mb-6 md:mb-10">
-              <span className="inline-block text-xs font-bold text-primary-blue uppercase tracking-widest mb-2">
-                Susunan Jabatan
+          <section className="bg-white rounded-[40px] shadow-[0_30px_60px_rgba(0,0,0,0.05)] border border-gray-100 p-8 md:p-12">
+            <div className="text-center mb-10 md:mb-14">
+              <span className="inline-block px-4 py-1.5 bg-blue-50 text-primary-blue rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                Bagan Susunan Jabatan
               </span>
-              <h2 className="text-xl md:text-3xl font-primary font-bold text-dark-blue">
-                RSUD Bagas Waras Kabupaten Klaten
+              <h2 className="text-2xl md:text-4xl font-primary font-bold text-dark-blue tracking-tight">
+                Struktur Organisasi RSUD Bagas Waras
               </h2>
-              <div className="w-16 h-1 bg-primary-blue rounded-full mx-auto mt-4"></div>
             </div>
 
-            <div className="w-full overflow-x-auto">
-              <div className="min-w-[320px]">
-                <img
-                  src={strukturBaru}
-                  alt="Struktur Organisasi RSUD Bagas Waras Kabupaten Klaten"
-                  className="w-full h-auto object-contain rounded-xl"
-                  draggable={false}
-                />
-              </div>
+            <div className="w-full overflow-hidden">
+              {isLoading ? (
+                <div className="w-full h-80 md:h-[500px] bg-gray-200 animate-pulse rounded-2xl flex items-center justify-center">
+                  <FaImage className="text-gray-300 text-6xl" />
+                </div>
+              ) : latestSOImage ? (
+                <div className="w-full overflow-x-auto rounded-2xl bg-white p-2">
+                  <img
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${latestSOImage}`}
+                    alt="Struktur Organisasi RSUD Bagas Waras"
+                    className="w-full h-auto object-contain transition-transform duration-500"
+                    draggable={false}
+                  />
+                </div>
+              ) : (
+                <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+                  <FaImage className="text-gray-200 text-6xl mx-auto mb-4" />
+                  <p className="text-gray-400 font-medium">
+                    Gambar struktur organisasi belum diunggah.
+                  </p>
+                </div>
+              )}
             </div>
-          </div>
+          </section>
 
           {/* ===== TAB SECTION ===== */}
           <div className="bg-white rounded-3xl md:rounded-4xl shadow-xl border border-gray-100 overflow-hidden">
@@ -211,190 +130,246 @@ const StrukturOrganisasi = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="p-6 md:p-10">
-              {/* PROFIL */}
-              {activeTab === "profil" && (
-                <div>
-                  <h3 className="text-lg md:text-2xl font-primary font-bold text-dark-blue mb-2">
-                    Profil Pegawai RSUD Bagas Waras
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-6">
-                    Daftar nama pejabat struktural RSUD Bagas Waras Kabupaten
-                    Klaten
-                  </p>
-                  <div className="overflow-x-auto rounded-2xl border border-gray-100">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-linear-to-r from-primary-blue to-light-blue text-white">
-                          <th className="px-4 py-3 text-center font-bold w-10 rounded-tl-2xl">
-                            No
-                          </th>
-                          <th className="px-5 py-3 text-left font-bold">
-                            Nama Pegawai
-                          </th>
-                          <th className="px-5 py-3 text-left font-bold">
-                            Jabatan
-                          </th>
-                          <th className="px-5 py-3 text-left font-bold rounded-tr-2xl">
-                            Pendidikan
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {profilData.map((row, idx) => (
-                          <tr
-                            key={idx}
-                            className={`border-b border-gray-50 ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/60"}`}
-                          >
-                            <td className="px-4 py-3.5 text-center font-black text-primary-blue">
-                              {idx + 1}
-                            </td>
-                            <td className="px-5 py-3.5 font-semibold text-dark-blue">
-                              {row.nama}
-                            </td>
-                            <td className="px-5 py-3.5 text-gray-600">
-                              {row.jabatan}
-                            </td>
-                            <td className="px-5 py-3.5 text-gray-600">
-                              {row.pendidikan}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
+            <div className="p-8 md:p-12">
+              <div className="animate-[fadeIn_0.5s_ease-out]">
+                {/* PROFIL */}
+                {activeTab === "profil" && (
+                  <div>
+                    <div className="mb-8 md:mb-12">
+                      <h3 className="text-2xl md:text-3xl font-primary font-bold text-dark-blue mb-3">
+                        Pejabat Struktural
+                      </h3>
+                      <p className="text-gray-400 text-sm md:text-base font-medium">
+                        Daftar nama dan jabatan pimpinan RSUD Bagas Waras
+                        Kabupaten Klaten
+                      </p>
+                    </div>
 
-              {/* TUGAS PER BIDANG */}
-              {activeTab === "tugas-bidang" && (
-                <div>
-                  <h3 className="text-lg md:text-2xl font-primary font-bold text-dark-blue mb-2">
-                    Tugas per Bidang / Bagian
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-6">
-                    Rincian tugas masing-masing unit kerja RSUD Bagas Waras
-                  </p>
-                  <div className="overflow-x-auto rounded-2xl border border-gray-100">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-linear-to-r from-primary-blue to-light-blue text-white">
-                          <th className="px-4 py-3 text-center font-bold w-10 rounded-tl-2xl">
-                            No
-                          </th>
-                          <th className="px-5 py-3 text-left font-bold w-1/3">
-                            Bagian / Bidang
-                          </th>
-                          <th className="px-5 py-3 text-left font-bold rounded-tr-2xl">
-                            Rincian Tugas
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {tugasBidangData.map((item, idx) => (
-                          <tr
-                            key={idx}
-                            className={`border-b border-gray-50 align-top ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/60"}`}
-                          >
-                            <td className="px-4 py-4 text-center font-black text-primary-blue">
-                              {idx + 1}
-                            </td>
-                            <td className="px-5 py-4 font-bold text-dark-blue">
-                              {item.bagian}
-                            </td>
-                            <td className="px-5 py-4 text-gray-600 leading-relaxed">
-                              {item.rincian}
-                            </td>
+                    <div className="overflow-x-auto rounded-[32px] border border-gray-100 shadow-sm">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-linear-to-r from-dark-blue to-primary-blue text-white">
+                            <th className="px-6 py-5 text-center font-black uppercase tracking-widest text-[10px] w-16">
+                              No
+                            </th>
+                            <th className="px-6 py-5 text-left font-black uppercase tracking-widest text-[10px]">
+                              Nama Pegawai
+                            </th>
+                            <th className="px-6 py-5 text-left font-black uppercase tracking-widest text-[10px]">
+                              Jabatan
+                            </th>
+                            <th className="px-6 py-5 text-left font-black uppercase tracking-widest text-[10px]">
+                              Pendidikan
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                          {isLoading ? (
+                            Array(5)
+                              .fill(0)
+                              .map((_, i) => (
+                                <tr key={i} className="animate-pulse">
+                                  <td className="px-6 py-6">
+                                    <div className="h-4 bg-gray-100 rounded w-8 mx-auto"></div>
+                                  </td>
+                                  <td className="px-6 py-6">
+                                    <div className="h-4 bg-gray-100 rounded w-48"></div>
+                                  </td>
+                                  <td className="px-6 py-6">
+                                    <div className="h-4 bg-gray-100 rounded w-32"></div>
+                                  </td>
+                                  <td className="px-6 py-6">
+                                    <div className="h-4 bg-gray-100 rounded w-40"></div>
+                                  </td>
+                                </tr>
+                              ))
+                          ) : pegawai.length > 0 ? (
+                            pegawai.map((row, idx) => (
+                              <tr
+                                key={idx}
+                                className="group hover:bg-blue-50/30 transition-colors"
+                              >
+                                <td className="px-6 py-5 text-center font-black text-primary-blue/40 group-hover:text-primary-blue transition-colors">
+                                  {idx + 1}
+                                </td>
+                                <td className="px-6 py-5 font-bold text-dark-blue text-base">
+                                  {row.nama}
+                                </td>
+                                <td className="px-6 py-5">
+                                  <span className="inline-block px-3 py-1 bg-gray-100 text-gray-500 rounded-lg text-[11px] font-bold uppercase tracking-wide group-hover:bg-primary-blue group-hover:text-white transition-all">
+                                    {row.jabatan}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-5 text-gray-500 font-medium italic">
+                                  {row.pendidikan || "-"}
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td
+                                colSpan="4"
+                                className="px-6 py-20 text-center text-gray-400 italic"
+                              >
+                                Data profil pegawai belum tersedia.
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* TUGAS RSUD */}
-              {activeTab === "tugas-rsud" && (
-                <div>
-                  <h3 className="text-lg md:text-2xl font-primary font-bold text-dark-blue mb-2">
-                    Tugas RSUD Bagas Waras
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-6">
-                    Berdasarkan Perda Kabupaten Klaten Nomor 8 & 10 Tahun 2014
-                  </p>
-                  <div className="overflow-x-auto rounded-2xl border border-gray-100">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-linear-to-r from-primary-blue to-light-blue text-white">
-                          <th className="px-4 py-3 text-center font-bold w-12 rounded-tl-2xl">
-                            No
-                          </th>
-                          <th className="px-5 py-3 text-left font-bold rounded-tr-2xl">
-                            Tugas RSUD Bagas Waras
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {tugasRSUD.map((tugas, idx) => (
-                          <tr
-                            key={idx}
-                            className={`border-b border-gray-50 align-top ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/60"}`}
-                          >
-                            <td className="px-4 py-4 text-center font-black text-primary-blue">
-                              {idx + 1}
-                            </td>
-                            <td className="px-5 py-4 text-gray-600 leading-relaxed">
-                              {tugas}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
+                {/* TUGAS PER BIDANG */}
+                {activeTab === "tugas-bidang" && (
+                  <div>
+                    <div className="mb-8 md:mb-12">
+                      <h3 className="text-2xl md:text-3xl font-primary font-bold text-dark-blue mb-3">
+                        Tugas per Bidang & Bagian
+                      </h3>
+                      <p className="text-gray-400 text-sm md:text-base font-medium">
+                        Rincian pembagian tugas dan tanggung jawab masing-masing
+                        unit kerja di RSUD
+                      </p>
+                    </div>
 
-              {/* FUNGSI RSUD */}
-              {activeTab === "fungsi-rsud" && (
-                <div>
-                  <h3 className="text-lg md:text-2xl font-primary font-bold text-dark-blue mb-2">
-                    Fungsi RSUD Bagas Waras
-                  </h3>
-                  <p className="text-gray-500 text-sm mb-6">
-                    Fungsi yang dijalankan RSUD Bagas Waras dalam melayani
-                    masyarakat
-                  </p>
-                  <div className="overflow-x-auto rounded-2xl border border-gray-100">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="bg-linear-to-r from-primary-blue to-light-blue text-white">
-                          <th className="px-4 py-3 text-center font-bold w-12 rounded-tl-2xl">
-                            No
-                          </th>
-                          <th className="px-5 py-3 text-left font-bold rounded-tr-2xl">
-                            Fungsi RSUD Bagas Waras
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {fungsiRSUD.map((fungsi, idx) => (
-                          <tr
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {isLoading ? (
+                        Array(4)
+                          .fill(0)
+                          .map((_, i) => (
+                            <div
+                              key={i}
+                              className="h-32 bg-gray-100 rounded-3xl animate-pulse"
+                            ></div>
+                          ))
+                      ) : tugasDivisi.length > 0 ? (
+                        tugasDivisi.map((item, idx) => (
+                          <div
                             key={idx}
-                            className={`border-b border-gray-50 align-top ${idx % 2 === 0 ? "bg-white" : "bg-gray-50/60"}`}
+                            className="bg-white p-6 md:p-8 rounded-[32px] border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-gray-200/50 transition-all group"
                           >
-                            <td className="px-4 py-4 text-center font-black text-primary-blue">
-                              {idx + 1}
-                            </td>
-                            <td className="px-5 py-4 text-gray-600 leading-relaxed">
-                              {fungsi}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                            <div className="flex items-center gap-4 mb-4">
+                              <div className="w-10 h-10 rounded-xl bg-primary-blue text-white flex items-center justify-center font-black text-sm shadow-lg group-hover:scale-110 transition-transform">
+                                {idx + 1}
+                              </div>
+                              <h4 className="font-bold text-lg text-dark-blue leading-tight uppercase tracking-tight">
+                                {item.nama_bidang || item.bidang}
+                              </h4>
+                            </div>
+                            <p className="text-gray-500 leading-relaxed text-sm md:text-base">
+                              {item.deskripsi_tugas || item.deskripsi}
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="col-span-full py-20 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                          <p className="text-gray-400 italic">
+                            Data tugas per bidang belum tersedia.
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
+                {/* TUGAS RSUD */}
+                {activeTab === "tugas-rsud" && (
+                  <div>
+                    <div className="mb-8 md:mb-12">
+                      <h3 className="text-2xl md:text-3xl font-primary font-bold text-dark-blue mb-3">
+                        Tugas Pokok RSUD
+                      </h3>
+                      <p className="text-gray-400 text-sm md:text-base font-medium">
+                        Daftar kewajiban utama rumah sakit berdasarkan regulasi
+                        daerah
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      {isLoading ? (
+                        Array(5)
+                          .fill(0)
+                          .map((_, i) => (
+                            <div
+                              key={i}
+                              className="h-16 bg-gray-100 rounded-2xl animate-pulse"
+                            ></div>
+                          ))
+                      ) : tugasRSUD.length > 0 ? (
+                        tugasRSUD.map((tugas, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-start gap-5 p-5 md:p-6 bg-gray-50 rounded-2xl border border-gray-100 group hover:bg-white hover:shadow-lg transition-all"
+                          >
+                            <div className="mt-1 w-6 h-6 rounded-full bg-white text-primary-blue text-xs font-black flex items-center justify-center shadow-sm border border-gray-100 group-hover:bg-primary-blue group-hover:text-white transition-colors">
+                              {idx + 1}
+                            </div>
+                            <p className="text-gray-600 font-medium leading-relaxed">
+                              {tugas.tugas_rsud || tugas.deskripsi || tugas}
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="py-20 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                          <p className="text-gray-400 italic">
+                            Data tugas RSUD belum tersedia.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* FUNGSI RSUD */}
+                {activeTab === "fungsi-rsud" && (
+                  <div>
+                    <div className="mb-8 md:mb-12">
+                      <h3 className="text-2xl md:text-3xl font-primary font-bold text-dark-blue mb-3">
+                        Fungsi Rumah Sakit
+                      </h3>
+                      <p className="text-gray-400 text-sm md:text-base font-medium">
+                        Penjabaran fungsional pelayanan kesehatan RSUD Bagas
+                        Waras
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {isLoading ? (
+                        Array(6)
+                          .fill(0)
+                          .map((_, i) => (
+                            <div
+                              key={i}
+                              className="h-20 bg-gray-100 rounded-2xl animate-pulse"
+                            ></div>
+                          ))
+                      ) : fungsiRSUD.length > 0 ? (
+                        fungsiRSUD.map((fungsi, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-5 p-6 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all border-l-4 border-l-primary-blue"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-blue-50 text-primary-blue text-xs font-black flex items-center justify-center shrink-0">
+                              {idx + 1}
+                            </div>
+                            <p className="text-gray-600 font-bold leading-tight">
+                              {fungsi.fungsi_rsud || fungsi.deskripsi || fungsi}
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="col-span-full py-20 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                          <p className="text-gray-400 italic">
+                            Data fungsi RSUD belum tersedia.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

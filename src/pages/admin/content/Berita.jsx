@@ -7,10 +7,12 @@ import {
   Calendar,
   User,
   Clock,
+  Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import BeritaModal from "../../../components/admin/BeritaModal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import Pagination from "../../../components/admin/Pagination";
 
 import {
   getBerita,
@@ -29,6 +31,15 @@ const Berita = () => {
     gambar: "",
     status: "",
   });
+
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10,
+  });
+  
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBerita, setEditingBerita] = useState(null);
@@ -53,18 +64,35 @@ const Berita = () => {
     });
   };
 
-  const fetchBerita = async () => {
+  const fetchBerita = async (page = 1) => {
+    setIsLoading(true);
     try {
-      const response = await getBerita();
-      setBerita(response.data);
+      const response = await getBerita({ page, per_page: pagination.itemsPerPage });
+      const data = response.data?.data || response.data || [];
+      setBerita(Array.isArray(data) ? data : []);
+      
+      if (response.data && response.data.current_page) {
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total,
+        }));
+      }
     } catch (error) {
       console.error("Error fetching berita:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchBerita();
-  }, []);
+    fetchBerita(pagination.currentPage);
+  }, [pagination.currentPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
 
   const handleSubmit = async (e, forcedStatus = null) => {
     if (e) e.preventDefault();
@@ -196,83 +224,130 @@ const Berita = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {berita.map((item) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-slate-50/50 transition-colors group"
-                >
-                  <td className="px-6 py-4 max-w-md">
-                    <div className="flex gap-4">
-                      <div className="w-20 h-20 shrink-0 rounded-xl bg-slate-100 overflow-hidden border border-slate-200">
-                        <img
-                          src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
+              {isLoading ? (
+                // Skeleton Loader (Non-Circular)
+                [...Array(3)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-6 py-6 max-w-md">
+                      <div className="flex gap-4">
+                        <div className="w-20 h-20 shrink-0 rounded-xl bg-slate-100 border border-slate-100 flex items-center justify-center">
+                          <ImageIcon className="text-slate-200" size={24} />
+                        </div>
+                        <div className="flex flex-col justify-center flex-1 gap-2">
+                          <div className="h-4 bg-slate-100 rounded-full w-full"></div>
+                          <div className="h-4 bg-slate-100 rounded-full w-2/3"></div>
+                        </div>
                       </div>
-                      <div className="flex flex-col justify-center">
-                        <p className="font-bold text-slate-900 line-clamp-2 leading-tight">
-                          {item.judul}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="space-y-1.5 px-3 border-l-2 border-slate-100">
-                      <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                        <User size={14} className="text-slate-300" />
-                        {item.penulis}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                        <Calendar size={14} className="text-slate-300" />
-                        {item.tanggal}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        item.status === "published"
-                          ? "bg-emerald-50 text-emerald-600"
-                          : "bg-amber-50 text-amber-600"
-                      }`}
-                    >
-                      {item.status === "published" ? (
-                        <CheckCircle2 size={12} />
-                      ) : (
-                        <Clock size={12} />
-                      )}
-                      {item.status === "published" ? "Terbit" : "Draft"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => openModal(item)}
-                        className="p-2 text-slate-400 hover:text-primary-blue hover:bg-primary-blue/10 rounded-lg transition-all"
-                      >
-                        <Edit2 size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {berita.length === 0 && (
-                <tr>
-                    <td colSpan={4} className="py-20 text-center text-slate-400 italic font-medium">
-                        Belum ada berita yang tersedia.
                     </td>
+                    <td className="px-6 py-4">
+                      <div className="space-y-2 px-3 border-l-2 border-slate-50">
+                        <div className="h-3 bg-slate-50 rounded-full w-24"></div>
+                        <div className="h-3 bg-slate-50 rounded-full w-32"></div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="mx-auto w-20 h-6 rounded-full bg-slate-50"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-9 h-9 rounded-lg bg-slate-50"></div>
+                        <div className="w-9 h-9 rounded-lg bg-slate-50"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                berita.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="hover:bg-slate-50/50 transition-colors group"
+                  >
+                    <td className="px-6 py-4 max-w-md">
+                      <div className="flex gap-4">
+                        <div className="w-20 h-20 shrink-0 rounded-xl bg-slate-100 overflow-hidden border border-slate-200">
+                          <img
+                            src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
+                            alt=""
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex flex-col justify-center">
+                          <p className="font-bold text-slate-900 line-clamp-2 leading-tight">
+                            {item.judul}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1.5 px-3 border-l-2 border-slate-100">
+                        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                          <User size={14} className="text-slate-300" />
+                          {item.penulis}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                          <Calendar size={14} className="text-slate-300" />
+                          {item.tanggal}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          item.status === "published"
+                            ? "bg-emerald-50 text-emerald-600"
+                            : "bg-amber-50 text-amber-600"
+                        }`}
+                      >
+                        {item.status === "published" ? (
+                          <CheckCircle2 size={12} />
+                        ) : (
+                          <Clock size={12} />
+                        )}
+                        {item.status === "published" ? "Terbit" : "Draft"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => openModal(item)}
+                          className="p-2 text-slate-400 hover:text-primary-blue hover:bg-primary-blue/10 rounded-lg transition-all"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+              {berita.length === 0 && !isLoading && (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="py-20 text-center text-slate-400 italic font-medium"
+                  >
+                    Belum ada berita yang tersedia.
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+        
+        {berita.length > 0 && (
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            totalItems={pagination.totalItems}
+            itemsPerPage={pagination.itemsPerPage}
+          />
+        )}
       </div>
 
       {/* Berita Modal Component */}

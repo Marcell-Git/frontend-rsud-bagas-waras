@@ -12,6 +12,7 @@ import {
 import { toast } from "react-toastify";
 import GaleriModal from "../../../components/admin/GaleriModal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import Pagination from "../../../components/admin/Pagination";
 
 import {
   getGaleri,
@@ -28,6 +29,13 @@ const Galeri = () => {
     gambar: "",
     url_video: "",
   });
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 12,
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -39,19 +47,36 @@ const Galeri = () => {
 
   const fileInputRef = useRef(null);
 
-  const fetchGaleri = async () => {
+  const fetchGaleri = async (page = 1) => {
+    setIsLoading(true);
     try {
-      const response = await getGaleri();
-      setMedia(response.data);
+      const response = await getGaleri({ page, per_page: pagination.itemsPerPage });
+      const data = response.data?.data || response.data || [];
+      setMedia(Array.isArray(data) ? data : []);
+
+      if (response.data && response.data.current_page) {
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total,
+        }));
+      }
     } catch (error) {
       console.error("Error fetching galeri:", error);
       toast.error("Gagal mengambil data galeri");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchGaleri();
-  }, []);
+    fetchGaleri(pagination.currentPage);
+  }, [pagination.currentPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -220,78 +245,99 @@ const Galeri = () => {
 
       {/* Gallery Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {filteredMedia.map((item) => {
-          const isVideo = !!item.url_video;
-          return (
+        {isLoading ? (
+          // Skeleton Grid Loader (Non-Circular)
+          [...Array(4)].map((_, index) => (
             <div
-              key={item.id}
-              className="group relative bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500"
+              key={index}
+              className="bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm animate-pulse"
             >
-              {/* Media Preview Area */}
-              <div className="aspect-4/3 bg-slate-100 relative overflow-hidden">
-                <img
-                  src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
-                  alt={item.judul}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-
-                {/* Badges */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                  <span
-                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 backdrop-blur-md border border-white/20 z-10 ${
-                      isVideo
-                        ? "bg-rose-500/90 text-white"
-                        : "bg-white/90 text-slate-900"
-                    }`}
-                  >
-                    {isVideo ? (
-                      <Video size={12} />
-                    ) : (
-                      <ImageIcon size={12} />
-                    )}
-                    {isVideo ? "VIDEO" : "IMAGE"}
-                  </span>
-                </div>
-                {isVideo && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-white/30 backdrop-blur-sm border border-white/40 flex items-center justify-center text-white group-hover:scale-110 transition-transform cursor-pointer">
-                      <Play size={32} fill="currentColor" />
-                    </div>
-                  </div>
-                )}
+              <div className="aspect-4/3 bg-slate-100 flex items-center justify-center">
+                <ImageIcon className="text-slate-200" size={32} />
               </div>
-
-              {/* Content Area */}
               <div className="p-6 space-y-4">
-                <div>
-                  <h3 className="font-bold text-slate-900 group-hover:text-primary-blue transition-colors leading-tight line-clamp-2">
-                    {item.judul}
-                  </h3>
-                </div>
-
-                {/* Permanent Actions */}
-                <div className="flex items-center gap-2 pt-4 border-t border-slate-50">
-                  <button
-                    onClick={() => openModal(item)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-50 text-slate-600 font-bold text-xs hover:bg-primary-blue hover:text-white transition-all border border-slate-100"
-                  >
-                    <Edit2 size={14} />
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="px-4 py-2.5 rounded-xl bg-slate-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all border border-slate-100"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                <div className="h-5 bg-slate-100 rounded-full w-full"></div>
+                <div className="flex gap-2 pt-4 border-t border-slate-50">
+                  <div className="h-10 bg-slate-50 rounded-xl flex-1"></div>
+                  <div className="h-10 bg-slate-50 rounded-xl w-12"></div>
                 </div>
               </div>
             </div>
-          );
-        })}
+          ))
+        ) : (
+          filteredMedia.map((item) => {
+            const isVideo = !!item.url_video;
+            return (
+              <div
+                key={item.id}
+                className="group relative bg-white rounded-[32px] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500"
+              >
+                {/* Media Preview Area */}
+                <div className="aspect-4/3 bg-slate-100 relative overflow-hidden">
+                  <img
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
+                    alt={item.judul}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <span
+                      className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 backdrop-blur-md border border-white/20 z-10 ${
+                        isVideo
+                          ? "bg-rose-500/90 text-white"
+                          : "bg-white/90 text-slate-900"
+                      }`}
+                    >
+                      {isVideo ? (
+                        <Video size={12} />
+                      ) : (
+                        <ImageIcon size={12} />
+                      )}
+                      {isVideo ? "VIDEO" : "IMAGE"}
+                    </span>
+                  </div>
+                  {isVideo && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-white/30 backdrop-blur-sm border border-white/40 flex items-center justify-center text-white group-hover:scale-110 transition-transform cursor-pointer">
+                        <Play size={32} fill="currentColor" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content Area */}
+                <div className="p-6 space-y-4">
+                  <div>
+                    <h3 className="font-bold text-slate-900 group-hover:text-primary-blue transition-colors leading-tight line-clamp-2">
+                      {item.judul}
+                    </h3>
+                  </div>
+
+                  {/* Permanent Actions */}
+                  <div className="flex items-center gap-2 pt-4 border-t border-slate-50">
+                    <button
+                      onClick={() => openModal(item)}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-50 text-slate-600 font-bold text-xs hover:bg-primary-blue hover:text-white transition-all border border-slate-100"
+                    >
+                      <Edit2 size={14} />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="px-4 py-2.5 rounded-xl bg-slate-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all border border-slate-100"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
 
         {/* Placeholder for Empty State */}
-        {filteredMedia.length === 0 && (
+        {filteredMedia.length === 0 && !isLoading && (
           <div className="col-span-full py-32 flex flex-col items-center justify-center text-center space-y-4">
             <div className="w-24 h-24 bg-slate-100 rounded-[32px] flex items-center justify-center text-slate-300">
               <Images size={48} />
@@ -313,6 +359,16 @@ const Galeri = () => {
           </div>
         )}
       </div>
+
+      {media.length > 0 && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+          totalItems={pagination.totalItems}
+          itemsPerPage={pagination.itemsPerPage}
+        />
+      )}
 
       {/* Galeri Modal Component */}
       <GaleriModal

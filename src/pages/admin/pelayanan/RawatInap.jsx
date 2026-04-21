@@ -29,6 +29,7 @@ const RawatInap = () => {
     fasilitas: "",
     gambar: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -44,12 +45,15 @@ const RawatInap = () => {
   const fileInputRef = useRef(null);
 
   const fetchRawatInap = async () => {
+    setIsLoading(true);
     try {
       const response = await getRawatInap();
       setInapData(response.data);
     } catch (error) {
       console.error("Error fetching rawat inap:", error);
       toast.error("Gagal mengambil data rawat inap");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -130,7 +134,7 @@ const RawatInap = () => {
       });
       if (item.gambar) {
         setPreviewUrl(
-          `${import.meta.env.VITE_STORAGE_URL}/rawat_inap/${item.gambar}`,
+          `${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`,
         );
       } else {
         setPreviewUrl(null);
@@ -218,87 +222,108 @@ const RawatInap = () => {
       </div>
 
       {/* Grid of Wards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 font-sans">
-        {inapData.map((item) => (
-          <div
-            key={item.id}
-            className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden flex flex-col group relative font-sans"
-          >
-            {/* Image Section */}
-            <div className="relative h-56 bg-slate-100 overflow-hidden font-sans">
-              {item.gambar ? (
-                <img
-                  src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
-                  alt={item.nama_kamar}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-300">
-                  <ImageIcon size={48} />
-                </div>
-              )}
-
-              {/* Badge Kelas */}
-              <div className="absolute top-4 left-4 font-sans">
-                <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md text-teal-700 font-black rounded-xl shadow-sm text-[10px] border border-white/20 uppercase tracking-widest">
-                  {item.tipe_kamar}
-                </span>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        {isLoading ? (
+          // Skeleton Grid Loader (Non-Circular)
+          [...Array(3)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden flex flex-col animate-pulse"
+            >
+              <div className="h-56 bg-slate-100 flex items-center justify-center">
+                <ImageIcon className="text-slate-200" size={48} />
               </div>
-
-              {/* Action Buttons */}
-              <div className="absolute top-4 right-4 flex gap-2 font-sans opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  onClick={() => openModal(item)}
-                  className="p-2.5 bg-white shadow-md text-slate-600 hover:text-teal-600 hover:bg-white rounded-xl transition-all"
-                >
-                  <Edit2 size={16} />
-                </button>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="p-2.5 bg-white shadow-md text-rose-500 hover:text-white hover:bg-rose-500 rounded-xl transition-all"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-
-              {/* Gradient overlay for blending */}
-              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-slate-900/60 to-transparent"></div>
-
-              {/* Bangsal Title */}
-              <h3 className="absolute bottom-4 left-5 right-5 text-xl font-bold text-white tracking-wide font-sans">
-                {item.nama_kamar}
-              </h3>
-            </div>
-
-            {/* Content Section */}
-            <div className="p-6 flex flex-col flex-1 bg-white font-sans">
-              <div className="space-y-4 font-sans">
-                <div className="font-sans">
-                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2 font-sans">
-                    <CheckCircle2 size={14} className="text-teal-500" />
-                    Fasilitas Kamar
-                  </h4>
-                  <ul className="space-y-2 font-sans">
-                    {item.fasilitas?.split(",").map((fas, index) => (
-                      <li
-                        key={index}
-                        className="text-slate-600 text-sm font-medium flex gap-2 font-sans"
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full bg-slate-300 mt-2 shrink-0"></div>
-                        <span className="leading-relaxed font-sans text-xs">
-                          {fas.trim()}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+              <div className="p-6 space-y-4">
+                <div className="h-6 bg-slate-100 rounded-full w-full"></div>
+                <div className="space-y-2">
+                  <div className="h-3 bg-slate-50 rounded-full w-full"></div>
+                  <div className="h-3 bg-slate-50 rounded-full w-2/3"></div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          inapData.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden flex flex-col group relative font-sans"
+            >
+              {/* Image Section */}
+              <div className="relative h-56 bg-slate-100 overflow-hidden font-sans">
+                {item.gambar ? (
+                  <img
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
+                    alt={item.nama_kamar}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-slate-300">
+                    <ImageIcon size={48} />
+                  </div>
+                )}
+
+                {/* Badge Kelas */}
+                <div className="absolute top-4 left-4 font-sans">
+                  <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md text-teal-700 font-black rounded-xl shadow-sm text-[10px] border border-white/20 uppercase tracking-widest">
+                    {item.tipe_kamar}
+                  </span>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="absolute top-4 right-4 flex gap-2 font-sans opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => openModal(item)}
+                    className="p-2.5 bg-white shadow-md text-slate-600 hover:text-teal-600 hover:bg-white rounded-xl transition-all"
+                  >
+                    <Edit2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="p-2.5 bg-white shadow-md text-rose-500 hover:text-white hover:bg-rose-500 rounded-xl transition-all"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+
+                {/* Gradient overlay for blending */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-slate-900/60 to-transparent"></div>
+
+                {/* Bangsal Title */}
+                <h3 className="absolute bottom-4 left-5 right-5 text-xl font-bold text-white tracking-wide font-sans">
+                  {item.nama_kamar}
+                </h3>
+              </div>
+
+              {/* Content Section */}
+              <div className="p-6 flex flex-col flex-1 bg-white font-sans">
+                <div className="space-y-4 font-sans">
+                  <div className="font-sans">
+                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2 font-sans">
+                      <CheckCircle2 size={14} className="text-teal-500" />
+                      Fasilitas Kamar
+                    </h4>
+                    <ul className="space-y-2 font-sans">
+                      {item.fasilitas?.split(",").map((fas, index) => (
+                        <li
+                          key={index}
+                          className="text-slate-600 text-sm font-medium flex gap-2 font-sans"
+                        >
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300 mt-2 shrink-0"></div>
+                          <span className="leading-relaxed font-sans text-xs">
+                            {fas.trim()}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
-      {inapData.length === 0 && (
+      {inapData.length === 0 && !isLoading && (
         <div className="py-24 text-center bg-white rounded-[40px] border border-slate-100 shadow-sm font-sans">
           <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 mb-4 font-sans">
             <BedDouble size={40} />
@@ -357,14 +382,19 @@ const RawatInap = () => {
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 font-sans">
                 Kelas Rawat
               </label>
-              <input
-                type="text"
+              <select
                 name="tipe_kamar"
                 value={formData.tipe_kamar}
                 onChange={handleChange}
-                placeholder="Contoh: Kelas VIP / I / II / III"
-                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all outline-none font-bold text-slate-700 font-sans"
-              />
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all outline-none font-bold text-slate-700 font-sans appearance-none cursor-pointer"
+              >
+                <option value="">Pilih Kelas</option>
+                <option value="Kelas VIP">Kelas VIP</option>
+                <option value="Kelas I">Kelas I</option>
+                <option value="Kelas II">Kelas II</option>
+                <option value="Kelas III">Kelas III</option>
+                <option value="-">-</option>
+              </select>
             </div>
           </div>
 

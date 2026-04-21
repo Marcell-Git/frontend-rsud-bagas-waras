@@ -10,85 +10,44 @@ import {
   FileSearch,
 } from "lucide-react";
 import { toast } from "react-toastify";
-import Modal from "../../../components/admin/Modal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getAlurPelayanan,
   createAlurPelayanan,
   deleteAlurPelayanan,
-  updateAlurPelayanan,
 } from "../../../api/pelayanan/alurPelayanan";
 
 const AlurPelayanan = () => {
   const [alurImages, setAlurImages] = useState([]);
-  const [formData, setFormData] = useState({
-    gambar: "",
-  });
-
+  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const fileInputRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchAlur = async () => {
+  const fileInputRef = useRef(null);
+
+  const fetchData = async () => {
+    setIsLoading(true);
     try {
       const response = await getAlurPelayanan();
-      setAlurImages(response.data);
+      setAlurImages(response.data?.data || response.data || []);
     } catch (error) {
-      console.error("Error fetching alur:", error);
       toast.error("Gagal mengambil data alur pelayanan");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAlur();
+    fetchData();
   }, []);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-      setFormData({ ...formData, gambar: file });
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!formData.gambar && !editingItem) {
-      toast.warning("Mohon pilih gambar diagram alur.");
-      return;
-    }
-
-    const data = new FormData();
-    if (formData.gambar) {
-      data.append("gambar", formData.gambar);
-    }
-
-    console.log(formData.gambar);
-
-    try {
-      if (editingItem) {
-        data.append("_method", "PUT");
-        await updateAlurPelayanan(editingItem.id, data);
-        toast.success("Gambar alur berhasil diperbarui");
-      } else {
-        await createAlurPelayanan(data);
-        toast.success("Gambar alur baru ditambahkan");
-      }
-      closeModal();
-      fetchAlur();
-    } catch (error) {
-      console.error("Error saving alur:", error);
-      toast.error("Gagal menyimpan alur pelayanan");
-    }
-  };
 
   const handleDelete = (id) => {
     setItemToDelete(id);
@@ -100,211 +59,312 @@ const AlurPelayanan = () => {
     setIsDeleting(true);
     try {
       await deleteAlurPelayanan(itemToDelete);
-      setAlurImages(alurImages.filter((a) => a.id !== itemToDelete));
-      toast.success("Gambar alur berhasil dihapus");
+      toast.success("Alur pelayanan berhasil dihapus");
       setIsConfirmOpen(false);
+      fetchData();
     } catch (error) {
-      toast.error("Gagal menghapus gambar alur");
-      console.error(error);
+      toast.error("Gagal menghapus alur pelayanan");
     } finally {
       setIsDeleting(false);
       setItemToDelete(null);
     }
   };
 
-  const openModal = (item = null) => {
-    if (item) {
-      setEditingItem(item);
-      setPreviewUrl(`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`);
-      setFormData({ gambar: null });
-    } else {
-      setEditingItem(null);
-      setPreviewUrl(null);
-      setFormData({ gambar: null });
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
     }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelection(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    if (e.target.files && e.target.files[0]) {
+      handleFileSelection(e.target.files[0]);
+    }
+  };
+
+  const handleFileSelection = (file) => {
+    if (file.type.startsWith("image/")) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      toast.warning("Mohon unggah file format gambar (JPG, PNG, atau WEBP).");
+    }
+  };
+
+  const handleSave = async () => {
+    if (!selectedFile) return;
+
+    setIsSubmitting(true);
+    try {
+      const data = new FormData();
+      data.append("gambar", selectedFile);
+      await createAlurPelayanan(data);
+      toast.success("Gambar alur pelayanan berhasil diunggah");
+      closeModal();
+      fetchData();
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Gagal mengunggah alur pelayanan";
+      toast.error(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const openModal = () => {
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ gambar: null });
+    setSelectedFile(null);
     setPreviewUrl(null);
-    setEditingItem(null);
+    setDragActive(false);
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 pb-12 font-sans">
+    <div className="max-w-7xl mx-auto space-y-8 pb-12 font-sans">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100 font-sans">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
         <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-teal-50 text-teal-600 flex items-center justify-center shadow-inner font-sans">
+          <div className="w-14 h-14 rounded-[22px] bg-teal-50 text-teal-600 flex items-center justify-center shadow-inner">
             <GitMerge size={30} />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
               Alur Pelayanan
             </h1>
-            <p className="text-slate-500 mt-1 font-medium italic text-sm font-sans">
-              "Manajemen gambar alur langkah pelayanan pasien (Banner Model)."
+            <p className="text-slate-400 mt-1 italic text-sm font-bold">
+              "Visualisasi alur pelayanan rumah sakit untuk kemudahan pasien."
             </p>
           </div>
         </div>
         <button
-          onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-teal-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-teal-700 transition-all active:scale-95 shadow-lg shadow-teal-600/20 font-sans"
+          onClick={openModal}
+          className="flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-slate-900/20 transition-all active:scale-95 text-xs uppercase tracking-widest shadow-lg shadow-teal-500/10"
         >
-          <Plus size={20} />
-          Tambah Alur
+          <Plus size={18} />
+          Unggah Alur Baru
         </button>
       </div>
 
-      {/* Table Section (Sama Seperti Banner) */}
-      <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden font-sans">
-        <div className="overflow-x-auto font-sans">
-          <table className="w-full text-left border-collapse font-sans">
-            <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100 font-sans">
-                <th className="px-8 py-6 text-xs font-black text-slate-500 uppercase tracking-widest w-96 font-sans">
-                  Gambar Pratinjau Alur
-                </th>
-                <th className="px-8 py-6 text-xs font-black text-slate-500 uppercase tracking-widest font-sans">
-                  Detail ID
-                </th>
-                <th className="px-8 py-6 text-xs font-black text-slate-500 uppercase tracking-widest text-right w-32 font-sans">
-                  Aksi
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-sans">
-              {alurImages.map((item) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-slate-50/50 transition-colors font-sans group"
-                >
-                  <td className="px-8 py-6 font-sans">
-                    <div className="w-80 h-44 rounded-[24px] bg-slate-100 overflow-hidden border border-slate-200 shadow-inner transition-transform duration-500 group-hover:scale-[1.03] font-sans">
-                      <img
-                        src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
-                        alt="Alur Pelayanan"
-                        className="w-full h-full object-cover font-sans"
-                      />
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 font-sans">
-                    <div className="flex flex-col gap-1 font-sans">
-                       <span className="text-sm font-bold text-slate-700 font-sans">#ALUR-{item.id}</span>
-                       <span className="text-[10px] text-slate-400 font-medium font-sans italic">Terakhir diupdate: {new Date(item.updated_at).toLocaleDateString("id-ID")}</span>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 text-right font-sans">
-                    <div className="flex justify-end gap-2 font-sans">
-                      <button
-                        onClick={() => openModal(item)}
-                        className="p-3 bg-white text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all border border-slate-200 font-sans shadow-sm"
-                        title="Edit Alur"
-                      >
-                        <ImageIcon size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="p-3 bg-white text-slate-400 hover:text-white hover:bg-rose-500 rounded-xl transition-all border border-slate-200 font-sans shadow-sm"
-                        title="Hapus"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {alurImages.length === 0 && (
-          <div className="py-24 text-center font-sans">
-            <div className="w-20 h-20 bg-slate-50 rounded-[28px] flex items-center justify-center mx-auto text-slate-200 mb-6 border border-dashed border-slate-200 font-sans">
-              <FileSearch size={40} />
-            </div>
-            <p className="text-slate-500 font-bold font-sans">
-              Belum ada diagram alur pelayanan yang ditemukan.
-            </p>
-            <button
-               onClick={() => openModal()}
-               className="text-teal-600 font-black text-xs uppercase tracking-widest mt-4 hover:underline font-sans"
+      {/* Grid Display */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        {isLoading ? (
+          // Skeleton Loader (Non-Circular)
+          [...Array(2)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm animate-pulse"
             >
-                Klik untuk tambah
-            </button>
+              <div className="flex justify-end mb-4">
+                <div className="w-10 h-10 bg-slate-50 rounded-2xl"></div>
+              </div>
+              <div className="w-full h-[400px] bg-slate-50 rounded-2xl flex items-center justify-center">
+                <ImageIcon className="text-slate-100" size={64} />
+              </div>
+              <div className="mt-4 h-3 bg-slate-50 rounded-full w-32"></div>
+            </div>
+          ))
+        ) : (
+          alurImages.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm relative group overflow-hidden"
+            >
+              {/* Delete Button top right */}
+              <div className="absolute top-8 right-8 z-10 flex gap-2">
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="p-3 bg-white/90 backdrop-blur-sm shadow-md text-rose-500 hover:text-white hover:bg-rose-500 rounded-2xl transition-all"
+                  title="Hapus Gambar"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+
+              {/* Image Preview Container */}
+              <div className="w-full h-auto min-h-[400px] bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-100 p-4">
+                <img
+                  src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
+                  alt="Alur Pelayanan"
+                  className="w-full object-contain object-top rounded-xl shadow-sm"
+                />
+              </div>
+              <div className="mt-4 px-2">
+                 <p className="text-[10px] text-slate-400 font-medium">Diunggah pada: {new Date(item.created_at).toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+              </div>
+            </div>
+          ))
+        )}
+
+        {!isLoading && alurImages.length === 0 && (
+          <div className="col-span-full py-24 text-center bg-white rounded-[32px] border border-slate-100 shadow-sm">
+            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 mb-4 border border-slate-100">
+              <ImageIcon size={40} />
+            </div>
+            <p className="text-slate-500 font-bold">
+              Belum ada diagram alur pelayanan yang diunggah.
+            </p>
           </div>
         )}
       </div>
 
-      {/* CRUD Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title={editingItem ? "Update Diagram Alur" : "Unggah Alur Baru"}
-        subtitle="Pastikan diagram alur pelayanan terbaca dengan jelas (HD)."
-        footer={
-          <div className="flex gap-4 w-full justify-end font-sans">
-            <button
-              onClick={closeModal}
-              className="px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all text-xs uppercase tracking-widest font-sans"
-            >
-              Batal
-            </button>
-            <button
-              onClick={handleSubmit}
-              className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-sans"
-            >
-              <Save size={16} />
-              Simpan Diagram
-            </button>
-          </div>
-        }
-      >
-        <div className="space-y-6 font-sans">
-          {/* Upload Area */}
-          <div className="space-y-3 font-sans">
-            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 font-sans">
-              File Diagram Alur Pelayanan
-            </label>
-            <div
-               onClick={() => fileInputRef.current?.click()}
-               className={`relative border-2 border-dashed rounded-[32px] p-10 flex flex-col items-center justify-center text-center transition-all cursor-pointer font-sans ${
-                  previewUrl ? "border-teal-500 bg-teal-50/30" : "border-slate-200 bg-slate-50 hover:bg-slate-100"
-               }`}
-            >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                
-                {previewUrl ? (
-                    <div className="w-full font-sans">
-                        <img 
-                            src={previewUrl} 
-                            alt="Preview" 
-                            className="w-full h-auto max-h-[300px] object-contain rounded-2xl shadow-sm font-sans"
-                        />
-                        <p className="mt-4 text-[10px] font-black text-teal-600 uppercase tracking-widest font-sans">Klik diagram untuk mengganti file</p>
+      {/* Upload Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => !isSubmitting && closeModal()}
+          ></div>
+
+          <div className="bg-white w-full max-w-xl rounded-[40px] shadow-2xl relative overflow-hidden flex flex-col">
+            <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0">
+              <div className="flex gap-4">
+                 <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 shadow-inner">
+                    <GitMerge size={24} />
+                  </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900 leading-tight">
+                    Unggah Alur Baru
+                  </h2>
+                  <p className="text-sm text-slate-500 font-medium mt-1">
+                    Pastikan diagram terbaca jelas oleh pengunjung.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={closeModal}
+                className="p-3 hover:bg-slate-100 rounded-2xl text-slate-400 transition-colors"
+                disabled={isSubmitting}
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="p-8">
+              <div
+                className={`relative border-2 border-dashed rounded-[32px] p-10 flex flex-col items-center justify-center text-center transition-all ${
+                  dragActive
+                    ? "border-teal-500 bg-teal-50"
+                    : "border-slate-200 bg-slate-50"
+                } ${previewUrl ? "border-none p-0 bg-transparent" : "cursor-pointer hover:bg-slate-100"}`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                onClick={() => !previewUrl && !isSubmitting && fileInputRef.current?.click()}
+              >
+                {!previewUrl ? (
+                  <>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleChange}
+                      className="hidden"
+                    />
+                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-teal-600 mb-4 shadow-sm border border-slate-100 font-sans">
+                      <Upload size={28} />
                     </div>
+                    <p className="font-bold text-slate-700 text-lg mb-2">
+                      Tarik & Letakkan Gambar di Sini
+                    </p>
+                    <p className="text-slate-400 text-sm mb-6">
+                      Mendukung format JPG, PNG, WEBP (HD)
+                    </p>
+                    <button
+                      type="button"
+                      className="px-6 py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl shadow-sm"
+                    >
+                      Pilih dari Komputer
+                    </button>
+                  </>
                 ) : (
-                    <>
-                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-teal-600 mb-4 shadow-sm border border-slate-100 font-sans">
-                            <Upload size={28} />
-                        </div>
-                        <p className="font-bold text-slate-700 text-lg mb-1 font-sans">Pilih Gambar Diagram</p>
-                        <p className="text-slate-400 text-sm font-sans">Format file: JPG, PNG, atau WEBP</p>
-                    </>
+                  <div className="relative w-full rounded-3xl overflow-hidden bg-slate-100 border border-slate-200 group p-4 border-dashed font-sans">
+                    <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 z-10 backdrop-blur-sm rounded-3xl mx-4 my-4 font-sans">
+                      <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            fileInputRef.current?.click()
+                        }}
+                        className="px-4 py-2 bg-white rounded-lg text-slate-700 font-bold text-sm hover:scale-105 transition-transform font-sans"
+                      >
+                        Ganti File
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewUrl(null);
+                          setSelectedFile(null);
+                        }}
+                        className="px-4 py-2 bg-rose-500 text-white rounded-lg font-bold text-sm hover:scale-105 transition-transform font-sans"
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleChange}
+                      className="hidden"
+                    />
+                    <img
+                      src={previewUrl}
+                      alt="Preview Alur Pelayanan"
+                      className="w-full h-auto max-h-[400px] object-contain rounded-xl shadow-sm font-sans"
+                    />
+                  </div>
                 )}
+              </div>
+            </div>
+
+            <div className="p-8 border-t border-slate-100 bg-slate-50/50 flex gap-4 font-sans">
+              <button
+                type="button"
+                onClick={closeModal}
+                className="flex-1 px-8 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all uppercase text-xs tracking-widest font-sans"
+                disabled={isSubmitting}
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={!previewUrl || isSubmitting}
+                className={`flex-2 px-8 py-4 rounded-2xl font-bold uppercase text-xs tracking-widest transition-all flex items-center justify-center gap-2 font-sans ${
+                  previewUrl && !isSubmitting
+                    ? "bg-slate-900 text-white shadow-xl shadow-slate-900/20 hover:bg-slate-800"
+                    : "bg-slate-200 text-slate-400 cursor-not-allowed"
+                }`}
+              >
+                {isSubmitting ? (
+                  <>
+                     <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> Memproses...
+                  </>
+                ) : (
+                  <>Simpan Alur</>
+                )}
+              </button>
             </div>
           </div>
         </div>
-      </Modal>
-
+      )}
       {/* Confirm Delete Modal */}
       <ConfirmModal
         isOpen={isConfirmOpen}
@@ -312,7 +372,7 @@ const AlurPelayanan = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Alur Pelayanan"
-        message="Diagram alur akan dihapus secara permanen dari server. Lanjutkan?"
+        message="Apakah Anda yakin ingin menghapus gambar alur pelayanan ini secara permanen?"
       />
     </div>
   );

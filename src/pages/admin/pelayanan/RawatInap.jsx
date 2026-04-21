@@ -130,7 +130,7 @@ const RawatInap = () => {
       });
       if (item.gambar) {
         setPreviewUrl(
-          `${import.meta.env.VITE_STORAGE_URL}/rawat_inap/${item.gambar}`,
+          `${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`,
         );
       } else {
         setPreviewUrl(null);
@@ -357,14 +357,19 @@ const RawatInap = () => {
               <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 font-sans">
                 Kelas Rawat
               </label>
-              <input
-                type="text"
+              <select
                 name="tipe_kamar"
                 value={formData.tipe_kamar}
                 onChange={handleChange}
-                placeholder="Contoh: Kelas VIP / I / II / III"
-                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all outline-none font-bold text-slate-700 font-sans"
-              />
+                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all outline-none font-bold text-slate-700 font-sans appearance-none cursor-pointer"
+              >
+                <option value="">Pilih Kelas</option>
+                <option value="Kelas VIP">Kelas VIP</option>
+                <option value="Kelas I">Kelas I</option>
+                <option value="Kelas II">Kelas II</option>
+                <option value="Kelas III">Kelas III</option>
+                <option value="-">-</option>
+              </select>
             </div>
           </div>
 

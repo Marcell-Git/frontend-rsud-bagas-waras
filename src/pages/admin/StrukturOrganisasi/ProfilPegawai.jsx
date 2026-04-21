@@ -102,7 +102,9 @@ const ProfilPegawai = () => {
       setIsModalOpen(false);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Gagal menyimpan data pegawai");
+      toast.error(
+        error.response?.data?.message || "Gagal menyimpan data pegawai",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -252,17 +254,19 @@ const ProfilPegawai = () => {
           ></div>
 
           <form
-            onSubmit={handleSubmit} 
+            onSubmit={handleSubmit}
             className="bg-white w-full max-w-lg rounded-[40px] shadow-2xl relative overflow-hidden flex flex-col"
           >
             <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
               <div className="flex gap-4">
-                 <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 shadow-inner border border-primary-blue/20">
-                    <Users size={24} />
-                  </div>
+                <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 shadow-inner border border-primary-blue/20">
+                  <Users size={24} />
+                </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 leading-tight">
-                    {editingItem ? "Edit Profil Pegawai" : "Tambah Pegawai Baru"}
+                    {editingItem
+                      ? "Edit Profil Pegawai"
+                      : "Tambah Pegawai Baru"}
                   </h2>
                   <p className="text-xs text-slate-500 font-medium mt-1">
                     Lengkapi informasi profil pegawai secara detail.
@@ -363,9 +367,7 @@ const ProfilPegawai = () => {
                     Memproses...
                   </>
                 ) : (
-                  <>
-                    {editingItem ? "Update Data" : "Simpan Pegawai"}
-                  </>
+                  <>{editingItem ? "Update Data" : "Simpan Pegawai"}</>
                 )}
               </button>
             </div>

@@ -327,7 +327,7 @@ const SurveyKepuasan = () => {
                     >
                       <td className="px-8 py-6 align-middle font-sans">
                         <span className="font-bold text-slate-400 font-sans">
-                          #{item.id}
+                          #{(pagination.currentPage - 1) * pagination.itemsPerPage + (index + 1)}
                         </span>
                       </td>
 

@@ -26,6 +26,7 @@ const Banner = () => {
     status: "Aktif",
     urutan: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const fileInputRef = useRef(null);
 
@@ -51,12 +52,15 @@ const Banner = () => {
   };
 
   const fetchBanner = async () => {
+    setIsLoading(true);
     try {
       const response = await getBanner();
       setBanners(response.data);
     } catch (error) {
       toast.error("Gagal mengambil data banner");
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -203,65 +207,91 @@ const Banner = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredBanners.map((banner) => (
-                <tr
-                  key={banner.id}
-                  className="hover:bg-slate-50/50 transition-colors group"
-                >
-                  <td className="px-6 py-4">
-                    <div className="w-64 h-36 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 shadow-sm transition-transform hover:scale-[1.02] duration-300">
-                      <img
-                        src={`${import.meta.env.VITE_STORAGE_URL}/${banner.url_gambar}`}
-                        alt="Banner Image"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </td>
+              {isLoading ? (
+                // Skeleton Loader (Non-Circular)
+                [...Array(3)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-6 py-6">
+                      <div className="w-64 h-36 rounded-2xl bg-slate-100 border border-slate-100 flex flex-col justify-center items-center gap-2">
+                        <ImageIcon className="text-slate-200" size={32} />
+                        <div className="w-24 h-2 bg-slate-200 rounded-full"></div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="w-8 h-8 rounded-lg bg-slate-100"></div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="mx-auto w-20 h-6 rounded-full bg-slate-100"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-9 h-9 rounded-lg bg-slate-50"></div>
+                        <div className="w-9 h-9 rounded-lg bg-slate-50"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                filteredBanners.map((banner) => (
+                  <tr
+                    key={banner.id}
+                    className="hover:bg-slate-50/50 transition-colors group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="w-64 h-36 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 shadow-sm transition-transform hover:scale-[1.02] duration-300">
+                        <img
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${banner.url_gambar}`}
+                          alt="Banner Image"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    </td>
 
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm">
-                      {banner.urutan}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={() => handleToggleStatus(banner.id)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        banner.status === "Aktif"
-                          ? "bg-emerald-50 text-emerald-600"
-                          : "bg-rose-50 text-rose-600"
-                      }`}
-                    >
-                      {banner.status === "Aktif" ? (
-                        <CheckCircle2 size={12} />
-                      ) : (
-                        <XCircle size={12} />
-                      )}
-                      {banner.status === "Aktif" ? "Aktif" : "Nonaktif"}
-                    </button>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-end gap-2">
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm">
+                        {banner.urutan}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
                       <button
-                        onClick={() => openModal(banner)}
-                        className="p-2 text-slate-400 hover:text-primary-blue hover:bg-primary-blue/10 rounded-lg transition-all"
+                        onClick={() => handleToggleStatus(banner.id)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          banner.status === "Aktif"
+                            ? "bg-emerald-50 text-emerald-600"
+                            : "bg-rose-50 text-rose-600"
+                        }`}
                       >
-                        <Edit2 size={18} />
+                        {banner.status === "Aktif" ? (
+                          <CheckCircle2 size={12} />
+                        ) : (
+                          <XCircle size={12} />
+                        )}
+                        {banner.status === "Aktif" ? "Aktif" : "Nonaktif"}
                       </button>
-                      <button
-                        onClick={() => handleDelete(banner.id)}
-                        className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => openModal(banner)}
+                          className="p-2 text-slate-400 hover:text-primary-blue hover:bg-primary-blue/10 rounded-lg transition-all"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(banner.id)}
+                          className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-        {filteredBanners.length === 0 && (
+        {banners.length === 0 && !isLoading && (
           <div className="py-20 text-center">
             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-dashed border-slate-200">
               <ImageIcon size={32} className="text-slate-300" />

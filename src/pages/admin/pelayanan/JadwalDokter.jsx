@@ -10,6 +10,7 @@ import {
   Clock,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getJadwalDokter,
@@ -32,6 +33,10 @@ const JadwalDokter = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -48,15 +53,24 @@ const JadwalDokter = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus jadwal ini?")) {
-      try {
-        await deleteJadwalDokter(id);
-        toast.success("Jadwal dokter berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus jadwal dokter");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteJadwalDokter(itemToDelete);
+      toast.success("Jadwal dokter berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus jadwal dokter");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -134,9 +148,42 @@ const JadwalDokter = () => {
       {/* Table Section */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <div className="w-10 h-10 border-4 border-slate-200 border-t-teal-600 rounded-full animate-spin mb-4"></div>
-            Memuat jadwal dokter...
+          // Skeleton Loader (Non-Circular)
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100">
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest text-center w-16">No</th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest w-1/3">Nama Dokter</th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest w-1/4">Poli / Spesialis</th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">Hari Praktek</th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">Jam Praktek</th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest text-right w-32">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {[...Array(4)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-8 py-6 text-center"><div className="w-6 h-6 bg-slate-100 rounded mx-auto"></div></td>
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center"><Stethoscope size={18} className="text-slate-200" /></div>
+                        <div className="h-5 bg-slate-100 rounded-full w-40"></div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6"><div className="h-7 bg-slate-50 rounded-xl w-32"></div></td>
+                    <td className="px-8 py-6"><div className="h-4 bg-slate-50 rounded-full w-24"></div></td>
+                    <td className="px-8 py-6"><div className="h-4 bg-slate-50 rounded-full w-20"></div></td>
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -373,6 +420,15 @@ const JadwalDokter = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Jadwal Dokter"
+        message="Apakah Anda yakin ingin menghapus jadwal praktek dokter ini secara permanen?"
+      />
     </div>
   );
 };

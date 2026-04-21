@@ -8,6 +8,7 @@ import {
   Plus,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getSyaratPelayanan,
@@ -23,6 +24,10 @@ const SyaratPelayanan = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -42,15 +47,24 @@ const SyaratPelayanan = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus gambar syarat pelayanan ini?")) {
-      try {
-        await deleteSyaratPelayanan(id);
-        toast.success("Syarat pelayanan berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus syarat pelayanan");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteSyaratPelayanan(itemToDelete);
+      toast.success("Syarat pelayanan berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus syarat pelayanan");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -143,10 +157,21 @@ const SyaratPelayanan = () => {
       {/* Grid of Images */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {isLoading ? (
-          <div className="col-span-full py-20 text-center">
-             <div className="w-10 h-10 border-4 border-slate-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4"></div>
-             Memuat data...
-          </div>
+          // Skeleton Loader (Non-Circular)
+          [...Array(3)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm animate-pulse"
+            >
+              <div className="flex justify-end mb-4">
+                <div className="w-10 h-10 bg-slate-50 rounded-2xl"></div>
+              </div>
+              <div className="w-full h-[300px] bg-slate-50 rounded-2xl flex items-center justify-center">
+                <ImageIcon className="text-slate-100" size={64} />
+              </div>
+              <div className="mt-4 h-3 bg-slate-50 rounded-full w-32"></div>
+            </div>
+          ))
         ) : (
           syaratImages.map((item) => (
             <div
@@ -332,6 +357,15 @@ const SyaratPelayanan = () => {
           </div>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Syarat Pelayanan"
+        message="Apakah Anda yakin ingin menghapus gambar syarat pelayanan ini? Tindakan ini bersifat permanen."
+      />
     </div>
   );
 };

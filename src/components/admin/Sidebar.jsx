@@ -36,10 +36,11 @@ import {
 import { NavLink, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
-const SidebarItem = ({ icon: Icon, label, to, collapsed }) => {
+const SidebarItem = ({ icon: Icon, label, to, collapsed, end }) => {
   return (
     <NavLink
       to={to}
+      end={end}
       className={({ isActive }) => `
         w-full flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group relative
         ${
@@ -89,6 +90,7 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       icon: LayoutDashboard,
       category: "Main",
       to: "/admin",
+      end: true,
     },
 
     // Content

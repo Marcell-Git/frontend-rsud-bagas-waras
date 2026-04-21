@@ -38,6 +38,7 @@ const KegiatanWBKWBBM = () => {
     tanggal: "",
     deskripsi: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -51,6 +52,7 @@ const KegiatanWBKWBBM = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchKegiatan = async (page = 1) => {
+    setIsLoading(true);
     try {
       const response = await getWBKWBBM({ page, per_page: pagination.itemsPerPage });
       const data = response.data?.data || response.data || [];
@@ -68,6 +70,8 @@ const KegiatanWBKWBBM = () => {
       console.error("Error fetching kegiatan:", error);
       toast.error("Gagal mengambil data kegiatan WBK/WBBM");
       setKegiatanData([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -234,7 +238,39 @@ const KegiatanWBKWBBM = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans text-sm">
-              {kegiatanData.map((item) => (
+              {isLoading ? (
+                  // Skeleton Loader (Non-Circular)
+                  [...Array(3)].map((_, index) => (
+                    <tr key={index} className="animate-pulse">
+                      <td className="px-8 py-6">
+                        <div className="space-y-3">
+                          <div className="h-4 bg-slate-100 rounded-full w-24"></div>
+                          <div className="h-5 bg-slate-50 rounded-full w-full"></div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                         <div className="space-y-2">
+                            <div className="h-4 bg-slate-50 rounded-full w-full"></div>
+                            <div className="h-4 bg-slate-50 rounded-full w-full"></div>
+                            <div className="h-4 bg-slate-50 rounded-full w-2/3"></div>
+                         </div>
+                      </td>
+                      <td className="px-8 py-6">
+                         <div className="w-32 h-20 rounded-xl bg-slate-100 flex flex-col justify-center items-center gap-2">
+                             <ImageIcon size={20} className="text-slate-200" />
+                             <div className="w-16 h-1.5 bg-slate-200 rounded-full"></div>
+                         </div>
+                      </td>
+                      <td className="px-8 py-6 text-right">
+                         <div className="flex justify-end gap-2">
+                            <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                            <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                         </div>
+                      </td>
+                    </tr>
+                  ))
+              ) : (
+                kegiatanData.map((item) => (
                 <tr
                   key={item.id}
                   className="hover:bg-slate-50/50 transition-colors font-sans"
@@ -286,32 +322,33 @@ const KegiatanWBKWBBM = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {kegiatanData.length > 0 && (
-          <Pagination
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            onPageChange={handlePageChange}
-            totalItems={pagination.totalItems}
-            itemsPerPage={pagination.itemsPerPage}
-          />
-        )}
-
-        {kegiatanData.length === 0 && (
-          <div className="py-24 text-center font-sans">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 shadow-sm mb-4 font-sans">
-              <Award size={40} />
-            </div>
-            <p className="text-slate-500 font-bold font-sans">
-              Belum ada data kegiatan yang dicatat.
-            </p>
-          </div>
-        )}
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
+
+      {kegiatanData.length > 0 && !isLoading && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+          totalItems={pagination.totalItems}
+          itemsPerPage={pagination.itemsPerPage}
+        />
+      )}
+
+      {kegiatanData.length === 0 && !isLoading && (
+        <div className="py-24 text-center font-sans">
+          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 shadow-sm mb-4 font-sans">
+            <Award size={40} />
+          </div>
+          <p className="text-slate-500 font-bold font-sans">
+            Belum ada data kegiatan yang dicatat.
+          </p>
+        </div>
+      )}
+    </div>
 
       {/* CRUD Modal */}
       <Modal

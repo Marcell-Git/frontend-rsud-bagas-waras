@@ -1,6 +1,6 @@
 import api from "../axios";
 
-export const getLinkEksternal = () => api.get("/link_eksternal");
+export const getLinkEksternal = (params) => api.get("/link_eksternal", { params });
 export const getLinkEksternalById = (id) => api.get(`/link_eksternal/${id}`);
 export const createLinkEksternal = (data) =>
   api.post("/link_eksternal", data, {

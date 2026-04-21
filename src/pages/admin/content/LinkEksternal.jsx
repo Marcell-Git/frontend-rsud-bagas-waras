@@ -12,6 +12,7 @@ import {
 import { toast } from "react-toastify";
 
 import Pagination from "../../../components/admin/Pagination";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getLinkEksternal,
@@ -40,6 +41,10 @@ const LinkEksternal = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const fileInputRef = useRef(null);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchLinks = async (page = 1) => {
     setIsLoading(true);
@@ -70,15 +75,24 @@ const LinkEksternal = () => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus link eksternal ini?")) {
-      try {
-        await deleteLinkEksternal(id);
-        toast.success("Link eksternal berhasil dihapus");
-        fetchLinks();
-      } catch (error) {
-        toast.error("Gagal menghapus link eksternal");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteLinkEksternal(itemToDelete);
+      toast.success("Link eksternal berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchLinks(pagination.currentPage);
+    } catch (error) {
+      toast.error("Gagal menghapus link eksternal");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -176,10 +190,29 @@ const LinkEksternal = () => {
 
       {/* Grid Layout */}
       {isLoading ? (
-         <div className="py-20 text-center flex flex-col items-center justify-center">
-            <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-            <p className="text-slate-400 font-bold font-sans">Memuat data...</p>
-         </div>
+        // Skeleton Grid Loader (Non-Circular)
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {[...Array(4)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-[32px] border border-slate-100 shadow-sm animate-pulse flex flex-col font-sans"
+            >
+              <div className="aspect-2/1 bg-slate-50 flex items-center justify-center p-8 border-b border-slate-100">
+                <Globe className="text-slate-200" size={32} />
+              </div>
+              <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="h-5 bg-slate-100 rounded-full w-full"></div>
+                  <div className="h-3 bg-slate-50 rounded-full w-2/3 mx-auto"></div>
+                </div>
+                <div className="flex items-center gap-2 pt-5 mt-5 border-t border-slate-50">
+                  <div className="h-10 bg-slate-50 rounded-xl flex-1"></div>
+                  <div className="h-10 bg-slate-50 rounded-xl w-12"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {links.map((item) => (
@@ -406,6 +439,15 @@ const LinkEksternal = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Link Eksternal"
+        message="Apakah Anda yakin ingin menghapus link eksternal ini secara permanen?"
+      />
     </div>
   );
 };

@@ -17,6 +17,7 @@ import {
   Upload,
   ExternalLink,
 } from "lucide-react";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getPengumuman,
@@ -39,6 +40,10 @@ const Pengumuman = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -55,15 +60,24 @@ const Pengumuman = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus pengumuman ini?")) {
-      try {
-        await deletePengumuman(id);
-        toast.success("Pengumuman berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus pengumuman");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deletePengumuman(itemToDelete);
+      toast.success("Pengumuman berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus pengumuman");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -175,9 +189,56 @@ const Pengumuman = () => {
       {/* Table Section */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden min-h-[400px]">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <div className="w-8 h-8 border-4 border-slate-200 border-t-primary-blue rounded-full animate-spin mb-4"></div>
-            Memuat data...
+          // Skeleton Loader (Non-Circular)
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100">
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-center w-16">
+                    No
+                  </th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                    Judul Pengumuman
+                  </th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                    Update Terakhir
+                  </th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {[...Array(3)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-6 py-6 text-center">
+                      <div className="w-6 h-6 bg-slate-100 rounded mx-auto"></div>
+                    </td>
+                    <td className="px-6 py-6 max-w-md">
+                      <div className="flex flex-col gap-2">
+                        <div className="h-4 bg-slate-100 rounded-full w-full"></div>
+                        <div className="h-3 bg-slate-50 rounded-full w-1/3 mt-2"></div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-6">
+                      <div className="h-4 bg-slate-50 rounded-full w-24"></div>
+                    </td>
+                    <td className="px-6 py-6 text-center">
+                      <div className="mx-auto w-20 h-6 rounded-full bg-slate-50"></div>
+                    </td>
+                    <td className="px-6 py-6">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-9 h-9 rounded-lg bg-slate-50"></div>
+                        <div className="w-9 h-9 rounded-lg bg-slate-50"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -428,6 +489,15 @@ const Pengumuman = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Pengumuman"
+        message="Apakah Anda yakin ingin menghapus pengumuman ini secara permanen? Tindakan ini tidak dapat dibatalkan."
+      />
     </div>
   );
 };

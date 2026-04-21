@@ -9,6 +9,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getVisi,
@@ -28,6 +29,10 @@ const Visi = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -44,15 +49,24 @@ const Visi = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus poin visi ini?")) {
-      try {
-        await deleteVisi(id);
-        toast.success("Poin visi berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus poin visi");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteVisi(itemToDelete);
+      toast.success("Poin visi berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus poin visi");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -126,15 +140,28 @@ const Visi = () => {
       {/* Content Section */}
       <div className="space-y-4">
         {isLoading ? (
-          <div className="py-20 text-center">
-             <div className="w-10 h-10 border-4 border-slate-200 border-t-primary-blue rounded-full animate-spin mx-auto mb-4"></div>
-             Memuat data...
-          </div>
+          // Skeleton Loader (Non-Circular)
+          [...Array(2)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm animate-pulse flex gap-6 items-start"
+            >
+              <div className="w-10 h-10 rounded-full bg-slate-100 shrink-0"></div>
+              <div className="flex-1 space-y-4">
+                <div className="h-6 bg-slate-100 rounded-full w-full"></div>
+                <div className="h-6 bg-slate-100 rounded-full w-3/4"></div>
+                <div className="flex gap-2 pt-4 border-t border-slate-50">
+                  <div className="h-10 bg-slate-50 rounded-xl w-24"></div>
+                  <div className="h-10 bg-slate-50 rounded-xl w-24"></div>
+                </div>
+              </div>
+            </div>
+          ))
         ) : (
           visiPoints.map((item, index) => (
             <div
               key={item.id}
-              className="group bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-md hover:border-primary-blue/20 transition-all duration-300 flex gap-6 items-start"
+              className="group bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-md hover:border-primary-blue/20 flex gap-6 items-start"
             >
               <div className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 font-black flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-primary-blue group-hover:text-white transition-colors">
                 {index + 1}
@@ -148,14 +175,14 @@ const Visi = () => {
                 <div className="flex items-center gap-2 pt-5 mt-4 border-t border-slate-50 font-sans">
                   <button
                     onClick={() => openModal(item)}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 font-bold text-xs hover:bg-primary-blue hover:text-white transition-all border border-slate-100 font-sans"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 font-bold text-xs hover:bg-primary-blue hover:text-white border border-slate-100 font-sans"
                   >
                     <Edit2 size={14} />
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-500 hover:text-white transition-all border border-slate-100 font-sans"
+                    className="px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-500 hover:text-white border border-slate-100 font-sans"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -279,6 +306,15 @@ const Visi = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Poin Visi"
+        message="Apakah Anda yakin ingin menghapus poin visi ini? Data yang terhapus tidak dapat dikembalikan."
+      />
     </div>
   );
 };

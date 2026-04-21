@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Target, X, Save } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getMisi,
@@ -20,6 +21,10 @@ const Misi = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -36,15 +41,24 @@ const Misi = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus poin misi ini?")) {
-      try {
-        await deleteMisi(id);
-        toast.success("Poin misi berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus poin misi");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteMisi(itemToDelete);
+      toast.success("Poin misi berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus poin misi");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -118,20 +132,30 @@ const Misi = () => {
       {/* Grid of Mission Points */}
       <div className="grid grid-cols-1 gap-6">
         {isLoading ? (
-          <div className="py-20 text-center">
-             <div className="w-10 h-10 border-4 border-slate-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
-             Memuat data...
-          </div>
+          // Skeleton Loader (Non-Circular)
+          [...Array(3)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm animate-pulse flex flex-col md:flex-row gap-6 items-start"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 shrink-0"></div>
+              <div className="flex-1 space-y-4">
+                <div className="h-6 bg-slate-100 rounded-full w-full"></div>
+                <div className="h-6 bg-slate-100 rounded-full w-2/3"></div>
+                <div className="flex gap-2 pt-4 border-t border-slate-50">
+                  <div className="h-10 bg-slate-50 rounded-xl w-24"></div>
+                  <div className="h-10 bg-slate-50 rounded-xl w-24"></div>
+                </div>
+              </div>
+            </div>
+          ))
         ) : (
           misiPoints.map((item, index) => (
             <div
               key={item.id}
-              className="group bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-2xl hover:border-emerald-100 transition-all duration-500 flex flex-col md:flex-row gap-6 items-start relative overflow-hidden"
+              className="group bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-2xl hover:border-emerald-100 flex flex-col md:flex-row gap-6 items-start relative overflow-hidden"
             >
-              {/* Background Decoration */}
-              <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl"></div>
-
-              <div className="w-12 h-12 rounded-2xl bg-slate-50 text-emerald-500 font-black flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500 text-lg">
+              <div className="w-12 h-12 rounded-2xl bg-slate-50 text-emerald-500 font-black flex items-center justify-center shrink-0 border border-slate-100 group-hover:bg-emerald-500 group-hover:text-white transition-all text-lg">
                 {index + 1}
               </div>
 
@@ -144,14 +168,14 @@ const Misi = () => {
                 <div className="flex items-center gap-2 pt-5 mt-4 border-t border-slate-50 font-sans">
                   <button
                     onClick={() => openModal(item)}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 font-bold text-xs hover:bg-emerald-500 hover:text-white transition-all border border-slate-100 font-sans"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 font-bold text-xs hover:bg-emerald-500 hover:text-white border border-slate-100 font-sans"
                   >
                     <Edit2 size={14} />
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-500 hover:text-white transition-all border border-slate-100 font-sans"
+                    className="px-4 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-500 hover:text-white border border-slate-100 font-sans"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -260,6 +284,15 @@ const Misi = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Poin Misi"
+        message="Apakah Anda yakin ingin menghapus poin misi ini? Data yang terhapus tidak dapat dikembalikan."
+      />
     </div>
   );
 };

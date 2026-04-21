@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Briefcase, Save, X, Target } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import { getTugasRSUD, createTugasRSUD, updateTugasRSUD, deleteTugasRSUD } from "../../../api/struktur/tugasRSUD";
 
@@ -14,6 +15,10 @@ const TugasRSUD = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -31,15 +36,24 @@ const TugasRSUD = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus poin tugas ini?")) {
-      try {
-        await deleteTugasRSUD(id);
-        toast.success("Poin tugas berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus poin tugas");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteTugasRSUD(itemToDelete);
+      toast.success("Poin tugas berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus poin tugas");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -113,10 +127,23 @@ const TugasRSUD = () => {
       {/* Content Section */}
       <div className="space-y-4">
         {isLoading ? (
-           <div className="py-20 text-center">
-             <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
-             Memuat data...
-           </div>
+          // Skeleton Loader (Non-Circular)
+          [...Array(3)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm animate-pulse flex flex-col md:flex-row gap-6 items-start"
+            >
+              <div className="w-10 h-10 rounded-full bg-slate-100 shrink-0"></div>
+              <div className="flex-1 space-y-4">
+                <div className="h-6 bg-slate-100 rounded-full w-full"></div>
+                <div className="h-6 bg-slate-100 rounded-full w-3/4"></div>
+                <div className="flex gap-2 pt-4 border-t border-slate-50">
+                  <div className="h-10 bg-slate-50 rounded-xl w-24"></div>
+                  <div className="h-10 bg-slate-50 rounded-xl w-24"></div>
+                </div>
+              </div>
+            </div>
+          ))
         ) : (
           tugasPoints.map((item, index) => (
             <div
@@ -254,6 +281,15 @@ const TugasRSUD = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Tugas RSUD"
+        message="Apakah Anda yakin ingin menghapus poin tugas ini? Data yang terhapus tidak dapat dikembalikan."
+      />
     </div>
   );
 };

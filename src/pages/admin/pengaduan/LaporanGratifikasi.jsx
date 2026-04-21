@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Gift,
   Eye,
@@ -9,38 +9,63 @@ import {
   Banknote,
   PackageOpen,
   Info,
+  Trash2,
+  CheckCircle,
 } from "lucide-react";
+import { toast } from "react-toastify";
+import {
+  getLaporanGratifikasi,
+  deleteLaporanGratifikasi,
+} from "../../../api/pengaduan/laporanGratifikasi";
+import Pagination from "../../../components/admin/Pagination";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 const LaporanGratifikasi = () => {
-  // Dummy Read-Only Data
-  const [dataGratifikasi] = useState([
-    {
-      id: 1,
-      waktu: "10 September 2023 - 13:45 WIB",
-      namaPenerima: "Dr. Ahmad Subarjo",
-      jabatanPenerima: "Kepala Instalasi Rawat Jalan",
-      namaPemberian: "Parsel Buah & Bingkisan Barang",
-      spesifikasiPemberian:
-        "Parsel ukuran besar berisi buah-buahan impor dan alat kesehatan pribadi.",
-      nilaiPemberian: "± Rp 1.500.000",
-      uraian:
-        "Keluarga pasien yang baru saja pulang dari perawatan mendatangi ruang dokter dan memaksa meninggalkan parsel di meja sebagai tanda terima kasih atas pelayanan yang diberikan.",
-    },
-    {
-      id: 2,
-      waktu: "15 September 2023 - 09:00 WIB",
-      namaPenerima: "Dra. Kusuma Wardhani",
-      jabatanPenerima: "Pejabat Pengadaan Barang",
-      namaPemberian: "Voucher Liburan & Uang Tunai",
-      spesifikasiPemberian:
-        "2 Lembar voucher hotel bintang 5 dan amplop tertutup.",
-      nilaiPemberian: "Rp 5.000.000",
-      uraian:
-        "Dalam rangka memenangkan tender alat kesehatan tahunan, perwakilan pemasok menyelipkan amplop dan voucher di dalam berkas dokumen lelang saat penyerahan proposal di ruang rapat.",
-    },
-  ]);
+  const [dataGratifikasi, setDataGratifikasi] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10,
+  });
 
   const [viewItem, setViewItem] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const fetchGratifikasi = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const response = await getLaporanGratifikasi({
+        page,
+        per_page: pagination.itemsPerPage,
+      });
+      if (response.data && response.data.data) {
+        setDataGratifikasi(response.data.data);
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching gratifikasi:", error);
+      toast.error("Gagal mengambil data laporan gratifikasi");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchGratifikasi(pagination.currentPage);
+  }, [pagination.currentPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
 
   const openViewModal = (item) => {
     setViewItem(item);
@@ -48,6 +73,28 @@ const LaporanGratifikasi = () => {
 
   const closeViewModal = () => {
     setViewItem(null);
+  };
+
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteLaporanGratifikasi(itemToDelete);
+      toast.success("Laporan gratifikasi berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchGratifikasi(pagination.currentPage);
+    } catch (error) {
+      console.error("Error deleting gratifikasi:", error);
+      toast.error("Gagal menghapus laporan gratifikasi");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
+    }
   };
 
   return (
@@ -97,76 +144,130 @@ const LaporanGratifikasi = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {dataGratifikasi.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-slate-50/50 transition-colors"
-                >
-                  {/* Nomor */}
-                  <td className="px-8 py-6 align-middle font-bold text-slate-400">
-                    #{index + 1}
-                  </td>
-
-                  {/* Penerima */}
-                  <td className="px-8 py-6 align-middle">
-                    <div className="flex flex-col gap-1">
-                      <span className="font-bold text-slate-800 flex items-center gap-2">
-                        <User size={14} className="text-slate-400" />{" "}
-                        {item.namaPenerima}
-                      </span>
-                      <span className="text-sm font-medium text-amber-600 flex items-center gap-2">
-                        <Briefcase size={12} /> {item.jabatanPenerima}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Objek Pemberian */}
-                  <td className="px-8 py-6 align-middle">
-                    <div className="flex flex-col gap-1.5 border-l-2 border-amber-200 pl-3">
-                      <p className="font-bold text-slate-700 leading-snug line-clamp-1">
-                        {item.namaPemberian}
-                      </p>
-                      <p className="font-bold text-emerald-600 text-[10px] uppercase tracking-widest">
-                        {item.nilaiPemberian}
-                      </p>
-                    </div>
-                  </td>
-
-                  {/* Tanggal */}
-                  <td className="px-8 py-6 align-middle">
-                    <span className="inline-flex w-fit items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 font-bold text-[10px] uppercase rounded-lg border border-slate-200 tracking-wider">
-                      <CalendarDays size={12} />
-                      {item.waktu.split(" - ")[0]}
-                    </span>
-                  </td>
-
-                  {/* Aksi (Hanya Lihat Info) */}
-                  <td className="px-8 py-6 align-middle text-right">
-                    <button
-                      onClick={() => openViewModal(item)}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-500 text-amber-600 hover:text-white font-bold rounded-xl text-xs transition-all border border-amber-100 hover:border-amber-500 hover:shadow-lg hover:shadow-amber-500/20"
+              {isLoading
+                ? // Skeleton Rows
+                  [...Array(5)].map((_, index) => (
+                    <tr key={index} className="animate-pulse">
+                      <td className="px-8 py-6">
+                        <div className="h-4 bg-slate-100 rounded w-8"></div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="space-y-2">
+                          <div className="h-4 bg-slate-100 rounded-full w-40"></div>
+                          <div className="h-3 bg-slate-50 rounded-full w-32"></div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="space-y-2">
+                          <div className="h-4 bg-slate-50 rounded-full w-full"></div>
+                          <div className="h-3 bg-slate-50 rounded-full w-24"></div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="h-8 bg-slate-50 rounded-lg w-28 font-sans text-transparent">
+                          date
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="flex justify-end gap-2">
+                          <div className="w-24 h-10 bg-slate-50 rounded-xl"></div>
+                          <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                : dataGratifikasi.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-slate-50/50 transition-colors"
                     >
-                      <Eye size={16} />
-                      Rincian
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                      {/* Nomor */}
+                      <td className="px-8 py-6 align-middle font-bold text-slate-400">
+                        #{item.id}
+                      </td>
+
+                      {/* Penerima */}
+                      <td className="px-8 py-6 align-middle">
+                        <div className="flex flex-col gap-1">
+                          <span className="font-bold text-slate-800 flex items-center gap-2">
+                            <User size={14} className="text-slate-400" />{" "}
+                            {item.nama_penerima}
+                          </span>
+                          <span className="text-sm font-medium text-amber-600 flex items-center gap-2">
+                            <Briefcase size={12} /> {item.jabatan_penerima}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Objek Pemberian */}
+                      <td className="px-8 py-6 align-middle">
+                        <div className="flex flex-col gap-1.5 border-l-2 border-amber-200 pl-3">
+                          <p className="font-bold text-slate-700 leading-snug line-clamp-1">
+                            {item.nama_pemberian}
+                          </p>
+                          <p className="font-bold text-emerald-600 text-[10px] uppercase tracking-widest">
+                            {item.nilai_pemberian}
+                          </p>
+                        </div>
+                      </td>
+
+                      {/* Tanggal */}
+                      <td className="px-8 py-6 align-middle">
+                        <span className="inline-flex w-fit items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 font-bold text-[10px] uppercase rounded-lg border border-slate-200 tracking-wider">
+                          <CalendarDays size={12} />
+                          {new Date(item.waktu).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                      </td>
+
+                      {/* Aksi */}
+                      <td className="px-8 py-6 align-middle text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => openViewModal(item)}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 hover:bg-amber-500 text-amber-600 hover:text-white font-bold rounded-xl text-xs transition-all border border-amber-100"
+                          >
+                            <Eye size={16} />
+                            Rincian
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="p-2.5 bg-slate-50 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all border border-slate-100"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>
-
-        {dataGratifikasi.length === 0 && (
-          <div className="py-24 text-center">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 mb-4">
-              <Gift size={40} />
-            </div>
-            <p className="text-slate-500 font-bold">
-              Belum ada aduan gratifikasi yang terdata.
-            </p>
-          </div>
-        )}
       </div>
+
+      {dataGratifikasi.length === 0 && !isLoading && (
+        <div className="py-24 text-center">
+          <div className="w-20 h-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200 flex items-center justify-center mx-auto text-slate-300 mb-6 font-sans">
+            <CheckCircle size={40} />
+          </div>
+          <p className="text-slate-500 font-bold">
+            Belum ada aduan gratifikasi yang terdata.
+          </p>
+        </div>
+      )}
+
+      {!isLoading && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+          totalItems={pagination.totalItems}
+          itemsPerPage={pagination.itemsPerPage}
+        />
+      )}
 
       {/* Read-Only Detail Modal */}
       {viewItem && (
@@ -217,7 +318,7 @@ const LaporanGratifikasi = () => {
                         Nama Lengkap Penerima
                       </p>
                       <p className="font-bold text-slate-800">
-                        {viewItem.namaPenerima}
+                        {viewItem.nama_penerima}
                       </p>
                     </div>
                   </div>
@@ -230,7 +331,7 @@ const LaporanGratifikasi = () => {
                         Jabatan Instansi
                       </p>
                       <p className="font-bold text-amber-600 line-clamp-1">
-                        {viewItem.jabatanPenerima}
+                        {viewItem.jabatan_penerima}
                       </p>
                     </div>
                   </div>
@@ -249,7 +350,7 @@ const LaporanGratifikasi = () => {
                       <PackageOpen size={12} /> Bentuk Benda / Jasa
                     </p>
                     <p className="font-black text-lg text-slate-800">
-                      {viewItem.namaPemberian}
+                      {viewItem.nama_pemberian}
                     </p>
                   </div>
                   <div className="p-5 bg-emerald-50 rounded-3xl border border-emerald-100">
@@ -257,7 +358,7 @@ const LaporanGratifikasi = () => {
                       <Banknote size={12} /> Estimasi Nilai Rupiah
                     </p>
                     <p className="font-black text-2xl text-emerald-700">
-                      {viewItem.nilaiPemberian}
+                      {viewItem.nilai_pemberian}
                     </p>
                   </div>
                 </div>
@@ -268,7 +369,7 @@ const LaporanGratifikasi = () => {
                       Spesifikasi Lebih Lanjut
                     </p>
                     <p className="font-bold text-slate-700 leading-relaxed bg-white px-4 py-3 border border-slate-200 rounded-xl">
-                      {viewItem.spesifikasiPemberian}
+                      {viewItem.spesifikasi_pemberian}
                     </p>
                   </div>
 
@@ -296,6 +397,16 @@ const LaporanGratifikasi = () => {
           </div>
         </div>
       )}
+
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Laporan Gratifikasi"
+        message="Apakah Anda yakin ingin menghapus laporan gratifikasi ini secara permanen? Data yang dihapus tidak dapat dikembalikan."
+      />
     </div>
   );
 };

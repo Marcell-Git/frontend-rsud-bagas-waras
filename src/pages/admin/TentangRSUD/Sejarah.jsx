@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, History, Save, X, Clock } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getSejarah,
@@ -20,6 +21,10 @@ const Sejarah = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -36,15 +41,24 @@ const Sejarah = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus momen sejarah ini?")) {
-      try {
-        await deleteSejarah(id);
-        toast.success("Momen sejarah berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus momen sejarah");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteSejarah(itemToDelete);
+      toast.success("Momen sejarah berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus momen sejarah");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -118,10 +132,36 @@ const Sejarah = () => {
       {/* Table Section */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
         {isLoading ? (
-           <div className="py-20 text-center">
-             <div className="w-10 h-10 border-4 border-slate-200 border-t-amber-600 rounded-full animate-spin mx-auto mb-4"></div>
-             Memuat data...
-           </div>
+          // Skeleton Loader (Non-Circular)
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50/50 border-b border-slate-100 text-slate-500 text-xs tracking-widest uppercase">
+                  <th className="px-8 py-5 font-black">Deskripsi Sejarah</th>
+                  <th className="px-8 py-5 font-black text-right w-40">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-sans">
+                {[...Array(3)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-8 py-8 align-top">
+                      <div className="space-y-3">
+                        <div className="h-5 bg-slate-100 rounded-full w-full"></div>
+                        <div className="h-5 bg-slate-100 rounded-full w-5/6"></div>
+                        <div className="h-5 bg-slate-100 rounded-full w-4/6"></div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-8 align-top text-right">
+                      <div className="flex justify-end gap-2 mt-1">
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -270,6 +310,15 @@ const Sejarah = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Momen Sejarah"
+        message="Apakah Anda yakin ingin menghapus momen bersejarah ini? Tindakan ini bersifat permanen."
+      />
     </div>
   );
 };

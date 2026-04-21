@@ -9,6 +9,7 @@ import {
   Stethoscope,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getPoli,
@@ -28,6 +29,10 @@ const RawatJalan = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -44,15 +49,24 @@ const RawatJalan = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Hapus poliklinik dari daftar rawat jalan?")) {
-      try {
-        await deletePoli(id);
-        toast.success("Poliklinik berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus poliklinik");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deletePoli(itemToDelete);
+      toast.success("Poliklinik berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus poliklinik");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -126,10 +140,24 @@ const RawatJalan = () => {
       {/* Grid Section for Polyclinics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {isLoading ? (
-           <div className="col-span-full py-20 text-center">
-             <div className="w-10 h-10 border-4 border-slate-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4"></div>
-             Memuat data...
-           </div>
+          // Skeleton Loader (Non-Circular)
+          [...Array(6)].map((_, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 animate-pulse"
+            >
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0">
+                  <Stethoscope size={24} className="text-slate-100" />
+                </div>
+                <div className="h-6 bg-slate-50 rounded-full w-24 mt-2"></div>
+              </div>
+              <div className="flex gap-2 justify-end border-t border-slate-50 pt-4">
+                <div className="h-8 bg-slate-50 rounded-xl w-16"></div>
+                <div className="h-8 bg-slate-50 rounded-xl w-16"></div>
+              </div>
+            </div>
+          ))
         ) : (
           poliData.map((item) => (
             <div
@@ -264,6 +292,15 @@ const RawatJalan = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Poliklinik"
+        message="Apakah Anda yakin ingin menghapus poliklinik ini dari daftar layanan rawat jalan?"
+      />
     </div>
   );
 };

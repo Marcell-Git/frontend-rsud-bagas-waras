@@ -36,6 +36,7 @@ const BerkasPPID = () => {
     kategori: "Informasi Berkala",
     kelompok_dokumen: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -48,9 +49,9 @@ const BerkasPPID = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchPPID = async (page = 1) => {
+    setIsLoading(true);
     try {
       const response = await getPPID({ page, per_page: pagination.itemsPerPage });
-      // Handle potential paginated response or direct array
       const data = response.data?.data || response.data || [];
       setPpidData(Array.isArray(data) ? data : []);
       
@@ -66,6 +67,8 @@ const BerkasPPID = () => {
       console.error("Error fetching PPID:", error);
       toast.error("Gagal mengambil data PPID");
       setPpidData([]); // Ensure it stays an array on error
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -242,7 +245,32 @@ const BerkasPPID = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans text-sm">
-              {ppidData.map((item) => (
+              {isLoading ? (
+                // Skeleton Loader (Non-Circular)
+                [...Array(5)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-8 py-6">
+                      <div className="space-y-3">
+                        <div className="h-5 bg-slate-100 rounded-full w-full"></div>
+                        <div className="h-4 bg-slate-50 rounded-full w-2/3"></div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-center">
+                      <div className="w-24 h-6 rounded-lg bg-slate-100"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="w-32 h-10 rounded-xl bg-slate-50"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                ppidData.map((item) => (
                 <tr
                   key={item.id}
                   className="hover:bg-slate-50/50 transition-colors font-sans"
@@ -301,32 +329,33 @@ const BerkasPPID = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {ppidData.length > 0 && (
-          <Pagination
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            onPageChange={handlePageChange}
-            totalItems={pagination.totalItems}
-            itemsPerPage={pagination.itemsPerPage}
-          />
-        )}
-
-        {ppidData.length === 0 && (
-          <div className="py-24 text-center font-sans">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 shadow-sm mb-4 font-sans">
-              <FolderOpen size={40} />
-            </div>
-            <p className="text-slate-500 font-bold font-sans">
-              Data dokumen PPID masih kosong.
-            </p>
-          </div>
-        )}
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
+
+      {ppidData.length > 0 && !isLoading && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+          totalItems={pagination.totalItems}
+          itemsPerPage={pagination.itemsPerPage}
+        />
+      )}
+
+      {ppidData.length === 0 && !isLoading && (
+        <div className="py-24 text-center font-sans">
+          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 shadow-sm mb-4 font-sans">
+            <FolderOpen size={40} />
+          </div>
+          <p className="text-slate-500 font-bold font-sans">
+            Data dokumen PPID masih kosong.
+          </p>
+        </div>
+      )}
+    </div>
 
       {/* CRUD Modal */}
       <Modal

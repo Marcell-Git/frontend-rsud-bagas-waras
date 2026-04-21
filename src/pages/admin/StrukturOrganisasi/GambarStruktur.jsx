@@ -8,6 +8,7 @@ import {
   Plus,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getStrukturOrganisasi,
@@ -23,6 +24,10 @@ const GambarStruktur = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -42,15 +47,24 @@ const GambarStruktur = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus gambar struktur organisasi ini?")) {
-      try {
-        await deleteStrukturOrganisasi(id);
-        toast.success("Gambar struktur berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus gambar struktur");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteStrukturOrganisasi(itemToDelete);
+      toast.success("Gambar struktur berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus gambar struktur");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -143,10 +157,16 @@ const GambarStruktur = () => {
       {/* Grid of Images */}
       <div className="grid grid-cols-1 gap-8">
         {isLoading ? (
-           <div className="py-20 text-center">
-             <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
-             Memuat data...
-           </div>
+          // Skeleton Loader (Non-Circular)
+          <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm animate-pulse space-y-4">
+            <div className="w-full h-[400px] bg-slate-100 rounded-2xl flex items-center justify-center">
+              <ImageIcon className="text-slate-200" size={48} />
+            </div>
+            <div className="space-y-2 px-2">
+              <div className="h-4 bg-slate-50 rounded-full w-24"></div>
+              <div className="h-3 bg-slate-50 rounded-full w-32"></div>
+            </div>
+          </div>
         ) : (
           strukturImages.map((item) => (
             <div
@@ -171,8 +191,10 @@ const GambarStruktur = () => {
                 />
               </div>
               <div className="mt-4 px-2">
-                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest italic">ID: STR-{item.id}</p>
-                 <p className="text-[10px] text-slate-400 font-medium">Ditambahkan: {new Date(item.created_at).toLocaleDateString("id-ID")}</p>
+                <p className="text-[10px] text-slate-400 font-medium">
+                  Ditambahkan:{" "}
+                  {new Date(item.created_at).toLocaleDateString("id-ID")}
+                </p>
               </div>
             </div>
           ))
@@ -201,9 +223,9 @@ const GambarStruktur = () => {
           <div className="bg-white w-full max-w-xl rounded-[40px] shadow-2xl relative overflow-hidden flex flex-col">
             <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0">
               <div className="flex gap-4">
-                 <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-inner">
-                    <Users2 size={24} />
-                  </div>
+                <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-inner">
+                  <Users2 size={24} />
+                </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900 leading-tight">
                     Unggah Gambar Struktur
@@ -233,7 +255,9 @@ const GambarStruktur = () => {
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                onClick={() => !previewUrl && !isSubmitting && fileInputRef.current?.click()}
+                onClick={() =>
+                  !previewUrl && !isSubmitting && fileInputRef.current?.click()
+                }
               >
                 {!previewUrl ? (
                   <>
@@ -265,8 +289,8 @@ const GambarStruktur = () => {
                     <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 z-10 backdrop-blur-sm rounded-3xl mx-4 my-4 font-sans">
                       <button
                         onClick={(e) => {
-                            e.stopPropagation();
-                            fileInputRef.current?.click();
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
                         }}
                         className="px-4 py-2 bg-white rounded-lg text-slate-700 font-bold text-sm hover:scale-105 transition-transform"
                       >
@@ -321,7 +345,8 @@ const GambarStruktur = () => {
               >
                 {isSubmitting ? (
                   <>
-                     <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> Memproses...
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>{" "}
+                    Memproses...
                   </>
                 ) : (
                   <>Upload Gambar</>
@@ -331,6 +356,15 @@ const GambarStruktur = () => {
           </div>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Gambar Struktur"
+        message="Apakah Anda yakin ingin menghapus bagan struktur organisasi ini secara permanen?"
+      />
     </div>
   );
 };

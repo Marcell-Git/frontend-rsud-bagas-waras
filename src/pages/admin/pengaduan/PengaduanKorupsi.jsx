@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ShieldAlert,
   Eye,
@@ -10,38 +10,63 @@ import {
   AlertTriangle,
   Users2,
   CalendarDays,
+  Trash2,
+  ShieldCheck,
 } from "lucide-react";
+import { toast } from "react-toastify";
+import {
+  getPengaduanKorupsi,
+  deletePengaduanKorupsi,
+} from "../../../api/pengaduan/korupsi";
+import Pagination from "../../../components/admin/Pagination";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 const PengaduanKorupsi = () => {
-  // Dummy Read-Only Data
-  const [dataPengaduan] = useState([
-    {
-      id: 1,
-      tanggal: "12 Sep 2023 - 10:30 WIB",
-      namaLengkap: "Budi Santoso (Anonim)",
-      email: "budi.anon@gmail.com",
-      telepon: "081234567890",
-      perihal: "Dugaan Pungli di Loket Pendaftaran",
-      pihakTerlibat: "Oknum petugas di loket 3 (Inisial A)",
-      uraian:
-        "Pada hari Senin tanggal 11 September, oknum petugas tersebut meminta sejumlah uang tambahan di luar biaya retribusi resmi dengan dalih untuk mempercepat proses pembuatan kartu pasien baru.",
-      buktiPendukung: "https://example.com/bukti1.pdf", // Simulasi link file
-    },
-    {
-      id: 2,
-      tanggal: "15 Sep 2023 - 08:15 WIB",
-      namaLengkap: "Siti Aminah",
-      email: "siti.aminah@yahoo.com",
-      telepon: "085711223344",
-      perihal: "Mark-up Kuota Obat Fasilitas Umum",
-      pihakTerlibat: "Staf Instalasi Farmasi",
-      uraian:
-        "Saya menyadari adanya ketidaksesuaian jumlah tebusan resep obat yang ditagihkan kepada keluarga pasien non-BPJS dengan jumlah yang tertera di nota asli apotek luar.",
-      buktiPendukung: "https://example.com/bukti2.jpg",
-    },
-  ]);
+  const [dataPengaduan, setDataPengaduan] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10,
+  });
 
   const [viewItem, setViewItem] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const fetchKorupsi = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const response = await getPengaduanKorupsi({
+        page,
+        per_page: pagination.itemsPerPage,
+      });
+      if (response.data && response.data.data) {
+        setDataPengaduan(response.data.data);
+        setPagination((prev) => ({
+          ...prev,
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching tipikor:", error);
+      toast.error("Gagal mengambil data aduan tipikor");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchKorupsi(pagination.currentPage);
+  }, [pagination.currentPage]);
+
+  const handlePageChange = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
 
   const openViewModal = (item) => {
     setViewItem(item);
@@ -49,6 +74,28 @@ const PengaduanKorupsi = () => {
 
   const closeViewModal = () => {
     setViewItem(null);
+  };
+
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deletePengaduanKorupsi(itemToDelete);
+      toast.success("Laporan aduan berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchKorupsi(pagination.currentPage);
+    } catch (error) {
+      console.error("Error deleting tipikor:", error);
+      toast.error("Gagal menghapus laporan aduan");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
+    }
   };
 
   return (
@@ -98,75 +145,127 @@ const PengaduanKorupsi = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {dataPengaduan.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-slate-50/50 transition-colors"
-                >
-                  {/* Nomor */}
-                  <td className="px-8 py-6 align-middle font-bold text-slate-400">
-                    #{index + 1}
-                  </td>
+              {isLoading ? (
+                // Skeleton Rows
+                [...Array(5)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-8 py-6">
+                      <div className="h-4 bg-slate-100 rounded w-8"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="space-y-2">
+                        <div className="h-4 bg-slate-100 rounded-full w-40"></div>
+                        <div className="h-3 bg-slate-50 rounded-full w-32"></div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="h-5 bg-slate-50 rounded-full w-full"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="h-8 bg-slate-50 rounded-lg w-28"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-24 h-10 bg-slate-50 rounded-xl"></div>
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                dataPengaduan.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className="hover:bg-slate-50/50 transition-colors"
+                  >
+                    {/* Nomor */}
+                    <td className="px-8 py-6 align-middle font-bold text-slate-400">
+                      #{item.id}
+                    </td>
 
-                  {/* Pengirim */}
-                  <td className="px-8 py-6 align-middle">
-                    <div className="flex flex-col gap-1">
-                      <span className="font-bold text-slate-800 flex items-center gap-2">
-                        <User size={14} className="text-slate-400" />{" "}
-                        {item.namaLengkap}
+                    {/* Pengirim */}
+                    <td className="px-8 py-6 align-middle">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold text-slate-800 flex items-center gap-2">
+                          <User size={14} className="text-slate-400" />{" "}
+                          {item.nama_lengkap}
+                        </span>
+                        <span className="text-sm font-medium text-slate-500 flex items-center gap-2">
+                          <Mail size={12} className="text-slate-400" />{" "}
+                          {item.email}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Perihal */}
+                    <td className="px-8 py-6 align-middle">
+                      <div className="flex items-start gap-2">
+                        <div className="w-2 h-2 mt-2 rounded-full bg-rose-500 shrink-0"></div>
+                        <p className="font-bold text-slate-700 leading-snug line-clamp-2">
+                          {item.perihal}
+                        </p>
+                      </div>
+                    </td>
+
+                    {/* Tanggal */}
+                    <td className="px-8 py-6 align-middle">
+                      <span className="inline-flex w-fit items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 font-bold text-[10px] uppercase rounded-lg border border-slate-200 tracking-wider">
+                        <CalendarDays size={12} />
+                        {new Date(item.tanggal).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </span>
-                      <span className="text-sm font-medium text-slate-500 flex items-center gap-2">
-                        <Mail size={12} className="text-slate-400" />{" "}
-                        {item.email}
-                      </span>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Perihal */}
-                  <td className="px-8 py-6 align-middle">
-                    <div className="flex items-start gap-2">
-                      <div className="w-2 h-2 mt-2 rounded-full bg-rose-500 shrink-0"></div>
-                      <p className="font-bold text-slate-700 leading-snug line-clamp-2">
-                        {item.perihal}
-                      </p>
-                    </div>
-                  </td>
-
-                  {/* Tanggal */}
-                  <td className="px-8 py-6 align-middle">
-                    <span className="inline-flex w-fit items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 font-bold text-[10px] uppercase rounded-lg border border-slate-200 tracking-wider">
-                      <CalendarDays size={12} />
-                      {item.tanggal.split(" - ")[0]}
-                    </span>
-                  </td>
-
-                  {/* Aksi (Hanya Lihat Info) */}
-                  <td className="px-8 py-6 align-middle text-right">
-                    <button
-                      onClick={() => openViewModal(item)}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white font-bold rounded-xl text-xs transition-all border border-rose-100 hover:border-rose-500 hover:shadow-lg hover:shadow-rose-500/20"
-                    >
-                      <Eye size={16} />
-                      Cek Detail
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    {/* Aksi */}
+                    <td className="px-8 py-6 align-middle text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => openViewModal(item)}
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white font-bold rounded-xl text-xs transition-all border border-rose-100"
+                        >
+                          <Eye size={16} />
+                          Cek Detail
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-2.5 bg-slate-50 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all border border-slate-100"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        {dataPengaduan.length === 0 && (
+        </div>
+
+        {dataPengaduan.length === 0 && !isLoading && (
           <div className="py-24 text-center">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto text-slate-300 mb-4">
-              <ShieldAlert size={40} />
+            <div className="w-20 h-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200 flex items-center justify-center mx-auto text-slate-300 mb-6 font-sans">
+              <ShieldCheck size={40} />
             </div>
             <p className="text-slate-500 font-bold">
               Belum ada aduan tindak pidana korupsi.
             </p>
           </div>
         )}
-      </div>
+
+        {!isLoading && (
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+            totalItems={pagination.totalItems}
+            itemsPerPage={pagination.itemsPerPage}
+          />
+        )}
 
       {/* Read-Only Detail Modal */}
       {viewItem && (
@@ -214,7 +313,7 @@ const PengaduanKorupsi = () => {
                     </p>
                     <p className="font-bold text-slate-800 flex items-center gap-2">
                       <User size={14} className="text-slate-400" />{" "}
-                      {viewItem.namaLengkap}
+                      {viewItem.nama_lengkap}
                     </p>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
@@ -232,7 +331,7 @@ const PengaduanKorupsi = () => {
                     </p>
                     <p className="font-bold text-slate-800 flex items-center gap-2">
                       <Phone size={14} className="text-slate-400" />{" "}
-                      {viewItem.telepon}
+                      {viewItem.no_telp || "-"}
                     </p>
                   </div>
                 </div>
@@ -317,6 +416,16 @@ const PengaduanKorupsi = () => {
           </div>
         </div>
       )}
+
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Aduan Tipikor"
+        message="Apakah Anda yakin ingin menghapus laporan aduan tindak pidana korupsi ini? Tindakan ini tidak dapat dibatalkan."
+      />
     </div>
   );
 };

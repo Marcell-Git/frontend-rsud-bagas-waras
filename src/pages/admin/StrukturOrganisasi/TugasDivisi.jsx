@@ -9,6 +9,7 @@ import {
   FileText,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getTugasDivisi,
@@ -29,6 +30,10 @@ const TugasDivisi = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -45,15 +50,24 @@ const TugasDivisi = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus tugas divisi ini?")) {
-      try {
-        await deleteTugasDivisi(id);
-        toast.success("Tugas divisi berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus tugas divisi");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deleteTugasDivisi(itemToDelete);
+      toast.success("Tugas divisi berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus tugas divisi");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -131,9 +145,38 @@ const TugasDivisi = () => {
       {/* Table Section */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <div className="w-10 h-10 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
-            Memuat data...
+          // Skeleton Loader (Non-Circular)
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs tracking-widest uppercase font-sans">
+                  <th className="px-8 py-5 font-black w-1/4">Nama Bidang / Divisi</th>
+                  <th className="px-8 py-5 font-black">Deskripsi Tugas & Tanggung Jawab</th>
+                  <th className="px-8 py-5 font-black text-right w-32">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {[...Array(3)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="px-8 py-6">
+                      <div className="h-10 bg-slate-100 rounded-xl w-32"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="space-y-2">
+                        <div className="h-4 bg-slate-50 rounded-full w-full"></div>
+                        <div className="h-4 bg-slate-50 rounded-full w-2/3"></div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -305,6 +348,15 @@ const TugasDivisi = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Tugas Divisi"
+        message="Apakah Anda yakin ingin menghapus data tugas divisi ini?"
+      />
     </div>
   );
 };

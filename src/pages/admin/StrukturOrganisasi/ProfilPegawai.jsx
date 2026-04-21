@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import {
   getPegawai,
@@ -33,6 +34,10 @@ const ProfilPegawai = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -49,15 +54,24 @@ const ProfilPegawai = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus pegawai ini?")) {
-      try {
-        await deletePegawai(id);
-        toast.success("Data pegawai berhasil dihapus");
-        fetchData();
-      } catch (error) {
-        toast.error("Gagal menghapus data pegawai");
-      }
+  const handleDelete = (id) => {
+    setItemToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
+    try {
+      await deletePegawai(itemToDelete);
+      toast.success("Data pegawai berhasil dihapus");
+      setIsConfirmOpen(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Gagal menghapus data pegawai");
+    } finally {
+      setIsDeleting(false);
+      setItemToDelete(null);
     }
   };
 
@@ -158,9 +172,48 @@ const ProfilPegawai = () => {
       {/* Table Section */}
       <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden min-h-[400px]">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-            <div className="w-10 h-10 border-4 border-slate-200 border-t-primary-blue rounded-full animate-spin mb-4"></div>
-            Memuat data...
+          // Skeleton Loader (Non-Circular)
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs tracking-widest uppercase">
+                  <th className="py-5 px-8 font-black w-24">No</th>
+                  <th className="py-5 px-8 font-black">Nama Pegawai</th>
+                  <th className="py-5 px-8 font-black">Jabatan</th>
+                  <th className="py-5 px-8 font-black">Pendidikan</th>
+                  <th className="py-5 px-8 font-black text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {[...Array(3)].map((_, index) => (
+                  <tr key={index} className="animate-pulse">
+                    <td className="py-6 px-8">
+                      <div className="w-8 h-6 bg-slate-100 rounded"></div>
+                    </td>
+                    <td className="py-6 px-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
+                          <User size={18} className="text-slate-200" />
+                        </div>
+                        <div className="h-4 bg-slate-100 rounded-full w-32"></div>
+                      </div>
+                    </td>
+                    <td className="py-6 px-8">
+                      <div className="h-6 bg-slate-50 rounded-xl w-24"></div>
+                    </td>
+                    <td className="py-6 px-8">
+                      <div className="h-4 bg-slate-50 rounded-full w-28"></div>
+                    </td>
+                    <td className="py-6 px-8">
+                      <div className="flex justify-end gap-2">
+                        <div className="w-9 h-9 rounded-xl bg-slate-50"></div>
+                        <div className="w-9 h-9 rounded-xl bg-slate-50"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -185,7 +238,7 @@ const ProfilPegawai = () => {
                     </td>
                     <td className="py-6 px-8">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-indigo-50 text-primary-blue flex items-center justify-center flex-shrink-0 border border-indigo-100/50">
+                        <div className="w-10 h-10 rounded-xl bg-indigo-50 text-primary-blue flex items-center justify-center shrink-0 border border-indigo-100/50">
                           <User size={18} />
                         </div>
                         <span className="font-bold text-slate-900">
@@ -374,6 +427,15 @@ const ProfilPegawai = () => {
           </form>
         </div>
       )}
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
+        title="Hapus Profil Pegawai"
+        message="Apakah Anda yakin ingin menghapus data pegawai ini? Data yang terhapus tidak dapat dikembalikan."
+      />
     </div>
   );
 };

@@ -1,20 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../components/viewer/Navbar";
 import Footer from "../../components/viewer/Footer";
 import Header from "../../components/viewer/Header";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
 import { FaRoute, FaInfoCircle } from "react-icons/fa";
-
-import AlurPelayananPng from "../../assets/baganAlur/BaganAlurPelayanan.png";
-import AlurRanapPng from "../../assets/baganAlur/BaganAlurRanap.png";
-import AlurPengaduanPng from "../../assets/baganAlur/BaganAlurPengaduan.png";
-
-import SyaratRanap from "../../assets/baganAlur/sp1.jpg";
-import SyaratRajal from "../../assets/baganAlur/sp2.jpg";
-import SyaratPengaduan from "../../assets/baganAlur/pengaduan.jpg";
+import { getAlurPelayanan } from "../../api/pelayanan/alurPelayanan";
+import { getSyaratPelayanan } from "../../api/pelayanan/syaratPelayanan";
 
 const AlurPelayanan = () => {
   const [activeTab, setActiveTab] = useState("alur");
+  const [alurData, setAlurData] = useState([]);
+  const [syaratData, setSyaratData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const [alurRes, syaratRes] = await Promise.all([
+        getAlurPelayanan(),
+        getSyaratPelayanan()
+      ]);
+      setAlurData(alurRes.data?.data || alurRes.data || []);
+      setSyaratData(syaratRes.data?.data || syaratRes.data || []);
+    } catch (error) {
+      console.error("Error fetching alur/syarat pelayanan:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchData();
+  }, []);
 
   return (
     <div className="font-secondary min-h-screen flex flex-col bg-slate-50">
@@ -56,75 +74,49 @@ const AlurPelayanan = () => {
 
           {/* Content Area */}
           <div className="p-6 md:p-12 bg-cyan-50/40 relative min-h-[500px]">
-            {activeTab === "alur" ? (
+            {isLoading ? (
+               <div className="flex flex-col gap-12 max-w-5xl mx-auto animate-pulse">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="w-full aspect-video bg-white/50 rounded-2xl"></div>
+                  ))}
+               </div>
+            ) : activeTab === "alur" ? (
               <div className="flex flex-col gap-12 sm:gap-16 max-w-5xl mx-auto items-center animate-[fadeIn_0.4s_ease-out]">
-                {/* Diagram Rawat Jalan */}
-                <div className="w-full flex flex-col gap-6 text-center group">
-                  <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                    <img
-                      src={AlurPelayananPng}
-                      alt="Bagan Alur Pelayanan Rawat Jalan"
-                      className="w-full h-auto object-contain rounded-xl"
-                    />
-                  </div>
-                </div>
-
-                {/* Diagram Rawat Inap */}
-                <div className="w-full flex flex-col gap-6 text-center group">
-                  <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                    <img
-                      src={AlurRanapPng}
-                      alt="Bagan Alur Pelayanan Rawat Inap"
-                      className="w-full h-auto object-contain rounded-xl"
-                    />
-                  </div>
-                </div>
-
-                {/* Diagram Pengaduan */}
-                <div className="w-full flex flex-col gap-6 text-center group">
-                  <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                    <img
-                      src={AlurPengaduanPng}
-                      alt="Bagan Alur Pelayanan Pengaduan"
-                      className="w-full h-auto object-contain rounded-xl"
-                    />
-                  </div>
-                </div>
+                {alurData.length > 0 ? (
+                  alurData.map((item) => (
+                    <div key={item.id} className="w-full flex flex-col gap-6 text-center group">
+                      <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
+                        <img
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
+                          alt={item.judul}
+                          className="w-full h-auto object-contain rounded-xl"
+                        />
+                      </div>
+                      {item.judul && <p className="font-bold text-cyan-800">{item.judul}</p>}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-20 text-gray-400 italic">Data alur pelayanan belum tersedia.</div>
+                )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-24 text-center gap-4 text-gray-500 animate-[fadeIn_0.4s_ease-out]">
-                {/* Diagram Rawat Jalan */}
-                <div className="w-full flex flex-col gap-6 text-center group">
-                  <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                    <img
-                      src={SyaratRanap}
-                      alt="Bagan Alur Pelayanan Rawat Jalan"
-                      className="w-full h-auto object-contain rounded-xl"
-                    />
-                  </div>
-                </div>
-
-                {/* Diagram Rawat Inap */}
-                <div className="w-full flex flex-col gap-6 text-center group">
-                  <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                    <img
-                      src={SyaratRajal}
-                      alt="Bagan Alur Pelayanan Rawat Inap"
-                      className="w-full h-auto object-contain rounded-xl"
-                    />
-                  </div>
-                </div>
-
-                {/* Diagram Pengaduan */}
-                <div className="w-full flex flex-col gap-6 text-center group">
-                  <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                    <img
-                      src={SyaratPengaduan}
-                      alt="Bagan Alur Pelayanan Pengaduan"
-                      className="w-full h-auto object-contain rounded-xl"
-                    />
-                  </div>
-                </div>
+              <div className="flex flex-col gap-12 sm:gap-16 max-w-5xl mx-auto items-center animate-[fadeIn_0.4s_ease-out]">
+                {syaratData.length > 0 ? (
+                  syaratData.map((item) => (
+                    <div key={item.id} className="w-full flex flex-col gap-6 text-center group">
+                      <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
+                        <img
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
+                          alt={item.judul}
+                          className="w-full h-auto object-contain rounded-xl"
+                        />
+                      </div>
+                      {item.judul && <p className="font-bold text-cyan-800">{item.judul}</p>}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-20 text-gray-400 italic">Data syarat pelayanan belum tersedia.</div>
+                )}
               </div>
             )}
           </div>

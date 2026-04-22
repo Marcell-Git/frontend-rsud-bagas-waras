@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { FaPeopleGroup } from "react-icons/fa6";
+import { FaMoneyBill, FaPeopleGroup } from "react-icons/fa6";
 
 const SidebarItem = ({ icon: Icon, label, to, collapsed, end }) => {
   return (
@@ -129,7 +129,7 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
     },
     {
       label: "Standar Pelayanan",
-      icon: FileText,
+      icon: FileCheck,
       category: "Content",
       to: "/admin/standar-pelayanan",
     },
@@ -216,6 +216,12 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       icon: GitGraph,
       category: "Pelayanan",
       to: "/admin/alur-pelayanan",
+    },
+    {
+      label: "Tarif Pelayanan",
+      icon: FaMoneyBill,
+      category: "Pelayanan",
+      to: "/admin/tarif-pelayanan",
     },
     {
       label: "Syarat Pelayanan",

@@ -34,8 +34,8 @@ const LaporanTindakLanjut = () => {
 
   const [formData, setFormData] = useState({
     judul: "",
-    petugas: "",
-    waktu_upload: "",
+    nama_petugas: "",
+    waktu: "",
     file: null,
   });
 
@@ -109,16 +109,16 @@ const LaporanTindakLanjut = () => {
       setEditingItem(item);
       setFormData({
         judul: item.judul || "",
-        petugas: item.petugas || "",
-        waktu_upload: item.waktu_upload || "",
+        nama_petugas: item.nama_petugas || "",
+        waktu: item.waktu || "",
         file: null,
       });
     } else {
       setEditingItem(null);
       setFormData({
         judul: "",
-        petugas: "",
-        waktu_upload: "",
+        nama_petugas: "",
+        waktu: "",
         file: null,
       });
     }
@@ -169,16 +169,20 @@ const LaporanTindakLanjut = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.judul || !formData.petugas) {
-      return toast.warning("Judul dan Nama Petugas harus diisi");
+    if (!formData.judul || !formData.nama_petugas || !formData.waktu) {
+      return toast.warning("Judul, Nama Petugas, dan Waktu harus diisi");
+    }
+
+    if (!editingItem && !formData.file) {
+      return toast.warning("Silakan unggah file laporan (PDF)");
     }
 
     setIsSubmitting(true);
     try {
       const data = new FormData();
       data.append("judul", formData.judul);
-      data.append("petugas", formData.petugas);
-      data.append("waktu_upload", formData.waktu_upload);
+      data.append("nama_petugas", formData.nama_petugas);
+      data.append("waktu", formData.waktu);
       if (formData.file) {
         data.append("file", formData.file);
       }
@@ -287,7 +291,7 @@ const LaporanTindakLanjut = () => {
                           </h3>
                           <span className="inline-flex w-fit items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-500 font-bold text-[10px] uppercase rounded-lg border border-slate-200 tracking-wider">
                             <CalendarDays size={12} />
-                            {new Date(item.waktu_upload).toLocaleDateString(
+                            {new Date(item.waktu).toLocaleDateString(
                               "id-ID",
                               {
                                 day: "numeric",
@@ -306,16 +310,16 @@ const LaporanTindakLanjut = () => {
                             <UserRound size={14} />
                           </div>
                           <span className="font-bold text-slate-700 text-sm">
-                            {item.petugas}
+                            {item.nama_petugas}
                           </span>
                         </div>
                       </td>
 
                       {/* Attachment */}
                       <td className="px-8 py-6 align-middle">
-                        {item.file_path && (
+                        {item.url_file && (
                           <a
-                            href={`${import.meta.env.VITE_STORAGE_URL}/${item.file_path}`}
+                            href={`${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 font-bold rounded-xl text-xs transition-colors group border border-slate-200 hover:border-indigo-200"
@@ -439,8 +443,8 @@ const LaporanTindakLanjut = () => {
                         />
                         <input
                           type="text"
-                          name="petugas"
-                          value={formData.petugas}
+                          name="nama_petugas"
+                          value={formData.nama_petugas}
                           onChange={handleInputChange}
                           placeholder="Contoh: Dr. Handoko Surya"
                           className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none font-bold text-slate-700"
@@ -461,8 +465,8 @@ const LaporanTindakLanjut = () => {
                         />
                         <input
                           type="date"
-                          name="waktu_upload"
-                          value={formData.waktu_upload}
+                          name="waktu"
+                          value={formData.waktu}
                           onChange={handleInputChange}
                           className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none font-bold text-slate-700"
                         />

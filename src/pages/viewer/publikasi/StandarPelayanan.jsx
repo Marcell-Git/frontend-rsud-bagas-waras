@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import Navbar from "../../../components/viewer/Navbar";
 import Footer from "../../../components/viewer/Footer";
 import Header from "../../../components/viewer/Header";
@@ -17,38 +17,38 @@ import standarRawatInap from "../../../assets/RawatInap.png";
 import standarLaboratorium from "../../../assets/Laboratorium.png";
 import standarRadiologi from "../../../assets/Radiologi.png";
 
+import { getStandarPelayanan } from "../../../api/content/standarPelayanan";
+
 const StandarPelayanan = () => {
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Array data standar beserta ikonnya
-  const dataStandar = [
-    {
-      id: 1,
-      title: "Standar Pelayanan Rawat Jalan",
-      image: standarRawatJalan,
-      icon: (
-        <FaFileMedical className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />
-      ),
-    },
-    {
-      id: 2,
-      title: "Standar Pelayanan Rawat Inap",
-      image: standarRawatInap,
-      icon: <FaBed className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />,
-    },
-    {
-      id: 3,
-      title: "Standar Pelayanan Laboratorium",
-      image: standarLaboratorium,
-      icon: <FaVials className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />,
-    },
-    {
-      id: 4,
-      title: "Standar Pelayanan Radiologi",
-      image: standarRadiologi,
-      icon: <FaXRay className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />,
-    },
-  ];
+  const fetchStandar = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getStandarPelayanan({ per_page: 50 });
+      setItems(response.data?.data || response.data || []);
+    } catch (error) {
+      console.error("Error fetching standar pelayanan:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchStandar();
+  }, []);
+
+  const getIcon = (title) => {
+    const t = title.toLowerCase();
+    if (t.includes("jalan")) return <FaFileMedical className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />;
+    if (t.includes("inap")) return <FaBed className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />;
+    if (t.includes("laboratorium") || t.includes("lab")) return <FaVials className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />;
+    if (t.includes("radiologi")) return <FaXRay className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />;
+    return <FaFileMedical className="text-5xl text-cyan-500 mb-4 drop-shadow-sm" />;
+  };
 
   return (
     <div className="font-secondary min-h-screen flex flex-col bg-slate-50">
@@ -61,31 +61,43 @@ const StandarPelayanan = () => {
 
       {/* Grid Area */}
       <main className="grow py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full -mt-16 relative z-10 mb-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {dataStandar.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center justify-between group"
-            >
-              <div className="flex flex-col items-center grow w-full mb-6">
-                <div className="p-4 bg-cyan-50 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {item.icon}
-                </div>
-                <h2 className="text-lg font-bold text-gray-800 leading-snug">
-                  {item.title}
-                </h2>
-              </div>
-
-              <button
-                onClick={() => setSelectedImage(item.image)}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 shadow-md shadow-cyan-600/20"
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white rounded-3xl h-64 shadow-sm animate-pulse border border-gray-100"></div>
+            ))}
+          </div>
+        ) : items.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {items.map((item) => (
+              <div
+                key={item.id}
+                className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center justify-between group"
               >
-                <FaSearchPlus className="text-lg" />
-                Lihat
-              </button>
-            </div>
-          ))}
-        </div>
+                <div className="flex flex-col items-center grow w-full mb-6">
+                  <div className="p-4 bg-cyan-50 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {getIcon(item.nama_pelayanan)}
+                  </div>
+                  <h2 className="text-lg font-bold text-gray-800 leading-snug line-clamp-2">
+                    {item.nama_pelayanan}
+                  </h2>
+                </div>
+
+                <button
+                  onClick={() => setSelectedImage(`${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`)}
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white w-full py-3.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors active:scale-95 shadow-md shadow-cyan-600/20"
+                >
+                  <FaSearchPlus className="text-lg" />
+                  Lihat
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+             <p className="text-gray-400 font-medium italic">Data standar pelayanan belum tersedia.</p>
+          </div>
+        )}
 
         <div className="mt-12 flex justify-center">
           <a

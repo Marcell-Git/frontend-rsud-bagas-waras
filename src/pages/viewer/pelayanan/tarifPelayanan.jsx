@@ -26,6 +26,8 @@ import pdfHD from "../../../assets/tarifrsbw/HD.pdf";
 import pdfKJ from "../../../assets/tarifrsbw/KJ.pdf";
 import pdfOrthodonsia from "../../../assets/tarifrsbw/Orthodonsia.pdf";
 
+import { getTarifPelayanan } from "../../../api/pelayanan/tarifPelayanan";
+
 const tarifData = [
   {
     nama: "Tarif Rawat Jalan",
@@ -78,11 +80,34 @@ const tarifData = [
 ];
 
 const TarifPelayanan = () => {
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+
+  const fetchTarif = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getTarifPelayanan({ per_page: 50 });
+      setItems(response.data?.data || response.data || []);
+    } catch (error) {
+      console.error("Error fetching tarif:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchTarif();
   }, []);
+
+  const handleSelect = (item) => {
+    setSelected({
+      nama: item.nama_tarif,
+      pdf: `${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`,
+      filePdf: item.url_file.split('/').pop()
+    });
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col font-secondary">
@@ -130,37 +155,50 @@ const TarifPelayanan = () => {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-              {tarifData.map((tarif, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col group"
-                >
-                  {/* Gambar Preview */}
-                  <div className="relative h-64 overflow-hidden bg-white flex items-center justify-center">
-                    <img
-                      src={tarif.gambar}
-                      alt={`Preview ${tarif.nama}`}
-                      className="w-full h-full object-contain"
-                    />
-                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg p-1.5 shadow">
-                      <FaFileAlt className="text-primary-blue text-sm" />
+            {isLoading ? (
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="bg-white rounded-3xl h-80 shadow-md animate-pulse border border-gray-100"></div>
+                  ))}
+               </div>
+            ) : items.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+                {items.map((tarif, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col group"
+                  >
+                    {/* Gambar Preview */}
+                    <div className="relative h-64 overflow-hidden bg-white flex items-center justify-center p-4">
+                      <img
+                        src={`${import.meta.env.VITE_STORAGE_URL}/${tarif.gambar_tarif}`}
+                        alt={`Preview ${tarif.nama_tarif}`}
+                        className="w-full h-full object-contain"
+                      />
+                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg p-1.5 shadow">
+                        <FaFileAlt className="text-primary-blue text-sm" />
+                      </div>
+                    </div>
+
+                    {/* Tombol */}
+                    <div className="p-4 md:p-5">
+                      <h3 className="text-sm font-bold text-dark-blue mb-3 line-clamp-1">{tarif.nama_tarif}</h3>
+                      <button
+                        onClick={() => handleSelect(tarif)}
+                        className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary-blue text-white text-xs md:text-sm font-bold rounded-xl hover:bg-dark-blue transition-colors duration-300 shadow-sm cursor-pointer"
+                      >
+                        <FaEye className="text-xs" />
+                        Lihat Tarif
+                      </button>
                     </div>
                   </div>
-
-                  {/* Tombol */}
-                  <div className="p-4 md:p-5">
-                    <button
-                      onClick={() => setSelected(tarif)}
-                      className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-primary-blue text-white text-xs md:text-sm font-bold rounded-xl hover:bg-dark-blue transition-colors duration-300 shadow-sm cursor-pointer"
-                    >
-                      <FaEye className="text-xs" />
-                      Lihat Tarif
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                <p className="text-gray-400 font-medium italic">Data tarif belum tersedia.</p>
+              </div>
+            )}
           </div>
         </div>
       </main>

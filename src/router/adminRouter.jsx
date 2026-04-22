@@ -7,6 +7,7 @@ import Galeri from "../pages/admin/content/Galeri";
 import Pengumuman from "../pages/admin/content/Pengumuman";
 import Buletin from "../pages/admin/content/Buletin";
 import LinkEksternal from "../pages/admin/content/LinkEksternal";
+import StandarPelayanan from "../pages/admin/content/StandarPelayanan";
 
 import Visi from "../pages/admin/TentangRSUD/Visi";
 import Misi from "../pages/admin/TentangRSUD/Misi";
@@ -23,6 +24,7 @@ import JadwalDokter from "../pages/admin/pelayanan/JadwalDokter";
 import RawatInap from "../pages/admin/pelayanan/RawatInap";
 import RawatJalan from "../pages/admin/pelayanan/RawatJalan";
 import AlurPelayanan from "../pages/admin/pelayanan/AlurPelayanan";
+import TarifPelayanan from "../pages/admin/pelayanan/TarifPelayanan";
 import SyaratPelayanan from "../pages/admin/pelayanan/SyaratPelayanan";
 
 import BerkasPPID from "../pages/admin/publik/BerkasPPID";
@@ -79,6 +81,14 @@ const adminRoutes = [
       {
         path: "link-eksternal",
         element:  <LinkEksternal /> 
+      },
+      {
+        path: "tarif-pelayanan",
+        element:  <TarifPelayanan /> 
+      },
+      {
+        path: "standar-pelayanan",
+        element:  <StandarPelayanan /> 
       },
       {
         path: "visi",

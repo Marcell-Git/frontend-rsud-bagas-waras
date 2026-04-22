@@ -10,12 +10,6 @@ import {
   FaMobileAlt,
 } from "react-icons/fa";
 import sketchRsud from "../../assets/sketch_rsud_blue.png";
-import partnerBpjsKes from "../../assets/partner/BPJS_kesehatan.jpg";
-import partnerBpjsKet from "../../assets/partner/BPJS_ketenagakerjaan.png";
-import partnerMaturibu from "../../assets/partner/MATURIBU.jpeg";
-import partnerAwasi from "../../assets/partner/awasicorona.png";
-import partnerCovid from "../../assets/partner/covid_logo.png";
-import partnerPemkab from "../../assets/partner/pemkab.png";
 import Navbar from "../../components/viewer/Navbar";
 import Footer from "../../components/viewer/Footer";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
@@ -37,6 +31,7 @@ const Home = () => {
   const [dokter, setDokter] = useState([]);
   const [berita, setBerita] = useState([]);
   const [linkEksternal, setLinkEksternal] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchBanner = async () => {
     try {
@@ -84,11 +79,19 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchBanner();
-    fetchGaleriGambar();
-    fetchDokter();
-    fetchBeritaTerbaru();
-    fetchLinkEksternal();
+    const fetchAllData = async () => {
+      setIsLoading(true);
+      await Promise.all([
+        fetchBanner(),
+        fetchGaleriGambar(),
+        fetchDokter(),
+        fetchBeritaTerbaru(),
+        fetchLinkEksternal()
+      ]);
+      setIsLoading(false);
+    };
+
+    fetchAllData();
   }, []);
 
   useEffect(() => {
@@ -178,7 +181,7 @@ const Home = () => {
         <div className="w-full max-w-6xl mx-auto xl:px-8 xl:py-6 relative z-0">
           <div
             className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 ${
-              banners.length === 0
+              isLoading
                 ? "animate-pulse aspect-video md:aspect-[21/9]"
                 : ""
             }`}
@@ -367,7 +370,18 @@ const Home = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {activeTab === "ruangan"
+                    {isLoading ? (
+                      [...Array(4)].map((_, idx) => (
+                        <tr key={idx} className="animate-pulse">
+                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-4"></div></td>
+                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-32"></div></td>
+                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-20"></div></td>
+                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-24"></div></td>
+                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-16"></div></td>
+                          {activeTab === "ruangan" && <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-16"></div></td>}
+                        </tr>
+                      ))
+                    ) : activeTab === "ruangan"
                       ? ruanganData.map((item, index) => (
                           <tr
                             key={index}
@@ -438,31 +452,45 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {berita.map((news, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
-                >
-                  <div className="h-52 overflow-hidden">
-                    <img
-                      src={`${import.meta.env.VITE_STORAGE_URL}/${news.url_gambar}`}
-                      alt={`News ${idx}`}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
+              {isLoading ? (
+                [...Array(3)].map((_, idx) => (
+                  <div key={idx} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
+                    <div className="h-52 bg-gray-200"></div>
+                    <div className="p-6">
+                      <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
+                      <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+                      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
                   </div>
-                  <div className="p-6">
-                    <span className="text-sm font-semibold text-primary-blue mb-2 block">
-                      {formatDate(news.tanggal)}
-                    </span>
-                    <h3 className="text-xl font-primary font-bold text-dark-blue mb-4 hover:text-primary-blue transition-colors cursor-pointer">
-                      {news.judul}
-                    </h3>
-                    <p className="text-gray-600 line-clamp-2">
-                      {news.isi}
-                    </p>
+                ))
+              ) : (
+                berita.map((news, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
+                  >
+                    <div className="h-52 overflow-hidden">
+                      <img
+                        src={`${import.meta.env.VITE_STORAGE_URL}/${news.url_gambar}`}
+                        alt={`News ${idx}`}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <span className="text-sm font-semibold text-primary-blue mb-2 block">
+                        {formatDate(news.tanggal)}
+                      </span>
+                      <h3 className="text-xl font-primary font-bold text-dark-blue mb-4 hover:text-primary-blue transition-colors cursor-pointer">
+                        {news.judul}
+                      </h3>
+                      <p className="text-gray-600 line-clamp-2">
+                        {news.isi}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             <div className="text-center mt-12">
@@ -507,17 +535,27 @@ const Home = () => {
                   }
                 }}
               >
-                {[...galeri, ...galeri, ...galeri].map((img, idx) => (
-                  <div key={idx} className="shrink-0 snap-start w-64 md:w-80">
-                    <div className="p-1 bg-white border border-gray-200 rounded shadow-sm">
-                      <img
-                        src={`${import.meta.env.VITE_STORAGE_URL}/${img.url_gambar}`}
-                        alt={`Gallery ${idx}`}
-                        className="w-full h-48 md:h-64 object-cover rounded-sm pointer-events-none"
-                      />
+                {isLoading ? (
+                  [...Array(5)].map((_, idx) => (
+                    <div key={idx} className="shrink-0 snap-start w-64 md:w-80">
+                      <div className="p-1 bg-white border border-gray-200 rounded shadow-sm animate-pulse">
+                        <div className="w-full h-48 md:h-64 bg-gray-200 rounded-sm"></div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  [...galeri, ...galeri, ...galeri].map((img, idx) => (
+                    <div key={idx} className="shrink-0 snap-start w-64 md:w-80">
+                      <div className="p-1 bg-white border border-gray-200 rounded shadow-sm">
+                        <img
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${img.url_gambar}`}
+                          alt={`Gallery ${idx}`}
+                          className="w-full h-48 md:h-64 object-cover rounded-sm pointer-events-none"
+                        />
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -536,21 +574,27 @@ const Home = () => {
               Link Terkait
             </h2>
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
-              {linkEksternal.map((partner, idx) => (
-                <a
-                  key={idx}
-                  href={partner.url_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl shadow-sm border border-transparent hover:border-primary-blue hover:shadow-md hover:-translate-y-1 transition-all flex items-center justify-center"
-                >
-                  <img
-                    src={`${import.meta.env.VITE_STORAGE_URL}/${partner.url_gambar}`}
-                    alt={partner.nama}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </a>
-              ))}
+              {isLoading ? (
+                [...Array(5)].map((_, idx) => (
+                  <div key={idx} className="bg-gray-200 p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                linkEksternal.map((partner, idx) => (
+                  <a
+                    key={idx}
+                    href={partner.url_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl shadow-sm border border-transparent hover:border-primary-blue hover:shadow-md hover:-translate-y-1 transition-all flex items-center justify-center"
+                  >
+                    <img
+                      src={`${import.meta.env.VITE_STORAGE_URL}/${partner.url_gambar}`}
+                      alt={partner.nama}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </a>
+                ))
+              )}
             </div>
           </div>
         </section>

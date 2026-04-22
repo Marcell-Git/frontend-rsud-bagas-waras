@@ -7,6 +7,7 @@ import Galeri from "../pages/admin/content/Galeri";
 import Pengumuman from "../pages/admin/content/Pengumuman";
 import Buletin from "../pages/admin/content/Buletin";
 import LinkEksternal from "../pages/admin/content/LinkEksternal";
+import StandarPelayanan from "../pages/admin/content/StandarPelayanan";
 
 import Visi from "../pages/admin/TentangRSUD/Visi";
 import Misi from "../pages/admin/TentangRSUD/Misi";
@@ -79,6 +80,10 @@ const adminRoutes = [
       {
         path: "link-eksternal",
         element:  <LinkEksternal /> 
+      },
+      {
+        path: "standar-pelayanan",
+        element:  <StandarPelayanan /> 
       },
       {
         path: "visi",

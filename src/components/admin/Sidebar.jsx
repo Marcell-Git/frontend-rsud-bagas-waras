@@ -127,6 +127,12 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       category: "Content",
       to: "/admin/link-eksternal",
     },
+    {
+      label: "Standar Pelayanan",
+      icon: FileText,
+      category: "Content",
+      to: "/admin/standar-pelayanan",
+    },
 
     // Tentang RSUD
     {

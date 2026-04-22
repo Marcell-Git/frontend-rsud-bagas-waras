@@ -1,40 +1,33 @@
+import React, { useState, useEffect } from "react";
 import NavbarZI from "../../../components/publik/ZI/NavbarZI";
 import FooterZI from "../../../components/publik/ZI/FooterZI";
 import { FaCalendarAlt } from "react-icons/fa";
-
-import imgKegiatan1 from "../../../assets/publik/ZI/kegiatan1.png";
-import imgKegiatan2 from "../../../assets/publik/ZI/kegiatan2.png";
-import imgKegiatan3 from "../../../assets/publik/ZI/kegiatan3.png";
+import { getWBKWBBM } from "../../../api/publik/kegiatanWbkwbbm";
 
 const KegiatanZI = () => {
-  // Data dummy kegiatan
-  const mockKegiatan = [
-    {
-      id: 1,
-      title:
-        "Penandatanganan Pakta Integritas Seluruh Pegawai RSUD Bagas Waras",
-      date: "12 April 2024",
-      thumbnail: imgKegiatan1,
-      description:
-        "Dalam rangka mewujudkan Wilayah Bebas dari Korupsi (WBK) dan Wilayah Birokrasi Bersih dan Melayani (WBBM), seluruh jajaran direksi, manajemen, dan pegawai RSUD Bagas Waras Kabupaten Klaten secara serentak melaksanakan pembacaan dan penandatanganan Pakta Integritas. Kegiatan ini merupakan wujud komitmen nyata seluruh elemen rumah sakit untuk menolak segala bentuk gratifikasi, pungli, dan korupsi demi meningkatkan kualitas pelayanan publik yang paripurna bagi masyarakat.",
-    },
-    {
-      id: 2,
-      title: "Sosialisasi Penerapan Sistem Whistle Blowing (WBS)",
-      date: "28 Maret 2024",
-      thumbnail: imgKegiatan2,
-      description:
-        "RSUD Bagas Waras mengadakan kegiatan sosialisasi internal mengenai tata cara penggunaan portal Whistle Blowing System (WBS). Acara ini bertujuan untuk mengedukasi seluruh staf agar tidak ragu melaporkan segala bentuk indikasi kecurangan, pelanggaran kode etik, maupun benturan kepentingan yang terjadi di lingkungan kerja. Sosialisasi ini diharapkan mampu menciptakan iklim organisasi yang transparan dan selalu akuntabel.",
-    },
-    {
-      id: 3,
-      title: "Workshop Peningkatan Kualitas Layanan Publik Berbasis Digital",
-      date: "15 Februari 2024",
-      thumbnail: imgKegiatan3,
-      description:
-        "Sebagai salah satu elemen penting dalam indikator penilaian WBBM, RSUD Bagas Waras menggelar workshop peningkatan layanan fasilitas digital bagi staf pelayanan garis depan. Digitalisasi pendaftaran dan sistem antrean diyakini mampu mempercepat prosedur layanan kesehatan dan secara efektif meniadakan potensi perantara pihak ketiga. Inovasi layanan elektronik ini mendukung penuh visi terwujudnya Zona Integritas yang bersih.",
-    },
-  ];
+  const [kegiatan, setKegiatan] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchKegiatan = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getWBKWBBM();
+      setKegiatan(response.data?.data || response.data || []);
+    } catch (error) {
+      console.error("Gagal mengambil data kegiatan ZI:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchKegiatan();
+  }, []);
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('id-ID', options);
+  };
 
   return (
     <div className="font-secondary min-h-screen flex flex-col bg-gray-50/50">
@@ -53,39 +46,68 @@ const KegiatanZI = () => {
         </div>
 
         <div className="space-y-12">
-          {mockKegiatan.map((item) => (
-            <article
-              key={item.id}
-              className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group"
-            >
-              <div className="flex flex-col md:flex-row">
-                <div className="md:w-[45%] lg:w-2/5 shrink-0 relative overflow-hidden bg-gray-100">
-                  <div className="absolute inset-0 bg-gray-900/5 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
-                  <img
-                    src={item.thumbnail}
-                    alt={item.title}
-                    className="h-64 md:h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                </div>
-
-                {/* Content Box */}
-                <div className="p-8 md:p-10 flex flex-col justify-center grow">
-                  <div className="flex items-center text-xs font-semibold text-gray-500 mb-5 bg-emerald-50 w-fit px-4 py-2 rounded-full border border-emerald-100">
-                    <FaCalendarAlt className="text-emerald-500 mr-2.5 text-sm" />
-                    <time>{item.date}</time>
+          {isLoading ? (
+            /* Skeleton Loading State */
+            [...Array(3)].map((_, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden animate-pulse"
+              >
+                <div className="flex flex-col md:flex-row">
+                  <div className="md:w-[45%] lg:w-2/5 h-64 md:h-80 bg-gray-200 shrink-0"></div>
+                  <div className="p-8 md:p-10 flex flex-col justify-center grow space-y-4">
+                    <div className="h-8 bg-gray-200 rounded-full w-32"></div>
+                    <div className="h-8 bg-gray-200 rounded-lg w-full"></div>
+                    <div className="h-8 bg-gray-200 rounded-lg w-3/4"></div>
+                    <div className="space-y-2 pt-2">
+                      <div className="h-4 bg-gray-100 rounded-full w-full"></div>
+                      <div className="h-4 bg-gray-100 rounded-full w-full"></div>
+                      <div className="h-4 bg-gray-100 rounded-full w-2/3"></div>
+                    </div>
                   </div>
-
-                  <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 leading-snug group-hover:text-emerald-600 transition-colors">
-                    {item.title}
-                  </h2>
-
-                  <p className="text-gray-600 leading-relaxed text-[15px] text-justify line-clamp-4 md:line-clamp-none">
-                    {item.description}
-                  </p>
                 </div>
               </div>
-            </article>
-          ))}
+            ))
+          ) : kegiatan.length > 0 ? (
+            kegiatan.map((item) => (
+              <article
+                key={item.id}
+                className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+              >
+                <div className="flex flex-col md:flex-row">
+                  <div className="md:w-[45%] lg:w-2/5 shrink-0 relative overflow-hidden bg-gray-100">
+                    <div className="absolute inset-0 bg-gray-900/5 group-hover:bg-transparent transition-colors duration-300 z-10"></div>
+                    <img
+                      src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
+                      alt={item.judul}
+                      className="h-64 md:h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                  </div>
+
+                  {/* Content Box */}
+                  <div className="p-8 md:p-10 flex flex-col justify-center grow">
+                    <div className="flex items-center text-xs font-semibold text-gray-500 mb-5 bg-emerald-50 w-fit px-4 py-2 rounded-full border border-emerald-100">
+                      <FaCalendarAlt className="text-emerald-500 mr-2.5 text-sm" />
+                      <time>{formatDate(item.tanggal)}</time>
+                    </div>
+
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 leading-snug group-hover:text-emerald-600 transition-colors">
+                      {item.judul}
+                    </h2>
+
+                    <p className="text-gray-600 leading-relaxed text-[15px] text-justify line-clamp-4 md:line-clamp-none">
+                      {item.deskripsi}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))
+          ) : (
+            /* Empty State */
+            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+              <p className="text-gray-500 font-medium italic">Belum ada kegiatan WBK/WBBM yang dipublikasikan.</p>
+            </div>
+          )}
         </div>
       </main>
 

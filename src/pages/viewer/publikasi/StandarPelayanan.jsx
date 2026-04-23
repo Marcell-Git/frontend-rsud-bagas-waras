@@ -12,11 +12,6 @@ import {
   FaSearchPlus,
 } from "react-icons/fa";
 
-import standarRawatJalan from "../../../assets/RawatJalan.png";
-import standarRawatInap from "../../../assets/RawatInap.png";
-import standarLaboratorium from "../../../assets/Laboratorium.png";
-import standarRadiologi from "../../../assets/Radiologi.png";
-
 import { getStandarPelayanan } from "../../../api/content/standarPelayanan";
 
 const StandarPelayanan = () => {

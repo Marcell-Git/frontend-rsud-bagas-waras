@@ -6,78 +6,7 @@ import Header from "../../../components/viewer/Header";
 import { FaFileAlt, FaEye } from "react-icons/fa";
 import ModalPdfViewer from "../../../components/viewer/ModalPdfViewer";
 
-// Gambar preview
-import imgRalan from "../../../assets/tarifrsbw/trfRALAN.jpg";
-import imgRanap from "../../../assets/tarifrsbw/trfRANAP.jpg";
-import imgBedah from "../../../assets/tarifrsbw/trfBEDAH.jpg";
-import imgLab from "../../../assets/tarifrsbw/trfLAB.jpg";
-import imgRadiologi from "../../../assets/tarifrsbw/trfRADIOLOGI.jpg";
-import imgHD from "../../../assets/tarifrsbw/trfHD.png";
-import imgKJ from "../../../assets/tarifrsbw/trfKJ.png";
-import imgOD from "../../../assets/tarifrsbw/trfOD.png";
-
-// PDF
-import pdfRalan from "../../../assets/tarifrsbw/Tarif Rawat Jalan.pdf";
-import pdfRanap from "../../../assets/tarifrsbw/Tarif Rawat Inap.pdf";
-import pdfOperasi from "../../../assets/tarifrsbw/Tarif Operasi.pdf";
-import pdfLab from "../../../assets/tarifrsbw/Tarif Laboratorium.pdf";
-import pdfRadiologi from "../../../assets/tarifrsbw/Tarif Radiologi.pdf";
-import pdfHD from "../../../assets/tarifrsbw/HD.pdf";
-import pdfKJ from "../../../assets/tarifrsbw/KJ.pdf";
-import pdfOrthodonsia from "../../../assets/tarifrsbw/Orthodonsia.pdf";
-
 import { getTarifPelayanan } from "../../../api/pelayanan/tarifPelayanan";
-
-const tarifData = [
-  {
-    nama: "Tarif Rawat Jalan",
-    gambar: imgRalan,
-    pdf: pdfRalan,
-    filePdf: "Tarif_Rawat_Jalan.pdf",
-  },
-  {
-    nama: "Tarif Rawat Inap",
-    gambar: imgRanap,
-    pdf: pdfRanap,
-    filePdf: "Tarif_Rawat_Inap.pdf",
-  },
-  {
-    nama: "Tarif Operasi / Bedah",
-    gambar: imgBedah,
-    pdf: pdfOperasi,
-    filePdf: "Tarif_Operasi.pdf",
-  },
-  {
-    nama: "Tarif Hemodialisa (HD)",
-    gambar: imgHD,
-    pdf: pdfHD,
-    filePdf: "Tarif_HD.pdf",
-  },
-  {
-    nama: "Tarif Kamar Jenazah (KJ)",
-    gambar: imgKJ,
-    pdf: pdfKJ,
-    filePdf: "Tarif_KJ.pdf",
-  },
-  {
-    nama: "Tarif Orthodonsia",
-    gambar: imgOD,
-    pdf: pdfOrthodonsia,
-    filePdf: "Tarif_Orthodonsia.pdf",
-  },
-  {
-    nama: "Tarif Laboratorium",
-    gambar: imgLab,
-    pdf: pdfLab,
-    filePdf: "Tarif_Laboratorium.pdf",
-  },
-  {
-    nama: "Tarif Radiologi",
-    gambar: imgRadiologi,
-    pdf: pdfRadiologi,
-    filePdf: "Tarif_Radiologi.pdf",
-  },
-];
 
 const TarifPelayanan = () => {
   const [items, setItems] = useState([]);

@@ -15,28 +15,36 @@ const FooterZI = () => {
           {/* Social Media */}
           <div className="flex items-center gap-3">
             <a
-              href="#"
+              href="https://web.facebook.com/rsdbagaswaras"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Facebook"
               className="w-10 h-10 rounded-full bg-gray-600 hover:bg-white hover:text-gray-900 flex items-center justify-center transition-all duration-300 shadow-sm"
             >
               <FaFacebookF className="text-sm" />
             </a>
             <a
-              href="#"
+              href="https://x.com/rsudbagaswaras"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Twitter"
               className="w-10 h-10 rounded-full bg-gray-600 hover:bg-white hover:text-gray-900 flex items-center justify-center transition-all duration-300 shadow-sm"
             >
               <FaTwitter className="text-sm" />
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/rsudbagaswaras"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Instagram"
               className="w-10 h-10 rounded-full bg-gray-600 hover:bg-white hover:text-gray-900 flex items-center justify-center transition-all duration-300 shadow-sm"
             >
               <FaInstagram className="text-sm" />
             </a>
             <a
-              href="#"
+              href="https://www.youtube.com/@rsudbagaswarasofficial114"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="Youtube"
               className="w-10 h-10 rounded-full bg-gray-600 hover:bg-white hover:text-gray-900 flex items-center justify-center transition-all duration-300 shadow-sm"
             >

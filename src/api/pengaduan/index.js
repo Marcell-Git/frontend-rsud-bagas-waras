@@ -1,4 +1,4 @@
-export * from "./masyarakat";
+export * from "./pengaduanMasyarakat";
 export * from "./korupsi";
 export * from "./laporanTindakLanjut";
 export * from "./laporanGratifikasi";

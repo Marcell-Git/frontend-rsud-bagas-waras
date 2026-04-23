@@ -26,6 +26,7 @@ const Berita = () => {
   });
 
   const fetchBerita = async (page = 1) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setIsLoading(true);
     try {
       const response = await getBerita({
@@ -54,7 +55,6 @@ const Berita = () => {
   const handlePageChange = (page) => {
     if (page >= 1 && page <= pagination.lastPage) {
       fetchBerita(page);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 

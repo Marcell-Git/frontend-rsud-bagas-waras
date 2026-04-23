@@ -10,7 +10,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { getPengaduanMasyarakat, deletePengaduanMasyarakat } from '../../../api/pengaduan/masyarakat';
+import { getPengaduanMasyarakat, deletePengaduanMasyarakat } from '../../../api/pengaduan/pengaduanMasyarakat';
 import Pagination from '../../../components/admin/Pagination';
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 

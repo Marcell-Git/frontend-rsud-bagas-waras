@@ -42,142 +42,195 @@ import Informasi from "../pages/viewer/publikasi/Informasi";
 import Pengumuman from "../pages/viewer/Pengumuman";
 
 import adminRoutes from "./adminRouter";
+import AccessibilityManager from "../components/AccessibilityManager";
+import TextToSpeech from "../components/TextToSpeech";
+import { Outlet } from "react-router";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <>
+        <AccessibilityManager />
+        <Outlet />
+      </>
+    ),
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/berita",
+        element: <Berita />,
+      },
+      {
+        path: "/berita/:id",
+        element: <DetailBerita />,
+      },
+      {
+        path: "/galeri",
+        element: <Galeri />,
+      },
+      {
+        path: "/auth",
+        element: <Auth />,
+      },
+      {
+        path: "/alur-pelayanan",
+        element: <AlurPelayanan />,
+      },
+      {
+        path: "/pengaduan",
+        children: [
+          {
+            index: true,
+            element: <Pengaduan />,
+          },
+          {
+            path: "form",
+            element: <FormPengaduan />,
+          },
+        ],
+      },
+      {
+        path: "/pendaftaran-online",
+        element: <PendaftaranOnline />,
+      },
+      {
+        path: "/tentang-kami",
+        children: [
+          {
+            path: "visi-misi",
+            element: <VisiMisi />,
+          },
+          {
+            path: "sejarah-landasan-hukum",
+            element: <SejarahLandasanHukum />,
+          },
+          {
+            path: "struktur-organisasi",
+            element: <StrukturOrganisasi />,
+          },
+        ],
+      },
+      {
+        path: "/pelayanan",
+        children: [
+          {
+            path: "igd",
+            element: <IGD />,
+          },
+          {
+            path: "rawat-jalan",
+            element: <RawatJalan />,
+          },
+          {
+            path: "rawat-inap",
+            element: <RawatInap />,
+          },
+          {
+            path: "layanan-informasi",
+            element: <LayananInformasi />,
+          },
+          {
+            path: "tarif-pelayanan",
+            element: <TarifPelayanan />,
+          },
+        ],
+      },
+      {
+        path: "/ppid",
+        element: (
+          <>
+            <TextToSpeech />
+            <Outlet />
+          </>
+        ),
+        children: [
+          {
+            index: true,
+            element: <PPID />,
+          },
+          {
+            path: "informasi-berkala",
+            element: <InformasiBerkala />,
+          },
+          {
+            path: "informasi-serta-merta",
+            element: <InformasiSertaMerta />,
+          },
+          {
+            path: "informasi-setiap-saat",
+            element: <InformasiSetiapSaat />,
+          },
+          {
+            path: "informasi-dikecualikan",
+            element: <InformasiDikecuali />,
+          },
+        ],
+      },
+      {
+        path: "/wbs",
+        children: [
+          {
+            index: true,
+            element: <WBS />,
+          },
+          {
+            path: "pengaduan",
+            element: <PengaduanWBS />,
+          },
+        ],
+      },
+      {
+        path: "/zona-integritas",
+        children: [
+          {
+            index: true,
+            element: <HomeZI />,
+          },
+          {
+            path: "kegiatan",
+            element: <KegiatanZI />,
+          },
+        ],
+      },
+      {
+        path: "/publikasi",
+        children: [
+          {
+            path: "standar-pelayanan",
+            element: <StandarPelayanan />,
+          },
+          {
+            path: "indeks-kepuasan-masyarakat",
+            element: <IndeksKepuasanMasyarakat />,
+          },
+          {
+            path: "laporan-tindak-lanjut-pengaduan",
+            element: <LaporanTindakLanjutPengaduan />,
+          },
+          {
+            path: "buletin",
+            element: <Buletin />,
+          },
+          {
+            path: "informasi",
+            element: <Informasi />,
+          },
+        ],
+      },
+      {
+        path: "/pengumuman",
+        element: <Pengumuman />,
+      },
+      ...adminRoutes,
+    ],
   },
-  {
-    path: "/berita",
-    element: <Berita />,
-  },
-  {
-    path: "/berita/:id",
-    element: <DetailBerita />,
-  },
-  {
-    path: "/galeri",
-    element: <Galeri />,
-  },
-  {
-    path: "/auth",
-    element: <Auth />,
-  },
-  {
-    path: "/alur-pelayanan",
-    element: <AlurPelayanan />,
-  },
-  {
-    path: "/pengaduan",
-    element: <Pengaduan />,
-  },
-  {
-    path: "/pengaduan/form",
-    element: <FormPengaduan />,
-  },
-  {
-    path: "/pendaftaran-online",
-    element: <PendaftaranOnline />,
-  },
-  {
-    path: "/tentang-kami/visi-misi",
-    element: <VisiMisi />,
-  },
-  {
-    path: "/tentang-kami/sejarah-landasan-hukum",
-    element: <SejarahLandasanHukum />,
-  },
-  {
-    path: "/tentang-kami/struktur-organisasi",
-    element: <StrukturOrganisasi />,
-  },
-  {
-    path: "/pelayanan/igd",
-    element: <IGD />,
-  },
-  {
-    path: "/pelayanan/rawat-jalan",
-    element: <RawatJalan />,
-  },
-  {
-    path: "/pelayanan/rawat-inap",
-    element: <RawatInap />,
-  },
-  {
-    path: "/pelayanan/layanan-informasi",
-    element: <LayananInformasi />,
-  },
-  {
-    path: "/pelayanan/tarif-pelayanan",
-    element: <TarifPelayanan />,
-  },
-  {
-    path: "/ppid",
-    element: <PPID />,
-  },
-  {
-    path: "/ppid/informasi-berkala",
-    element: <InformasiBerkala />,
-  },
-  {
-    path: "/ppid/informasi-serta-merta",
-    element: <InformasiSertaMerta />,
-  },
-  {
-    path: "/ppid/informasi-setiap-saat",
-    element: <InformasiSetiapSaat />,
-  },
-  {
-    path: "/ppid/informasi-dikecualikan",
-    element: <InformasiDikecuali />,
-  },
-  {
-    path: "/wbs",
-    element: <WBS />,
-  },
-  {
-    path: "/wbs/pengaduan",
-    element: <PengaduanWBS />,
-  },
-  {
-    path: "/zona-integritas",
-    element: <HomeZI />,
-  },
-  {
-    path: "/zona-integritas/kegiatan",
-    element: <KegiatanZI />,
-  },
-  {
-    path: "/publikasi/standar-pelayanan",
-    element: <StandarPelayanan />,
-  },
-  {
-    path: "/publikasi/indeks-kepuasan-masyarakat",
-    element: <IndeksKepuasanMasyarakat />,
-  },
-  {
-    path: "/publikasi/laporan-tindak-lanjut-pengaduan",
-    element: <LaporanTindakLanjutPengaduan />,
-  },
-  {
-    path: "/publikasi/buletin",
-    element: <Buletin />,
-  },
-  {
-    path: "/publikasi/informasi",
-    element: <Informasi />,
-  },
-  {
-    path: "/pengumuman",
-    element: <Pengumuman />,
-  },
-  ...adminRoutes,
 ]);
 
 const AppRouter = () => {
@@ -198,7 +251,6 @@ const AppRouter = () => {
       <RouterProvider router={router} />
     </>
   );
-
 };
 
 export default AppRouter;

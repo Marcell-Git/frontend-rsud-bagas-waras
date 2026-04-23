@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Edit2,
@@ -16,6 +16,7 @@ import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import Pagination from "../../../components/admin/Pagination";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getPPID,
   createPPID,
@@ -24,6 +25,7 @@ import {
 } from "../../../api/publik/berkasPpid";
 
 const BerkasPPID = () => {
+  useTitle("Manajemen Berkas PPID");
   const [ppidData, setPpidData] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,

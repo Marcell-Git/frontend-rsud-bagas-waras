@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+﻿import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Plus,
   Edit2,
@@ -19,8 +19,10 @@ import {
 } from "../../../api/pengaduan/indexKepuasan";
 import Pagination from "../../../components/admin/Pagination";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import useTitle from "../../../hooks/useTitle";
 
 const IndexKepuasanMasyarakat = () => {
+  useTitle("Indeks Kepuasan Masyarakat");
   const [dataIndex, setDataIndex] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);

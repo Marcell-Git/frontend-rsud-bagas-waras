@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Edit2,
@@ -20,8 +20,10 @@ import {
 } from "../../../api/pengaduan/laporanTindakLanjut";
 import Pagination from "../../../components/admin/Pagination";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import useTitle from "../../../hooks/useTitle";
 
 const LaporanTindakLanjut = () => {
+  useTitle("Laporan Tindak Lanjut");
   const [laporanData, setLaporanData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);

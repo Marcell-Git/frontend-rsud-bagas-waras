@@ -20,8 +20,10 @@ import {
   updateGaleri,
   deleteGaleri,
 } from "../../../api/content/galeri";
+import useTitle from "../../../hooks/useTitle";
 
 const Galeri = () => {
+  useTitle("Manajemen Galeri");
   const [activeTab, setActiveTab] = useState("Semua");
   const [media, setMedia] = useState([]);
   const [formData, setFormData] = useState({

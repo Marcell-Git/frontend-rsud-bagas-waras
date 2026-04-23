@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import {
   FaCalendarAlt,
   FaUser,
-  FaSearch,
   FaArrowRight,
   FaChevronLeft,
   FaChevronRight,
@@ -14,7 +13,11 @@ import Footer from "../../components/viewer/Footer";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
 import { getBerita } from "../../api/content/berita";
 
+import useTitle from "../../hooks/useTitle";
+
 const Berita = () => {
+  useTitle("Berita");
+
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

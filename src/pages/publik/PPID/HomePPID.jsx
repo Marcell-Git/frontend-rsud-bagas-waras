@@ -12,7 +12,11 @@ import icon2 from "../../../assets/publik/PPID/info-sertamerta-baru.png";
 import icon3 from "../../../assets/publik/PPID/info-tiapsaat-baru.png";
 import icon4 from "../../../assets/publik/PPID/info-kecuali-baru.png";
 
+import useTitle from "../../../hooks/useTitle";
+
 const PPID = () => {
+  useTitle("PPID");
+  
   // === CAROUSEL LOGIC ===
   const slides = [carousel1, carousel2];
   const [currentSlide, setCurrentSlide] = useState(0);

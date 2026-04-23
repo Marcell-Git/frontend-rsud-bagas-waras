@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, History, Save, X, Clock } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getSejarah,
   createSejarah,
@@ -11,6 +12,7 @@ import {
 } from "../../../api/tentang/sejarah";
 
 const Sejarah = () => {
+  useTitle("Manajemen Sejarah");
   const [sejarahPoints, setSejarahPoints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({

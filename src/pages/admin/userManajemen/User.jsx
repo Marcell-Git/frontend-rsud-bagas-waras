@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Plus,
   Edit2,
@@ -11,7 +11,7 @@ import {
 import { toast } from "react-toastify";
 import Modal from "../../../components/admin/Modal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
-
+import useTitle from "../../../hooks/useTitle";
 import {
   getUsers,
   createUser,
@@ -20,6 +20,7 @@ import {
 } from "../../../api/users/index";
 
 const User = () => {
+  useTitle("Manajemen Pengguna");
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     nama_lengkap: "",

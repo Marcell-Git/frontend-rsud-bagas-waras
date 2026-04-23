@@ -13,8 +13,11 @@ import {
 } from "react-icons/fa";
 
 import { getStandarPelayanan } from "../../../api/content/standarPelayanan";
+import useTitle from "../../../hooks/useTitle";
 
 const StandarPelayanan = () => {
+  useTitle("Standar Pelayanan");
+
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);

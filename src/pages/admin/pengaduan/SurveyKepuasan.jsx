@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Smile,
   ThumbsUp,
@@ -13,8 +13,10 @@ import {
   getStatistik,
 } from "../../../api/pengaduan/surveyKepuasan";
 import Pagination from "../../../components/admin/Pagination";
+import useTitle from "../../../hooks/useTitle";
 
 const SurveyKepuasan = () => {
+  useTitle("Survey Kepuasan");
   const [surveyData, setSurveyData] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,

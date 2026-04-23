@@ -25,8 +25,10 @@ import {
   updatePengumuman,
   deletePengumuman,
 } from "../../../api/content/pengumuman";
+import useTitle from "../../../hooks/useTitle";
 
 const Pengumuman = () => {
+  useTitle("Manajemen Pengumuman");
   const [announcements, setAnnouncements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({

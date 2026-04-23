@@ -20,8 +20,10 @@ import {
   updateLinkEksternal,
   deleteLinkEksternal,
 } from "../../../api/content/linkEksternal";
+import useTitle from "../../../hooks/useTitle";
 
 const LinkEksternal = () => {
+  useTitle("Manajemen Link Eksternal");
   const [links, setLinks] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,

@@ -6,7 +6,11 @@ import Header from "../../../components/viewer/Header";
 import { FaBookOpen } from "react-icons/fa";
 import { getBuletin } from "../../../api/content/buletin";
 
+import useTitle from "../../../hooks/useTitle";
+
 const Buletin = () => {
+  useTitle("Buletin");
+
   const [buletins, setBuletins] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

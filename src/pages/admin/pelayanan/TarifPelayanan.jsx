@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Edit2,
@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import Pagination from "../../../components/admin/Pagination";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getTarifPelayanan,
   createTarifPelayanan,
@@ -26,6 +27,7 @@ import {
 } from "../../../api/pelayanan/tarifPelayanan";
 
 const TarifPelayanan = () => {
+  useTitle("Manajemen Tarif Pelayanan");
   const [items, setItems] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,

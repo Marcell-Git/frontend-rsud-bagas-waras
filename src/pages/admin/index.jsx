@@ -1,7 +1,9 @@
 import React from "react";
 import { Sun, Moon, Cloud, Calendar, Clock, Activity, ShieldCheck } from "lucide-react";
+import useTitle from "../../hooks/useTitle";
 
 const Admin = () => {
+  useTitle("Dashboard Admin");
   const user = JSON.parse(localStorage.getItem("user"));
   const getTimeOfDay = () => {
     const hours = new Date().getHours();

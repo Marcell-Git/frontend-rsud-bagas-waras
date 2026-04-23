@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   GitMerge,
   Upload,
@@ -12,6 +12,7 @@ import {
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getAlurPelayanan,
   createAlurPelayanan,
@@ -19,6 +20,7 @@ import {
 } from "../../../api/pelayanan/alurPelayanan";
 
 const AlurPelayanan = () => {
+  useTitle("Manajemen Alur Pelayanan");
   const [alurImages, setAlurImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);

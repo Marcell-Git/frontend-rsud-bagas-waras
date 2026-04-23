@@ -22,8 +22,10 @@ import {
   updateStandarPelayanan,
   deleteStandarPelayanan,
 } from "../../../api/content/standarPelayanan";
+import useTitle from "../../../hooks/useTitle";
 
 const StandarPelayanan = () => {
+  useTitle("Manajemen Standar Pelayanan");
   const [items, setItems] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,

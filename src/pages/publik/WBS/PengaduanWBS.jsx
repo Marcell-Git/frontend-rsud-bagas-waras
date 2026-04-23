@@ -7,7 +7,11 @@ import FormKorupsi from "../../../components/publik/WBS/FormKorupsi";
 import FormGratifikasi from "../../../components/publik/WBS/FormGratifikasi";
 import FormBenturan from "../../../components/publik/WBS/FormBenturan";
 
+import useTitle from "../../../hooks/useTitle";
+
 const PengaduanWBS = () => {
+  useTitle("Pengaduan WBS");
+  
     const [activeTab, setActiveTab] = useState("korupsi");
 
     return (

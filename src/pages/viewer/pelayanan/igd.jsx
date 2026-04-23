@@ -4,8 +4,11 @@ import Footer from "../../../components/viewer/Footer";
 import EmergencyCall from "../../../components/viewer/EmergencyCall";
 import { FaPhoneAlt, FaAmbulance } from "react-icons/fa";
 import Header from "../../../components/viewer/Header";
+import useTitle from "../../../hooks/useTitle";
 
 const IGD = () => {
+  useTitle("IGD");
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Edit2,
@@ -18,6 +18,7 @@ import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import Pagination from "../../../components/admin/Pagination";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getWBKWBBM,
   createWBKWBBM,
@@ -26,6 +27,7 @@ import {
 } from "../../../api/publik/kegiatanWbkwbbm";
 
 const KegiatanWBKWBBM = () => {
+  useTitle("Kegiatan WBK/WBBM");
   const [kegiatanData, setKegiatanData] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,

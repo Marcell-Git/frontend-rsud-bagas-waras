@@ -4,8 +4,11 @@ import Footer from "../../../components/viewer/Footer";
 import EmergencyCall from "../../../components/viewer/EmergencyCall";
 import Header from "../../../components/viewer/Header";
 import { FaPhoneAlt, FaHeadset } from "react-icons/fa";
+import useTitle from "../../../hooks/useTitle";
 
 const LayananInformasi = () => {
+  useTitle("Layanan Informasi");
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

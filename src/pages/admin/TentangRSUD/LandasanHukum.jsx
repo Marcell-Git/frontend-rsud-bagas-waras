@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Scale, Save, X, FileText } from "lucide-react";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getLandasanHukum,
   createLandasanHukum,
@@ -10,6 +11,7 @@ import {
 } from "../../../api/tentang/landasanHukum";
 
 const LandasanHukum = () => {
+  useTitle("Landasan Hukum");
   const [hukumData, setHukumData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

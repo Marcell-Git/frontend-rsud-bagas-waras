@@ -3,6 +3,8 @@ import FooterZI from "../../../components/publik/ZI/FooterZI";
 import hero from "../../../assets/publik/ZI/banner-zi.png";
 import { FaAngleDoubleDown } from "react-icons/fa";
 
+import useTitle from "../../../hooks/useTitle";
+
 import imgManajemenPerubahan from "../../../assets/publik/ZI/mana-perubahan.png";
 import imgTataLaksana from "../../../assets/publik/ZI/tata-laksana.png";
 import imgSDM from "../../../assets/publik/ZI/SDM.png";
@@ -11,6 +13,8 @@ import imgPengawasan from "../../../assets/publik/ZI/pengawasan.png";
 import imgPelayananPublik from "../../../assets/publik/ZI/yanblik.png";
 
 const HomeZI = () => {
+  useTitle("ZI");
+  
   const programs = [
     { title: "Manajemen Perubahan", img: imgManajemenPerubahan },
     { title: "Penataan Tatalaksana", img: imgTataLaksana },

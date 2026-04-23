@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Target, X, Save } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getMisi,
   createMisi,
@@ -11,6 +12,7 @@ import {
 } from "../../../api/tentang/misi";
 
 const Misi = () => {
+  useTitle("Manajemen Misi");
   const [misiPoints, setMisiPoints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({

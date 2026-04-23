@@ -6,11 +6,10 @@ const AccessibilityManager = () => {
 
   useEffect(() => {
     const isAdmin = pathname.startsWith("/admin");
+    const isAuth = pathname.startsWith("/auth");
     
-    // Check for existing script and widget
     const existingScript = document.querySelector('script[src*="sienna-accessibility"]');
     
-    // Sienna usually creates a widget with a specific class or ID. 
     // We'll look for common selectors used by Sienna.
     const widgetSelectors = [
       ".sienna-accessibility-widget", 
@@ -27,7 +26,7 @@ const AccessibilityManager = () => {
       return null;
     };
 
-    if (isAdmin) {
+    if (isAdmin || isAuth) {
       // Hide widget if on admin path
       const widget = findWidget();
       if (widget) {
@@ -39,7 +38,6 @@ const AccessibilityManager = () => {
       if (widget) {
         widget.style.setProperty("display", "block", "important");
       } else if (!existingScript) {
-        // Load script if it doesn't exist yet
         const script = document.createElement("script");
         script.src = "https://cdn.jsdelivr.net/npm/sienna-accessibility@latest/dist/sienna-accessibility.umd.js";
         script.defer = true;

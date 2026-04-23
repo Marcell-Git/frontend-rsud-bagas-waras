@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Plus,
   Edit2,
@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 import Pagination from "../../../components/admin/Pagination";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getJadwalDokter,
   createJadwalDokter,
@@ -21,6 +22,7 @@ import {
 } from "../../../api/pelayanan/jadwalDokter";
 
 const JadwalDokter = () => {
+  useTitle("Manajemen Jadwal Dokter");
   const [jadwalData, setJadwalData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({

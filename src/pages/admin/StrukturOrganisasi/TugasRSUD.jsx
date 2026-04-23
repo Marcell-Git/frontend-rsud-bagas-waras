@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Briefcase, Save, X, Target } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import { getTugasRSUD, createTugasRSUD, updateTugasRSUD, deleteTugasRSUD } from "../../../api/struktur/tugasRSUD";
+import useTitle from "../../../hooks/useTitle";
 
 const TugasRSUD = () => {
+  useTitle("Tugas RSUD");
   const [tugasPoints, setTugasPoints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({

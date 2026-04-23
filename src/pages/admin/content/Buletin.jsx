@@ -10,8 +10,10 @@ import {
   updateBuletin,
   deleteBuletin,
 } from "../../../api/content/buletin";
+import useTitle from "../../../hooks/useTitle";
 
 const Buletin = () => {
+  useTitle("Manajemen Buletin");
   const [buletins, setBuletins] = useState([]);
   const [formData, setFormData] = useState({
     gambar: "",

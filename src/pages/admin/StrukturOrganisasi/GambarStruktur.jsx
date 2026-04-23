@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useState, useRef, useEffect } from "react";
 import {
   Users2,
   Upload,
@@ -10,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getStrukturOrganisasi,
   createStrukturOrganisasi,
@@ -17,6 +18,7 @@ import {
 } from "../../../api/struktur/gambarSo";
 
 const GambarStruktur = () => {
+  useTitle("Gambar Struktur Organisasi");
   const [strukturImages, setStrukturImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   ShieldAlert,
   Eye,
@@ -20,8 +20,10 @@ import {
 } from "../../../api/pengaduan/korupsi";
 import Pagination from "../../../components/admin/Pagination";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import useTitle from "../../../hooks/useTitle";
 
 const PengaduanKorupsi = () => {
+  useTitle("Pengaduan Korupsi");
   const [dataPengaduan, setDataPengaduan] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -358,7 +360,7 @@ const PengaduanKorupsi = () => {
                       <Users2 size={12} /> Pihak yang Diduga Terlibat
                     </p>
                     <p className="font-bold text-slate-700 bg-white px-4 py-2 border border-slate-200 rounded-xl inline-block">
-                      {viewItem.pihakTerlibat}
+                      {viewItem.pihak_terkait}
                     </p>
                   </div>
 

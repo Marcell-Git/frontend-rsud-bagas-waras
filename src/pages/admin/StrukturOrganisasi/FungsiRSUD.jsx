@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Plus,
   Edit2,
@@ -11,6 +11,7 @@ import {
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getFungsiRSUD,
   createFungsiRSUD,
@@ -19,6 +20,7 @@ import {
 } from "../../../api/struktur/fungsiRSUD";
 
 const FungsiRSUD = () => {
+  useTitle("Fungsi RSUD");
   const [fungsiPoints, setFungsiPoints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({

@@ -8,7 +8,11 @@ import ModalPdfViewer from "../../../components/viewer/ModalPdfViewer";
 
 import { getTarifPelayanan } from "../../../api/pelayanan/tarifPelayanan";
 
+import useTitle from "../../../hooks/useTitle";
+
 const TarifPelayanan = () => {
+  useTitle("Tarif Pelayanan");
+
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(null);

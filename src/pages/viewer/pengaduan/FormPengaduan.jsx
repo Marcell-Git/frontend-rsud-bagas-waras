@@ -4,7 +4,11 @@ import logoRSUD from "../../../assets/logo-rsud.png";
 import { toast } from "react-toastify";
 import { createPengaduanMasyarakat } from "../../../api/pengaduan/pengaduanMasyarakat";
 
+import useTitle from "../../../hooks/useTitle";
+
 const FormPengaduan = () => {
+  useTitle("Formulir Pengaduan");
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({

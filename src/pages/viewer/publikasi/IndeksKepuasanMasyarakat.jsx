@@ -7,7 +7,11 @@ import ImageModal from "../../../components/viewer/ImageModal";
 import { FaChartBar, FaSearchPlus, FaCalendarAlt, FaChartPie, FaPoll } from "react-icons/fa";
 import { getIndexKepuasanApi } from "../../../api/pengaduan/indexKepuasan";
 
+import useTitle from "../../../hooks/useTitle";
+
 const IndeksKepuasanMasyarakat = () => {
+  useTitle("Indeks Kepuasan Masyarakat");
+
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);

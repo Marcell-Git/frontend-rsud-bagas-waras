@@ -6,8 +6,10 @@ import EmergencyCall from "../../components/viewer/EmergencyCall";
 import { FaBullhorn } from "react-icons/fa";
 import ModalPdfViewer from "../../components/viewer/ModalPdfViewer";
 import { getPengumuman } from "../../api/content/pengumuman";
+import useTitle from "../../hooks/useTitle";
 
 const Pengumuman = () => {
+  useTitle("Pengumuman");
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPdf, setSelectedPdf] = useState(null);

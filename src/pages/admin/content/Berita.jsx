@@ -20,8 +20,10 @@ import {
   updateBerita,
   deleteBerita,
 } from "../../../api/content/berita";
+import useTitle from "../../../hooks/useTitle";
 
 const Berita = () => {
+  useTitle("Manajemen Berita");
   const [berita, setBerita] = useState([]);
   const [formData, setFormData] = useState({
     judul: "",

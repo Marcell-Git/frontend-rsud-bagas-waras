@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/viewer/Navbar";
 import Footer from "../../components/viewer/Footer";
-import Header from "../../components/viewer/Header";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
-import { FaRoute, FaInfoCircle } from "react-icons/fa";
+import { FaRoute } from "react-icons/fa";
 import { getAlurPelayanan } from "../../api/pelayanan/alurPelayanan";
 import { getSyaratPelayanan } from "../../api/pelayanan/syaratPelayanan";
 
+import useTitle from "../../hooks/useTitle";
+
 const AlurPelayanan = () => {
+  useTitle("Alur Pelayanan");
+  
   const [activeTab, setActiveTab] = useState("alur");
   const [alurData, setAlurData] = useState([]);
   const [syaratData, setSyaratData] = useState([]);

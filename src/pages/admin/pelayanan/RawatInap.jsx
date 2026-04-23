@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useState, useRef, useEffect } from "react";
 import {
   Plus,
   Edit2,
@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import Modal from "../../../components/admin/Modal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getRawatInap,
   createRawatInap,
@@ -22,6 +23,7 @@ import {
 } from "../../../api/pelayanan/rawatInap";
 
 const RawatInap = () => {
+  useTitle("Manajemen Rawat Inap");
   const [inapData, setInapData] = useState([]);
   const [formData, setFormData] = useState({
     nama_kamar: "",

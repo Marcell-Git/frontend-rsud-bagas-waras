@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+﻿import React, { useState, useRef, useEffect } from "react";
 import {
   FileCheck,
   Upload,
@@ -10,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getSyaratPelayanan,
   createSyaratPelayanan,
@@ -17,6 +18,7 @@ import {
 } from "../../../api/pelayanan/syaratPelayanan";
 
 const SyaratPelayanan = () => {
+  useTitle("Manajemen Syarat Pelayanan");
   const [syaratImages, setSyaratImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);

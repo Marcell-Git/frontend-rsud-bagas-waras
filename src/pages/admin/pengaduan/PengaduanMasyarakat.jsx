@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Eye, 
@@ -13,8 +13,10 @@ import { toast } from 'react-toastify';
 import { getPengaduanMasyarakat, deletePengaduanMasyarakat } from '../../../api/pengaduan/pengaduanMasyarakat';
 import Pagination from '../../../components/admin/Pagination';
 import ConfirmModal from '../../../components/admin/ConfirmModal';
+import useTitle from "../../../hooks/useTitle";
 
 const PengaduanMasyarakat = () => {
+  useTitle("Pengaduan Masyarakat");
   const [laporan, setLaporan] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,

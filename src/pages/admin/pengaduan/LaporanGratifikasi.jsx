@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Gift,
   Eye,
@@ -19,8 +19,10 @@ import {
 } from "../../../api/pengaduan/laporanGratifikasi";
 import Pagination from "../../../components/admin/Pagination";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import useTitle from "../../../hooks/useTitle";
 
 const LaporanGratifikasi = () => {
+  useTitle("Laporan Gratifikasi");
   const [dataGratifikasi, setDataGratifikasi] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [pagination, setPagination] = useState({

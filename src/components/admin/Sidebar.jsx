@@ -244,6 +244,12 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       category: "Publik",
       to: "/admin/kegiatan-wbkwbbm",
     },
+    {
+      label: "JDIH",
+      icon: Scale,
+      category: "Publik",
+      to: "/admin/jdih",
+    },
 
     // Pengaduan
     {

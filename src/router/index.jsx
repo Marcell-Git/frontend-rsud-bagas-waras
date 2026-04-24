@@ -33,6 +33,8 @@ import PengaduanWBS from "../pages/publik/WBS/PengaduanWBS";
 import HomeZI from "../pages/publik/ZI/HomeZI";
 import KegiatanZI from "../pages/publik/ZI/KegiatanZI";
 
+import JDIH from "../pages/publik/JDIH";
+
 import StandarPelayanan from "../pages/viewer/publikasi/StandarPelayanan";
 import IndeksKepuasanMasyarakat from "../pages/viewer/publikasi/IndeksKepuasanMasyarakat";
 import LaporanTindakLanjutPengaduan from "../pages/viewer/publikasi/LaporanTindakLanjutPengaduan";
@@ -198,6 +200,10 @@ const router = createBrowserRouter([
             element: <KegiatanZI />,
           },
         ],
+      },
+      {
+        path: "/publik/jdih",
+        element: <JDIH />,
       },
       {
         path: "/publikasi",

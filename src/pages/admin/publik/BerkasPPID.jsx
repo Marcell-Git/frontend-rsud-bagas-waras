@@ -16,6 +16,7 @@ import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import Pagination from "../../../components/admin/Pagination";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getPPID,
   createPPID,
@@ -24,6 +25,7 @@ import {
 } from "../../../api/publik/berkasPpid";
 
 const BerkasPPID = () => {
+  useTitle("Manajemen Berkas PPID");
   const [ppidData, setPpidData] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -201,23 +203,18 @@ const BerkasPPID = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12 font-sans">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100 font-sans">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner font-sans">
-            <FolderOpen size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">
-              Berkas PPID
-            </h1>
-            <p className="text-slate-500 mt-1 font-medium italic text-sm font-sans">
-              "Manajemen Pejabat Pengelola Informasi dan Dokumentasi (PPID)."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Berkas PPID
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Manajemen Pejabat Pengelola Informasi dan Dokumentasi (PPID).
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-600/20 font-sans"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Unggah Dokumen

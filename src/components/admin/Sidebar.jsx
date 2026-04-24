@@ -36,6 +36,7 @@ import {
 import { NavLink, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { FaMoneyBill, FaPeopleGroup } from "react-icons/fa6";
+import { getWithExpiry, removeWithExpiry } from "../../utils/localStorageHelper";
 
 const SidebarItem = ({ icon: Icon, label, to, collapsed, end }) => {
   return (
@@ -76,12 +77,12 @@ const SidebarItem = ({ icon: Icon, label, to, collapsed, end }) => {
 
 const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = getWithExpiry("user") || {};
   const role = user.role;
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    removeWithExpiry("token");
+    removeWithExpiry("user");
     toast.info("Anda telah logout.");
     navigate("/auth");
   };
@@ -126,12 +127,6 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       icon: ExternalLink,
       category: "Content",
       to: "/admin/link-eksternal",
-    },
-    {
-      label: "Standar Pelayanan",
-      icon: FileCheck,
-      category: "Content",
-      to: "/admin/standar-pelayanan",
     },
 
     // Tentang RSUD
@@ -229,6 +224,12 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       category: "Pelayanan",
       to: "/admin/syarat-pelayanan",
     },
+    {
+      label: "Standar Pelayanan",
+      icon: FileCheck,
+      category: "Pelayanan",
+      to: "/admin/standar-pelayanan",
+    },
 
     // Publik 
     {
@@ -246,28 +247,28 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
 
     // Pengaduan
     {
-      label: "Survey Kepuasan",
-      icon: Smile,
-      category: "Pengaduan",
-      to: "/admin/survey-kepuasan",
-    },
-    {
       label: "Index Kepuasan Masyarakat",
       icon: FaPeopleGroup,
       category: "Pengaduan",
       to: "/admin/index-kepuasan-masyarakat",
     },
     {
-      label: "Pengaduan Masyarakat",
-      icon: MessageSquare,
-      category: "Pengaduan",
-      to: "/admin/pengaduan-masyarakat",
-    },
-    {
       label: "Laporan Tindak Lanjut",
       icon: FileCheck,
       category: "Pengaduan",
       to: "/admin/laporan-tindak-lanjut",
+    },
+    {
+      label: "Survey Kepuasan",
+      icon: Smile,
+      category: "Pengaduan",
+      to: "/admin/survey-kepuasan",
+    },
+    {
+      label: "Pengaduan Masyarakat",
+      icon: MessageSquare,
+      category: "Pengaduan",
+      to: "/admin/pengaduan-masyarakat",
     },
     {
       label: "Pengaduan Korupsi",

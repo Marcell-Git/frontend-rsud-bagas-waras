@@ -6,10 +6,8 @@ import {
   FaLandmark,
   FaScroll,
   FaChevronDown,
-  FaChevronUp,
   FaGavel,
   FaFileAlt,
-  FaHistory,
 } from "react-icons/fa";
 import Header from "../../../components/viewer/Header";
 import rsudBuilding from "../../../assets/rsud-building.png";
@@ -17,7 +15,10 @@ import rsudBuilding from "../../../assets/rsud-building.png";
 import { getSejarah } from "../../../api/tentang/sejarah";
 import { getLandasanHukum } from "../../../api/tentang/landasanHukum";
 
+import useTitle from "../../../hooks/useTitle";
+
 const HukumItem = ({ item }) => {
+  useTitle("Sejarah & Landasan Hukum");
   const [open, setOpen] = useState(false);
   return (
     <div

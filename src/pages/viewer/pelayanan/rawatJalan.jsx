@@ -6,8 +6,11 @@ import { FaCheckCircle } from "react-icons/fa";
 import Header from "../../../components/viewer/Header";
 
 import { getPoli } from "../../../api/pelayanan/rawatJalan";
+import useTitle from "../../../hooks/useTitle";
 
 const RawatJalan = () => {
+  useTitle("Rawat Jalan");
+
   const [poli, setPoli] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

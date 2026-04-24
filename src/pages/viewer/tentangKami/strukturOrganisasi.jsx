@@ -11,6 +11,8 @@ import { getTugasDivisi } from "../../../api/struktur/tugasPerDivisi";
 import { getTugasRSUD } from "../../../api/struktur/tugasRSUD";
 import { getFungsiRSUD } from "../../../api/struktur/fungsiRSUD";
 
+import useTitle from "../../../hooks/useTitle";
+
 const tabs = [
   { id: "profil", label: "Profil", icon: <FaIdCard /> },
   { id: "tugas-bidang", label: "Tugas per Bidang", icon: <FaTasks /> },
@@ -19,6 +21,7 @@ const tabs = [
 ];
 
 const StrukturOrganisasi = () => {
+  useTitle("Struktur Organisasi");
   const [activeTab, setActiveTab] = useState("profil");
   const [isLoading, setIsLoading] = useState(true);
 

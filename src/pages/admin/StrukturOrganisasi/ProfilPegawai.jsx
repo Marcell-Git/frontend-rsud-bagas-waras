@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Plus,
-  Search,
   Edit2,
   Trash2,
   X,
@@ -13,6 +12,7 @@ import {
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getPegawai,
   createPegawai,
@@ -21,6 +21,7 @@ import {
 } from "../../../api/struktur/profilPegawai";
 
 const ProfilPegawai = () => {
+  useTitle("Profil Pegawai");
   const [pegawai, setPegawai] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -32,7 +33,6 @@ const ProfilPegawai = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
@@ -124,50 +124,28 @@ const ProfilPegawai = () => {
     }
   };
 
-  const filteredPegawai = pegawai.filter(
-    (item) =>
-      (item.nama || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.jabatan || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.pendidikan || "").toLowerCase().includes(searchQuery.toLowerCase()),
-  );
 
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900">
             Profil Pegawai
           </h1>
-          <p className="text-slate-400 mt-1 italic text-sm font-bold">
+          <p className="text-slate-500 text-sm mt-1 font-medium">
             Kelola data nama, jabatan, dan pendidikan pegawai RSUD.
           </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-primary-blue/30 transition-all active:scale-95 shadow-lg shadow-primary-blue/20"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Pegawai
         </button>
       </div>
 
-      {/* Control Bar */}
-      <div className="flex bg-white p-4 rounded-[32px] shadow-sm border border-slate-100">
-        <div className="relative flex-1 w-full text-slate-900">
-          <Search
-            className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-bold"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Cari berdasarkan nama, jabatan, atau pendidikan..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary-blue/10 focus:border-primary-blue transition-all outline-none font-bold text-slate-700"
-          />
-        </div>
-      </div>
 
       {/* Table Section */}
       <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden min-h-[400px]">
@@ -228,7 +206,7 @@ const ProfilPegawai = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredPegawai.map((item, index) => (
+                {pegawai.map((item, index) => (
                   <tr
                     key={item.id}
                     className="hover:bg-slate-50/50 transition-colors group"
@@ -283,7 +261,7 @@ const ProfilPegawai = () => {
           </div>
         )}
 
-        {!isLoading && filteredPegawai.length === 0 && (
+        {!isLoading && pegawai.length === 0 && (
           <div className="py-32 flex flex-col items-center justify-center text-center px-4">
             <div className="w-20 h-20 bg-slate-50 rounded-[28px] border border-dashed border-slate-200 flex items-center justify-center text-slate-200 mb-6 font-sans">
               <Users size={32} />

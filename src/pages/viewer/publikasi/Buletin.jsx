@@ -6,7 +6,11 @@ import Header from "../../../components/viewer/Header";
 import { FaBookOpen } from "react-icons/fa";
 import { getBuletin } from "../../../api/content/buletin";
 
+import useTitle from "../../../hooks/useTitle";
+
 const Buletin = () => {
+  useTitle("Buletin");
+
   const [buletins, setBuletins] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -32,7 +36,7 @@ const Buletin = () => {
   return (
     <div className="font-secondary min-h-screen flex flex-col bg-slate-50">
       <Navbar />
-      
+
       <Header
         subtitle="Publikasi"
         title="Buletin RSUD"
@@ -47,38 +51,41 @@ const Buletin = () => {
               Galeri Buletin & Publikasi
             </h2>
             <p className="text-gray-500 mt-3 max-w-2xl mx-auto">
-              Berbagai edisi publikasi dan informasi terkini layanan rumah sakit untuk masyarakat.
+              Berbagai edisi publikasi dan informasi terkini layanan rumah sakit
+              untuk masyarakat.
             </p>
           </div>
 
           {isLoading ? (
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-               {[...Array(6)].map((_, i) => (
-                 <div key={i} className="aspect-[3/4] bg-gray-50 rounded-2xl animate-pulse border border-gray-100"></div>
-               ))}
-             </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-3/4 bg-gray-50 rounded-2xl animate-pulse border border-gray-100"
+                ></div>
+              ))}
+            </div>
           ) : buletins.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {buletins.map((item) => (
-                <div 
-                  key={item.id} 
+                <div
+                  key={item.id}
                   className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group"
                 >
-                  <img 
-                    src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`} 
-                    alt={item.judul} 
+                  <img
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
+                    alt={item.judul}
                     loading="lazy"
                     className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="p-4 border-t border-gray-50">
-                     <h3 className="font-bold text-gray-700 text-sm">{item.judul}</h3>
-                  </div>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-20">
-               <p className="text-gray-400 italic">Belum ada buletin yang tersedia.</p>
+              <p className="text-gray-400 italic">
+                Belum ada buletin yang tersedia.
+              </p>
             </div>
           )}
         </section>

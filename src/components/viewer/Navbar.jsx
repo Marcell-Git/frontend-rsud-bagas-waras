@@ -1,5 +1,5 @@
-import React, { useState } from"react";
-import { Link, useLocation } from"react-router";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router";
 import {
   FaFacebookF,
   FaTwitter,
@@ -7,8 +7,8 @@ import {
   FaYoutube,
   FaChevronDown,
   FaPhoneAlt,
-} from"react-icons/fa";
-import logoRsud from"../../assets/logo-rsud.png";
+} from "react-icons/fa";
+import logoRsud from "../../assets/logo-rsud.png";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,18 +21,20 @@ const Navbar = () => {
   };
 
   const isActiveMenu = (path) => {
-    if (path ==="/") return pathname ==="/";
-    if (path ==="/publik") {
-      return pathname.startsWith("/ppid") || 
-             pathname.startsWith("/wbs") || 
-             pathname.startsWith("/zona-integritas");
+    if (path === "/") return pathname === "/";
+    if (path === "/publik") {
+      return (
+        pathname.startsWith("/ppid") ||
+        pathname.startsWith("/wbs") ||
+        pathname.startsWith("/zona-integritas")
+      );
     }
-    return pathname === path || pathname.startsWith(path +"/");
+    return pathname === path || pathname.startsWith(path + "/");
   };
 
   const activeNavClass =
-"text-white relative lg:after:content-[''] lg:after:absolute lg:after:-bottom-1 lg:after:left-0 lg:after:w-full lg:after:h-0.5 lg:after:bg-white lg:after:rounded-full";
-  const inactiveNavClass ="text-white/90 hover:text-white";
+    "text-white relative lg:after:content-[''] lg:after:absolute lg:after:-bottom-1 lg:after:left-0 lg:after:w-full lg:after:h-0.5 lg:after:bg-white lg:after:rounded-full";
+  const inactiveNavClass = "text-white/90 hover:text-white";
 
   return (
     <header className="w-full bg-white flex flex-col relative z-50">
@@ -68,25 +70,33 @@ const Navbar = () => {
             <div className="w-px h-8 bg-gray-300"></div>
             <div className="flex items-center gap-3">
               <a
-                href="#"
+                href="https://web.facebook.com/rsdbagaswaras"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center border border-gray-200 hover:bg-primary-blue hover:text-white hover:border-primary-blue transition-all shadow-sm"
               >
                 <FaFacebookF />
               </a>
               <a
-                href="#"
+                href="https://x.com/rsudbagaswaras"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center border border-gray-200 hover:bg-primary-blue hover:text-white hover:border-primary-blue transition-all shadow-sm"
               >
                 <FaTwitter />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/rsudbagaswaras"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center border border-gray-200 hover:bg-primary-blue hover:text-white hover:border-primary-blue transition-all shadow-sm"
               >
                 <FaInstagram className="text-lg" />
               </a>
               <a
-                href="#"
+                href="https://www.youtube.com/@rsudbagaswarasofficial114"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white text-gray-500 flex items-center justify-center border border-gray-200 hover:bg-primary-blue hover:text-white hover:border-primary-blue transition-all shadow-sm"
               >
                 <FaYoutube className="text-lg" />
@@ -106,7 +116,7 @@ const Navbar = () => {
             />
           </Link>
           <ul
-            className={`${isMobileMenuOpen ?"flex" :"hidden"} flex-col absolute top-full left-0 w-full bg-primary-blue pb-6 px-6 shadow-xl gap-4 z-50 lg:flex! lg:flex-row lg:static lg:w-auto lg:bg-transparent lg:pb-0 lg:px-0 lg:shadow-none lg:gap-7 items-start lg:items-center list-none m-0 text-[13px] xl:text-[14px] font-bold text-white uppercase tracking-wider`}
+            className={`${isMobileMenuOpen ? "flex" : "hidden"} flex-col absolute top-full left-0 w-full bg-primary-blue pb-6 px-6 shadow-xl gap-4 z-50 lg:flex! lg:flex-row lg:static lg:w-auto lg:bg-transparent lg:pb-0 lg:px-0 lg:shadow-none lg:gap-7 items-start lg:items-center list-none m-0 text-[13px] xl:text-[14px] font-bold text-white uppercase tracking-wider`}
           >
             {/* Home */}
             <li>
@@ -126,17 +136,17 @@ const Navbar = () => {
               >
                 Tentang Kami{""}
                 <FaChevronDown
-                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown ==="tentang" ?"rotate-180 lg:rotate-0" :""}`}
+                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown === "tentang" ? "rotate-180 lg:rotate-0" : ""}`}
                 />
               </div>
               <ul
-                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown ==="tentang" ?"block" :"hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
+                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown === "tentang" ? "block" : "hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
               >
                 <div className="bg-white shadow-xl min-w-[260px] rounded-lg overflow-hidden py-2">
                   <li>
                     <Link
                       to="/tentang-kami/visi-misi"
-                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname ==="/tentang-kami/visi-misi" ?"bg-light-blue text-primary-blue" :"text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/tentang-kami/visi-misi" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Visi & Misi
                     </Link>
@@ -144,7 +154,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/tentang-kami/sejarah-landasan-hukum"
-                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname ==="/tentang-kami/sejarah-landasan-hukum" ?"bg-light-blue text-primary-blue" :"text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/tentang-kami/sejarah-landasan-hukum" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Sejarah & Landasan Hukum
                     </Link>
@@ -152,7 +162,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/tentang-kami/struktur-organisasi"
-                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname ==="/tentang-kami/struktur-organisasi" ?"bg-light-blue text-primary-blue" :"text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/tentang-kami/struktur-organisasi" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Struktur Organisasi
                     </Link>
@@ -169,17 +179,17 @@ const Navbar = () => {
               >
                 Pelayanan{""}
                 <FaChevronDown
-                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown ==="pelayanan" ?"rotate-180 lg:rotate-0" :""}`}
+                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown === "pelayanan" ? "rotate-180 lg:rotate-0" : ""}`}
                 />
               </div>
               <ul
-                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown ==="pelayanan" ?"block" :"hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
+                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown === "pelayanan" ? "block" : "hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
               >
                 <div className="bg-white shadow-xl min-w-[240px] rounded-lg overflow-hidden py-2">
                   <li>
                     <Link
                       to="/pelayanan/igd"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/pelayanan/igd" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       IGD
                     </Link>
@@ -187,7 +197,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/pelayanan/rawat-jalan"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/pelayanan/rawat-jalan" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Rawat Jalan
                     </Link>
@@ -195,7 +205,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/pelayanan/rawat-inap"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/pelayanan/rawat-inap" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Rawat Inap
                     </Link>
@@ -203,7 +213,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/pelayanan/layanan-informasi"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/pelayanan/layanan-informasi" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Layanan Informasi
                     </Link>
@@ -211,7 +221,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/pelayanan/tarif-pelayanan"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/pelayanan/tarif-pelayanan" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Tarif Pelayanan
                     </Link>
@@ -228,11 +238,11 @@ const Navbar = () => {
               >
                 Informasi Publik
                 <FaChevronDown
-                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown ==="publik" ?"rotate-180 lg:rotate-0" :""}`}
+                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown === "publik" ? "rotate-180 lg:rotate-0" : ""}`}
                 />
               </div>
               <ul
-                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown ==="publik" ?"block" :"hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
+                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown === "publik" ? "block" : "hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
               >
                 <div className="bg-white shadow-xl min-w-[220px] rounded-lg overflow-hidden py-2">
                   <li>
@@ -287,52 +297,52 @@ const Navbar = () => {
               >
                 Publikasi{""}
                 <FaChevronDown
-                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown ==="publikasi" ?"rotate-180 lg:rotate-0" :""}`}
+                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown === "publikasi" ? "rotate-180 lg:rotate-0" : ""}`}
                 />
               </div>
               <ul
-                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown ==="publikasi" ?"block" :"hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
+                className={`lg:absolute static left-0 top-full pt-2 lg:pt-4 ${activeDropdown === "publikasi" ? "block" : "hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
               >
                 <div className="bg-white shadow-xl min-w-[320px] rounded-lg overflow-hidden py-2">
                   <li>
-                    <a
-                      href="/publikasi/standar-pelayanan"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                    <Link
+                      to="/publikasi/standar-pelayanan"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publikasi/standar-pelayanan" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Standar Pelayanan
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="/publikasi/indeks-kepuasan-masyarakat"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                    <Link
+                      to="/publikasi/indeks-kepuasan-masyarakat"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publikasi/indeks-kepuasan-masyarakat" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Indeks Kepuasan Masyarakat
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="/publikasi/laporan-tindak-lanjut-pengaduan"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                    <Link
+                      to="/publikasi/laporan-tindak-lanjut-pengaduan"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publikasi/laporan-tindak-lanjut-pengaduan" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Laporan Tindak Lanjut Pengaduan
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="/publikasi/buletin"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                    <Link
+                      to="/publikasi/buletin"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publikasi/buletin" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Buletin
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="/publikasi/informasi"
-                      className="block px-6 py-2.5 text-gray-700 hover:bg-light-blue hover:text-primary-blue text-sm capitalize font-bold transition-colors"
+                    <Link
+                      to="/publikasi/informasi"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publikasi/informasi" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Informasi
-                    </a>
+                    </Link>
                   </li>
                 </div>
               </ul>
@@ -340,12 +350,12 @@ const Navbar = () => {
 
             {/* Pengumuman */}
             <li>
-              <a
-                href="/pengumuman"
+              <Link
+                to="/pengumuman"
                 className={`flex items-center gap-1 transition-colors py-2 ${isActiveMenu("/pengumuman") ? activeNavClass : inactiveNavClass}`}
               >
                 Pengumuman
-              </a>
+              </Link>
             </li>
 
             {/* Inovasi */}
@@ -356,11 +366,11 @@ const Navbar = () => {
               >
                 Inovasi{""}
                 <FaChevronDown
-                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown ==="inovasi" ?"rotate-180 lg:rotate-0" :""}`}
+                  className={`text-[10px] mt-0.5 transition-transform ${activeDropdown === "inovasi" ? "rotate-180 lg:rotate-0" : ""}`}
                 />
               </div>
               <ul
-                className={`lg:absolute static right-0 top-full pt-2 lg:pt-4 ${activeDropdown ==="inovasi" ?"block" :"hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
+                className={`lg:absolute static right-0 top-full pt-2 lg:pt-4 ${activeDropdown === "inovasi" ? "block" : "hidden"} lg:group-hover:block z-50 w-full lg:w-auto`}
               >
                 <div className="bg-white shadow-xl min-w-[200px] rounded-lg overflow-hidden py-2">
                   <li>
@@ -381,7 +391,7 @@ const Navbar = () => {
             className="lg:hidden text-white text-2xl focus:outline-none z-50"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ?"✕" :"☰"}
+            {isMobileMenuOpen ? "✕" : "☰"}
           </button>
         </div>
       </nav>

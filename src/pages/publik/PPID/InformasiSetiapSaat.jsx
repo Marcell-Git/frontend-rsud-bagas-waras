@@ -5,7 +5,11 @@ import hero from "../../../assets/publik/PPID/inf_setiapsaat.png";
 
 import { getInformasiSetiapSaat } from "../../../api/publik/berkasPpid";
 
+import useTitle from "../../../hooks/useTitle";
+
 const InformasiSetiapSaat = () => {
+  useTitle("Informasi Setiap Saat");
+  
   const [ppidData, setPpidData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

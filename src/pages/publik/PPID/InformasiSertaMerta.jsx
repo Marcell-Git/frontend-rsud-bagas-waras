@@ -5,7 +5,11 @@ import hero from "../../../assets/publik/PPID/inf_sertamerta.png";
 
 import { getInformasiSertaMerta } from "../../../api/publik/berkasPpid";
 
+import useTitle from "../../../hooks/useTitle";
+
 const InformasiSertaMerta = () => {
+  useTitle("Informasi Serta Merta");
+  
   const [ppidData, setPpidData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

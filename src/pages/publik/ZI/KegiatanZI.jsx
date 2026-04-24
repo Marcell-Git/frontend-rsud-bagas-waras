@@ -4,7 +4,11 @@ import FooterZI from "../../../components/publik/ZI/FooterZI";
 import { FaCalendarAlt } from "react-icons/fa";
 import { getWBKWBBM } from "../../../api/publik/kegiatanWbkwbbm";
 
+import useTitle from "../../../hooks/useTitle";
+
 const KegiatanZI = () => {
+  useTitle("Kegiatan ZI");
+  
   const [kegiatan, setKegiatan] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

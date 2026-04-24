@@ -18,8 +18,10 @@ import {
   updateBanner,
   deleteBanner,
 } from "../../../api/content/banner";
+import useTitle from "../../../hooks/useTitle";
 
 const Banner = () => {
+  useTitle("Manajemen Banner");
   const [banners, setBanners] = useState([]);
   const [formData, setFormData] = useState({
     gambar: "",

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
-  Search,
   Edit2,
   Trash2,
   Image as ImageIcon,
@@ -20,8 +19,10 @@ import {
   updateGaleri,
   deleteGaleri,
 } from "../../../api/content/galeri";
+import useTitle from "../../../hooks/useTitle";
 
 const Galeri = () => {
+  useTitle("Manajemen Galeri");
   const [activeTab, setActiveTab] = useState("Semua");
   const [media, setMedia] = useState([]);
   const [formData, setFormData] = useState({
@@ -39,7 +40,6 @@ const Galeri = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -174,32 +174,29 @@ const Galeri = () => {
   };
 
   const filteredMedia = media.filter((item) => {
-    const matchesSearch = item.judul
-      ? item.judul.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
     const isVideo = !!item.url_video;
     const matchesTab =
       activeTab === "Semua" ||
       (activeTab === "Gambar" && !isVideo) ||
       (activeTab === "Video" && isVideo);
-    return matchesSearch && matchesTab;
+    return matchesTab;
   });
 
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900">
             Galeri Media
           </h1>
-          <p className="text-slate-500 mt-2 font-medium">
+          <p className="text-slate-500 text-sm mt-1 font-medium">
             Kelola dokumentasi foto dan video kegiatan RSUD.
           </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-primary-blue/30 transition-all active:scale-95"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Media
@@ -225,22 +222,6 @@ const Galeri = () => {
           ))}
         </div>
 
-        {/* Search */}
-        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-          <div className="relative flex-1 sm:w-80">
-            <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              size={18}
-            />
-            <input
-              type="text"
-              placeholder="Cari judul media..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-primary-blue/10 focus:border-primary-blue transition-all outline-none"
-            />
-          </div>
-        </div>
       </div>
 
       {/* Gallery Grid */}

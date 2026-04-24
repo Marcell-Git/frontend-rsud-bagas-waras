@@ -12,14 +12,12 @@ import {
   FaSearchPlus,
 } from "react-icons/fa";
 
-import standarRawatJalan from "../../../assets/RawatJalan.png";
-import standarRawatInap from "../../../assets/RawatInap.png";
-import standarLaboratorium from "../../../assets/Laboratorium.png";
-import standarRadiologi from "../../../assets/Radiologi.png";
-
 import { getStandarPelayanan } from "../../../api/content/standarPelayanan";
+import useTitle from "../../../hooks/useTitle";
 
 const StandarPelayanan = () => {
+  useTitle("Standar Pelayanan");
+
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);

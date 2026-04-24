@@ -19,9 +19,11 @@ import { getGaleriGambar } from "../../api/content/galeri";
 import { getAllDokter } from "../../api/pelayanan/jadwalDokter";
 import { getBeritaTerbaru } from "../../api/content/berita";
 import { getLinkEksternal } from "../../api/content/linkEksternal";
+import SimRS from "../../api/SimRS";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { roomSummary, loading, error, refresh } = SimRS();
   const [activeSlide, setActiveSlide] = useState(0);
   const galleryRef = useRef(null);
   const [activeTab, setActiveTab] = useState("ruangan");
@@ -86,7 +88,7 @@ const Home = () => {
         fetchGaleriGambar(),
         fetchDokter(),
         fetchBeritaTerbaru(),
-        fetchLinkEksternal()
+        fetchLinkEksternal(),
       ]);
       setIsLoading(false);
     };
@@ -136,40 +138,6 @@ const Home = () => {
     return new Date(dateString).toLocaleDateString("id-ID", options);
   };
 
-  const ruanganData = [
-    {
-      no: 1,
-      nama: "Ruang ICU",
-      kapasitas: 15,
-      terisi: 12,
-      kosong: 3,
-      status: "Tersedia",
-    },
-    {
-      no: 2,
-      nama: "Ruang IGD",
-      kapasitas: 30,
-      terisi: 30,
-      kosong: 0,
-      status: "Penuh",
-    },
-    {
-      no: 3,
-      nama: "Ruang Melati (VIP)",
-      kapasitas: 10,
-      terisi: 5,
-      kosong: 5,
-      status: "Tersedia",
-    },
-    {
-      no: 4,
-      nama: "Ruang Anggrek (Kelas 1)",
-      kapasitas: 20,
-      terisi: 18,
-      kosong: 2,
-      status: "Tersedia",
-    },
-  ];
 
   return (
     <div className="bg-gray-50 min-h-screen text-gray-700 font-secondary">
@@ -180,10 +148,8 @@ const Home = () => {
         {/* Carousel Wrapper with Max Width to make it smaller/framed on big screens */}
         <div className="w-full max-w-6xl mx-auto xl:px-8 xl:py-6 relative z-0">
           <div
-            className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 ${
-              isLoading
-                ? "animate-pulse aspect-video md:aspect-[21/9]"
-                : ""
+            className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 aspect-video md:aspect-21/9 ${
+              isLoading ? "animate-pulse" : ""
             }`}
           >
             {/* Ghost image defining aspect ratio */}
@@ -336,6 +302,9 @@ const Home = () => {
                             Nama Ruangan
                           </th>
                           <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
+                            Kelas
+                          </th>
+                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
                             Kapasitas
                           </th>
                           <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
@@ -370,71 +339,95 @@ const Home = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {isLoading ? (
-                      [...Array(4)].map((_, idx) => (
-                        <tr key={idx} className="animate-pulse">
-                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-4"></div></td>
-                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-32"></div></td>
-                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-20"></div></td>
-                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-24"></div></td>
-                          <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-16"></div></td>
-                          {activeTab === "ruangan" && <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-16"></div></td>}
-                        </tr>
-                      ))
-                    ) : activeTab === "ruangan"
-                      ? ruanganData.map((item, index) => (
-                          <tr
-                            key={index}
-                            className="hover:bg-light-blue transition-colors text-sm md:text-base"
-                          >
+                    {isLoading || loading
+                      ? [...Array(4)].map((_, idx) => (
+                          <tr key={idx} className="animate-pulse">
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {index + 1}
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
-                              {item.nama}
+                              <div className="h-4 bg-gray-200 rounded w-4"></div>
                             </td>
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {item.kapasitas}
+                              <div className="h-4 bg-gray-200 rounded w-32"></div>
                             </td>
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {item.terisi}
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 text-primary-blue font-bold whitespace-nowrap">
-                              {item.kosong}
+                              <div className="h-4 bg-gray-200 rounded w-20"></div>
                             </td>
                             <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <span
-                                className={`px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-semibold ${item.status === "Tersedia" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
-                              >
-                                {item.status}
-                              </span>
+                              <div className="h-4 bg-gray-200 rounded w-20"></div>
                             </td>
+                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                              <div className="h-4 bg-gray-200 rounded w-24"></div>
+                            </td>
+                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                              <div className="h-4 bg-gray-200 rounded w-16"></div>
+                            </td>
+                            {activeTab === "ruangan" && (
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                <div className="h-4 bg-gray-200 rounded w-16"></div>
+                              </td>
+                            )}
                           </tr>
                         ))
-                      : dokter.map((item, index) => (
-                          <tr
-                            key={index}
-                            className="hover:bg-light-blue transition-colors text-sm md:text-base"
-                          >
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {index + 1}
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
-                              {item.nama_dokter}
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <span className="bg-light-blue text-primary-blue px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold">
-                                {item.spesialisasi}
-                              </span>
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              {item.hari}
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap font-bold text-primary-blue">
-                              {item.jam}
-                            </td>
-                          </tr>
-                        ))}
+                      : activeTab === "ruangan"
+                        ? roomSummary.map((item, index) => (
+                            <tr
+                              key={index}
+                              className="hover:bg-light-blue transition-colors text-sm md:text-base"
+                            >
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                {index + 1}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
+                                {item.room}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                <span className="bg-light-blue text-primary-blue px-3 py-1 rounded-full text-xs font-bold">
+                                  {item.class}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                {item.total}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                {item.filled}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 text-primary-blue font-bold whitespace-nowrap">
+                                {item.total - item.filled}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                <span
+                                  className={`px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-semibold ${item.total - item.filled > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                                >
+                                  {item.total - item.filled > 0
+                                    ? "Tersedia"
+                                    : "Penuh"}
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        : dokter.map((item, index) => (
+                            <tr
+                              key={index}
+                              className="hover:bg-light-blue transition-colors text-sm md:text-base"
+                            >
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                {index + 1}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
+                                {item.nama_dokter}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                <span className="bg-light-blue text-primary-blue px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold">
+                                  {item.spesialisasi}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                {item.hari}
+                              </td>
+                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap font-bold text-primary-blue">
+                                {item.jam}
+                              </td>
+                            </tr>
+                          ))}
                   </tbody>
                 </table>
               </div>
@@ -452,49 +445,51 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {isLoading ? (
-                [...Array(3)].map((_, idx) => (
-                  <div key={idx} className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
-                    <div className="h-52 bg-gray-200"></div>
-                    <div className="p-6">
-                      <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-                      <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                      <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              {isLoading
+                ? [...Array(3)].map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse"
+                    >
+                      <div className="h-52 bg-gray-200"></div>
+                      <div className="p-6">
+                        <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
+                        <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                      </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                berita.map((news, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
-                  >
-                    <div className="h-52 overflow-hidden">
-                      <img
-                        src={`${import.meta.env.VITE_STORAGE_URL}/${news.url_gambar}`}
-                        alt={`News ${idx}`}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
+                  ))
+                : berita.map((news, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-2 transition-all duration-300 overflow-hidden group"
+                    >
+                      <div className="h-52 overflow-hidden">
+                        <img
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${news.url_gambar}`}
+                          alt={`News ${idx}`}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+                      <div className="p-6">
+                        <span className="text-sm font-semibold text-primary-blue mb-2 block">
+                          {formatDate(news.tanggal)}
+                        </span>
+                        <h3 className="text-xl font-primary font-bold text-dark-blue mb-4 hover:text-primary-blue transition-colors cursor-pointer">
+                          {news.judul}
+                        </h3>
+                        <p className="text-gray-600 line-clamp-2">{news.isi}</p>
+                      </div>
                     </div>
-                    <div className="p-6">
-                      <span className="text-sm font-semibold text-primary-blue mb-2 block">
-                        {formatDate(news.tanggal)}
-                      </span>
-                      <h3 className="text-xl font-primary font-bold text-dark-blue mb-4 hover:text-primary-blue transition-colors cursor-pointer">
-                        {news.judul}
-                      </h3>
-                      <p className="text-gray-600 line-clamp-2">
-                        {news.isi}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
+                  ))}
             </div>
 
             <div className="text-center mt-12">
-              <button onClick={() => navigate("/berita")} className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors">
+              <button
+                onClick={() => navigate("/berita")}
+                className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors"
+              >
                 Lihat Semua Berita <FaArrowRight />
               </button>
             </div>
@@ -535,32 +530,39 @@ const Home = () => {
                   }
                 }}
               >
-                {isLoading ? (
-                  [...Array(5)].map((_, idx) => (
-                    <div key={idx} className="shrink-0 snap-start w-64 md:w-80">
-                      <div className="p-1 bg-white border border-gray-200 rounded shadow-sm animate-pulse">
-                        <div className="w-full h-48 md:h-64 bg-gray-200 rounded-sm"></div>
+                {isLoading
+                  ? [...Array(5)].map((_, idx) => (
+                      <div
+                        key={idx}
+                        className="shrink-0 snap-start w-64 md:w-80"
+                      >
+                        <div className="p-1 bg-white border border-gray-200 rounded shadow-sm animate-pulse">
+                          <div className="w-full h-48 md:h-64 bg-gray-200 rounded-sm"></div>
+                        </div>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  [...galeri, ...galeri, ...galeri].map((img, idx) => (
-                    <div key={idx} className="shrink-0 snap-start w-64 md:w-80">
-                      <div className="p-1 bg-white border border-gray-200 rounded shadow-sm">
-                        <img
-                          src={`${import.meta.env.VITE_STORAGE_URL}/${img.url_gambar}`}
-                          alt={`Gallery ${idx}`}
-                          className="w-full h-48 md:h-64 object-cover rounded-sm pointer-events-none"
-                        />
+                    ))
+                  : [...galeri, ...galeri, ...galeri].map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="shrink-0 snap-start w-64 md:w-80"
+                      >
+                        <div className="p-1 bg-white border border-gray-200 rounded shadow-sm">
+                          <img
+                            src={`${import.meta.env.VITE_STORAGE_URL}/${img.url_gambar}`}
+                            alt={`Gallery ${idx}`}
+                            className="w-full h-48 md:h-64 object-cover rounded-sm pointer-events-none"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))
-                )}
+                    ))}
               </div>
             </div>
 
             <div className="text-center mt-12">
-              <button onClick={() => navigate("/galeri")} className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors shadow-sm">
+              <button
+                onClick={() => navigate("/galeri")}
+                className="border-2 border-primary-blue text-primary-blue hover:bg-primary-blue hover:text-white px-8 py-3 rounded-lg font-semibold inline-flex items-center gap-2 transition-colors shadow-sm"
+              >
                 Lihat Detail Galeri <FaArrowRight />
               </button>
             </div>
@@ -574,27 +576,28 @@ const Home = () => {
               Link Terkait
             </h2>
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6">
-              {isLoading ? (
-                [...Array(5)].map((_, idx) => (
-                  <div key={idx} className="bg-gray-200 p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl animate-pulse"></div>
-                ))
-              ) : (
-                linkEksternal.map((partner, idx) => (
-                  <a
-                    key={idx}
-                    href={partner.url_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl shadow-sm border border-transparent hover:border-primary-blue hover:shadow-md hover:-translate-y-1 transition-all flex items-center justify-center"
-                  >
-                    <img
-                      src={`${import.meta.env.VITE_STORAGE_URL}/${partner.url_gambar}`}
-                      alt={partner.nama}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </a>
-                ))
-              )}
+              {isLoading
+                ? [...Array(5)].map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-gray-200 p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl animate-pulse"
+                    ></div>
+                  ))
+                : linkEksternal.map((partner, idx) => (
+                    <a
+                      key={idx}
+                      href={partner.url_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-white p-4 h-24 w-36 md:h-28 md:w-44 rounded-xl shadow-sm border border-transparent hover:border-primary-blue hover:shadow-md hover:-translate-y-1 transition-all flex items-center justify-center"
+                    >
+                      <img
+                        src={`${import.meta.env.VITE_STORAGE_URL}/${partner.url_gambar}`}
+                        alt={partner.nama}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </a>
+                  ))}
             </div>
           </div>
         </section>

@@ -8,7 +8,10 @@ import Header from "../../../components/viewer/Header";
 import { getVisiTerbaru } from "../../../api/tentang/visi";  
 import { getMisi } from "../../../api/tentang/misi";
 
+import useTitle from "../../../hooks/useTitle";
+
 const VisiMisi = () => {
+  useTitle("Visi & Misi");
 
   const [visi, setVisi] = useState([]);
   const [misi, setMisi] = useState([]);

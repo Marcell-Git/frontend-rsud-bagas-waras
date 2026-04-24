@@ -10,11 +10,13 @@ import {
   Trash2
 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { getPengaduanMasyarakat, deletePengaduanMasyarakat } from '../../../api/pengaduan/masyarakat';
+import { getPengaduanMasyarakat, deletePengaduanMasyarakat } from '../../../api/pengaduan/pengaduanMasyarakat';
 import Pagination from '../../../components/admin/Pagination';
 import ConfirmModal from '../../../components/admin/ConfirmModal';
+import useTitle from "../../../hooks/useTitle";
 
 const PengaduanMasyarakat = () => {
+  useTitle("Pengaduan Masyarakat");
   const [laporan, setLaporan] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -91,8 +93,12 @@ const PengaduanMasyarakat = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">Pengaduan Masyarakat</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium font-sans italic opacity-80">Layanan aspirasi, keluhan, dan aspresiasi langsung dari masyarakat umum.</p>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Pengaduan Masyarakat
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola layanan aspirasi, keluhan, dan apresiasi dari masyarakat umum.
+          </p>
         </div>
       </div>
 

@@ -10,8 +10,10 @@ import {
   updateBuletin,
   deleteBuletin,
 } from "../../../api/content/buletin";
+import useTitle from "../../../hooks/useTitle";
 
 const Buletin = () => {
+  useTitle("Manajemen Buletin");
   const [buletins, setBuletins] = useState([]);
   const [formData, setFormData] = useState({
     gambar: "",
@@ -127,21 +129,21 @@ const Buletin = () => {
   return (
     <div className="space-y-8 text-slate-900">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900">
             Manajemen Buletin
           </h1>
-          <p className="text-slate-500 mt-1 font-medium text-sm">
-            Kelola galeri gambar kover buletin RSUD Bagas Waras.
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola publikasi majalah digital RSUD Bagas Waras.
           </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-8 py-3 rounded-xl font-bold hover:shadow-xl hover:shadow-primary-blue/30 transition-all active:scale-95 text-sm"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
-          <Plus size={18} />
-          Unggah Gambar Kover
+          <Plus size={20} />
+          Upload Buletin
         </button>
       </div>
 

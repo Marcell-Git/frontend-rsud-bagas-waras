@@ -6,8 +6,11 @@ import Header from "../../../components/viewer/Header";
 import { FaCheckCircle, FaImage } from "react-icons/fa";
 
 import { getRawatInap } from "../../../api/pelayanan/rawatInap";
+import useTitle from "../../../hooks/useTitle";
 
 const RawatInap = () => {
+  useTitle("Rawat Inap");
+
   const [kamar, setKamar] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

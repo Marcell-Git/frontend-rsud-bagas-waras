@@ -1,8 +1,59 @@
-import React from "react";
-import { Link } from "react-router";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router";
 import logoRSUD from "../../../assets/logo-rsud.png";
+import { toast } from "react-toastify";
+import { createPengaduanMasyarakat } from "../../../api/pengaduan/pengaduanMasyarakat";
+
+import useTitle from "../../../hooks/useTitle";
 
 const FormPengaduan = () => {
+  useTitle("Formulir Pengaduan");
+
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    no_telp: "",
+    email: "",
+    isi_pengaduan: "",
+    tanggal: new Date().toISOString().split("T")[0],
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.no_telp || !formData.email || !formData.isi_pengaduan) {
+      toast.error("Semua field harus diisi!");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await createPengaduanMasyarakat(formData);
+      toast.success("Pengaduan berhasil terkirim!");
+      setFormData({
+        no_telp: "",
+        email: "",
+        isi_pengaduan: "",
+        tanggal: new Date().toISOString().split("T")[0],
+      });
+      // Optional: navigate back after success
+      // setTimeout(() => navigate("/pengaduan"), 2000);
+    } catch (error) {
+      console.error("Error submitting pengaduan:", error);
+      toast.error("Gagal mengirim pengaduan. Silakan coba lagi.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <div className="min-h-screen flex flex-col font-secondary text-gray-800 bg-slate-50">
       {/* Navbar Modern Minimalis */}
@@ -42,7 +93,7 @@ const FormPengaduan = () => {
             </p>
           </div>
 
-          <form className="space-y-6 sm:space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
             {/* Field: No Telp */}
             <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-8">
               <label
@@ -55,8 +106,12 @@ const FormPengaduan = () => {
                 <input
                   type="text"
                   id="phone"
+                  name="no_telp"
+                  value={formData.no_telp}
+                  onChange={handleChange}
                   className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all shadow-inner"
                   placeholder="Masukkan nomor telepon aktif"
+                  required
                 />
               </div>
             </div>
@@ -73,8 +128,12 @@ const FormPengaduan = () => {
                 <input
                   type="email"
                   id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all shadow-inner"
                   placeholder="Masukkan alamat email aktif"
+                  required
                 />
               </div>
             </div>
@@ -90,9 +149,13 @@ const FormPengaduan = () => {
               <div className="md:w-3/4">
                 <textarea
                   id="message"
+                  name="isi_pengaduan"
+                  value={formData.isi_pengaduan}
+                  onChange={handleChange}
                   rows="6"
                   className="w-full px-5 py-4 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition-all shadow-inner resize-y"
                   placeholder="Ketikkan detail pengaduan Anda..."
+                  required
                 ></textarea>
               </div>
             </div>
@@ -103,10 +166,18 @@ const FormPengaduan = () => {
               {/* Spacer buat menyamakan layout dengan input form */}
               <div className="md:w-3/4">
                 <button
-                  type="button"
-                  className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-lg font-bold py-3.5 px-10 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 active:scale-95"
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-lg font-bold py-3.5 px-10 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
                 >
-                  Kirim Pengaduan
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Mengirim...
+                    </>
+                  ) : (
+                    "Kirim Pengaduan"
+                  )}
                 </button>
               </div>
             </div>

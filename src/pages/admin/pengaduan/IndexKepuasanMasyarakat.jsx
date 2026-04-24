@@ -19,8 +19,10 @@ import {
 } from "../../../api/pengaduan/indexKepuasan";
 import Pagination from "../../../components/admin/Pagination";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+import useTitle from "../../../hooks/useTitle";
 
 const IndexKepuasanMasyarakat = () => {
+  useTitle("Indeks Kepuasan Masyarakat");
   const [dataIndex, setDataIndex] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -184,33 +186,23 @@ const IndexKepuasanMasyarakat = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-20 font-sans">
       {/* Header section with Glassmorphism */}
-      <div className="relative overflow-hidden bg-white/40 backdrop-blur-xl p-10 rounded-[40px] border border-white shadow-2xl shadow-indigo-500/10">
-        <div className="absolute top-0 right-0 p-8 opacity-10">
-          <Users size={120} className="text-indigo-600" />
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Index Kepuasan Masyarakat
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola publikasi grafik index kepuasan masyarakat RSUD Bagas Waras.
+          </p>
         </div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-500/20">
-                <Users size={24} />
-              </div>
-              <h1 className="text-3xl font-black text-slate-800 tracking-tight">
-                Index Kepuasan Masyarakat
-              </h1>
-            </div>
-            <p className="text-slate-500 font-medium max-w-2xl leading-relaxed">
-              Kelola data publikasi grafik index kepuasan masyarakat RSUD Bagas
-              Waras secara periodik.
-            </p>
-          </div>
-          <button
-            onClick={() => openModal()}
-            className="group flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-slate-900 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all duration-300"
-          >
-            <Plus size={20} className="transition-transform duration-500" />
-            Tambah Data
-          </button>
-        </div>
+        <button
+          onClick={() => openModal()}
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
+        >
+          <Plus size={20} />
+          Tambah Data
+        </button>
       </div>
 
       {/* Content Section */}

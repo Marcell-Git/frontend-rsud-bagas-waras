@@ -4,8 +4,10 @@ import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
 import { getTugasRSUD, createTugasRSUD, updateTugasRSUD, deleteTugasRSUD } from "../../../api/struktur/tugasRSUD";
+import useTitle from "../../../hooks/useTitle";
 
 const TugasRSUD = () => {
+  useTitle("Tugas RSUD");
   const [tugasPoints, setTugasPoints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -101,23 +103,18 @@ const TugasRSUD = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-inner">
-            <Briefcase size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Tugas RSUD
-            </h1>
-            <p className="text-slate-400 mt-1 italic text-sm font-bold">
-              "Daftar kewajiban dan tugas pokok rumah sakit."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Tugas RSUD
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola daftar kewajiban dan tugas pokok rumah sakit.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-600/20"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Tugas

@@ -5,7 +5,11 @@ import hero from "../../../assets/publik/PPID/inf_berkala.png";
 
 import { getInformasiBerkala } from "../../../api/publik/berkasPpid";
 
+import useTitle from "../../../hooks/useTitle";
+
 const InformasiBerkala = () => {
+  useTitle("Informasi Berkala");
+  
   const [ppidData, setPpidData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,19 +56,14 @@ const InformasiBerkala = () => {
       return acc;
     }, {});
 
-    // Sort based on preferredOrder
     return Object.keys(groups)
       .sort((a, b) => {
         const indexA = preferredOrder.indexOf(a);
         const indexB = preferredOrder.indexOf(b);
         
-        // If both exist in preferred list, follow that order
         if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-        // If only A exists, it comes first
         if (indexA !== -1) return -1;
-        // If only B exists, it comes first
         if (indexB !== -1) return 1;
-        // If neither exists, sort alphabetically
         return a.localeCompare(b);
       })
       .map((key) => ({

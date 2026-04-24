@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2, History, Save, X, Clock } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getSejarah,
   createSejarah,
@@ -11,6 +12,7 @@ import {
 } from "../../../api/tentang/sejarah";
 
 const Sejarah = () => {
+  useTitle("Manajemen Sejarah");
   const [sejarahPoints, setSejarahPoints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -106,23 +108,18 @@ const Sejarah = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-amber-50 text-amber-600 flex items-center justify-center shadow-inner">
-            <History size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Sejarah RSUD
-            </h1>
-            <p className="text-slate-400 mt-1 italic text-sm font-bold">
-              "Jejak perjalanan terbangunnya RSUD Bagas Waras."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Sejarah RSUD
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Jejak perjalanan terbangunnya RSUD Bagas Waras.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-900/20"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Momen Sejarah

@@ -27,6 +27,7 @@ const Galeri = () => {
   });
 
   const fetchGaleri = async (page = 1) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setIsLoading(true);
     try {
       const response = await getGaleri({
@@ -55,7 +56,6 @@ const Galeri = () => {
   const handlePageChange = (page) => {
     if (page >= 1 && page <= pagination.lastPage) {
       fetchGaleri(page);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -76,41 +76,39 @@ const Galeri = () => {
       {/* Hero Section */}
       <section className="pt-14 pb-16 bg-linear-to-b from-light-blue/50 to-white">
         <div className="max-w-7xl mx-auto px-6">
-          <nav className="flex mb-4 text-sm text-gray-500 font-medium" aria-label="Breadcrumb">
+          <nav
+            className="flex mb-4 text-sm text-gray-500 font-medium"
+            aria-label="Breadcrumb"
+          >
             <ol className="inline-flex items-center space-x-1 md:space-x-3">
               <li className="inline-flex items-center">
-                <Link to="/" className="hover:text-primary-blue transition-colors">Beranda</Link>
+                <Link
+                  to="/"
+                  className="hover:text-primary-blue transition-colors"
+                >
+                  Beranda
+                </Link>
               </li>
               <li>
                 <div className="flex items-center">
                   <FaChevronRight className="w-3 h-3 mx-1 text-gray-400" />
-                  <span className="ml-1 md:ml-2 text-primary-blue">Galeri Kegiatan</span>
+                  <span className="ml-1 md:ml-2 text-primary-blue">
+                    Galeri Kegiatan
+                  </span>
                 </div>
               </li>
             </ol>
           </nav>
-          
+
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <h1 className="text-4xl md:text-5xl font-primary font-extrabold text-dark-blue tracking-tight">
                 Galeri <span className="text-primary-blue">Kegiatan</span>
               </h1>
               <p className="mt-4 text-gray-600 max-w-2xl text-lg leading-relaxed">
-                Kumpulan dokumentasi kegiatan medis, fasilitas pelayanan, 
-                dan berbagai acara di lingkungan RSUD Bagas Waras Klaten.
+                Kumpulan dokumentasi kegiatan medis, fasilitas pelayanan, dan
+                berbagai acara di lingkungan RSUD Bagas Waras Klaten.
               </p>
-            </div>
-
-            {/* Search Bar */}
-            <div className="relative w-full md:w-80 group">
-              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-blue transition-colors" />
-              <input
-                type="text"
-                placeholder="Cari dokumentasi..."
-                className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-primary-blue/10 focus:border-primary-blue outline-none transition-all font-medium"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
             </div>
           </div>
         </div>
@@ -123,7 +121,10 @@ const Galeri = () => {
             /* Skeleton Loading */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(8)].map((_, idx) => (
-                <div key={idx} className="aspect-square bg-gray-100 rounded-[32px] animate-pulse"></div>
+                <div
+                  key={idx}
+                  className="aspect-square bg-gray-100 rounded-[32px] animate-pulse"
+                ></div>
               ))}
             </div>
           ) : images.length > 0 ? (
@@ -140,14 +141,13 @@ const Galeri = () => {
                       alt={item.keterangan || "Galeri Image"}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    
+
                     {/* Overlay */}
                     <div className="absolute inset-0 bg-linear-to-t from-dark-blue/80 via-dark-blue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
                       <div className="flex items-center justify-between gap-3 text-white">
                         <div className="flex-1">
-                          <p className="text-xs font-bold uppercase tracking-widest text-primary-blue mb-1">Kegiatan</p>
                           <p className="font-primary font-bold text-sm line-clamp-2 leading-tight">
-                            {item.keterangan || "RSUD Bagas Waras Klaten"}
+                            {item.judul || "RSUD Bagas Waras Klaten"}
                           </p>
                         </div>
                         <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 group-hover:bg-primary-blue group-hover:border-transparent transition-all">
@@ -169,7 +169,7 @@ const Galeri = () => {
                   >
                     <FaChevronLeft />
                   </button>
-                  
+
                   <div className="flex gap-2">
                     {[...Array(pagination.lastPage)].map((_, idx) => {
                       const pageNum = idx + 1;
@@ -205,12 +205,16 @@ const Galeri = () => {
               <div className="w-24 h-24 bg-light-blue rounded-[40px] flex items-center justify-center mb-6 shadow-inner">
                 <FaImages className="text-4xl text-primary-blue" />
               </div>
-              <h3 className="text-2xl font-primary font-bold text-dark-blue mb-2">Belum Ada Dokumentasi</h3>
-              <p className="text-gray-500 max-w-sm">Maaf, kami tidak menemukan foto dokumentasi yang Anda cari.</p>
-              <button 
+              <h3 className="text-2xl font-primary font-bold text-dark-blue mb-2">
+                Belum Ada Dokumentasi
+              </h3>
+              <p className="text-gray-500 max-w-sm">
+                Maaf, kami tidak menemukan foto dokumentasi yang Anda cari.
+              </p>
+              <button
                 onClick={() => setSearchTerm("")}
                 className="mt-8 text-primary-blue font-bold underline hover:text-dark-blue transition-colors"
-                >
+              >
                 Reset Pencarian
               </button>
             </div>
@@ -220,20 +224,20 @@ const Galeri = () => {
 
       {/* Lightbox Modal */}
       {selectedImage && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div 
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+          <div
             className="absolute inset-0 bg-dark-blue/95 backdrop-blur-md"
             onClick={closeLightbox}
           ></div>
-          
+
           <div className="relative w-full max-w-5xl group animate-[zoomIn_0.3s_ease-out]">
-            <button 
+            <button
               onClick={closeLightbox}
               className="absolute -top-16 right-0 p-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl transition-all"
             >
               <FaTimes size={24} />
             </button>
-            
+
             <div className="bg-white rounded-[40px] overflow-hidden shadow-2xl relative">
               <img
                 src={`${import.meta.env.VITE_STORAGE_URL}/${selectedImage.url_gambar}`}
@@ -242,7 +246,9 @@ const Galeri = () => {
               />
               <div className="p-8 bg-white flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                  <p className="text-xs font-black text-primary-blue uppercase tracking-widest mb-1">Dokumentasi RSUD Bagas Waras</p>
+                  <p className="text-xs font-black text-primary-blue uppercase tracking-widest mb-1">
+                    Dokumentasi RSUD Bagas Waras
+                  </p>
                   <h3 className="text-xl font-primary font-bold text-dark-blue">
                     {selectedImage.keterangan || "Kegiatan Operasional"}
                   </h3>

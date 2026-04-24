@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../components/viewer/Navbar";
 import Footer from "../../components/viewer/Footer";
-import Header from "../../components/viewer/Header";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
-import { FaRoute, FaInfoCircle } from "react-icons/fa";
+import { FaRoute } from "react-icons/fa";
 import { getAlurPelayanan } from "../../api/pelayanan/alurPelayanan";
 import { getSyaratPelayanan } from "../../api/pelayanan/syaratPelayanan";
 
+import useTitle from "../../hooks/useTitle";
+
 const AlurPelayanan = () => {
+  useTitle("Alur Pelayanan");
+  
   const [activeTab, setActiveTab] = useState("alur");
   const [alurData, setAlurData] = useState([]);
   const [syaratData, setSyaratData] = useState([]);
@@ -87,7 +90,7 @@ const AlurPelayanan = () => {
                     <div key={item.id} className="w-full flex flex-col gap-6 text-center group">
                       <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
                         <img
-                          src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
                           alt={item.judul}
                           className="w-full h-auto object-contain rounded-xl"
                         />
@@ -100,13 +103,13 @@ const AlurPelayanan = () => {
                 )}
               </div>
             ) : (
-              <div className="flex flex-col gap-12 sm:gap-16 max-w-5xl mx-auto items-center animate-[fadeIn_0.4s_ease-out]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-6xl mx-auto animate-[fadeIn_0.4s_ease-out]">
                 {syaratData.length > 0 ? (
                   syaratData.map((item) => (
                     <div key={item.id} className="w-full flex flex-col gap-6 text-center group">
                       <div className="bg-white p-2 border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
                         <img
-                          src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${item.url_gambar}`}
                           alt={item.judul}
                           className="w-full h-auto object-contain rounded-xl"
                         />

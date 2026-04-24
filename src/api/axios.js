@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getWithExpiry, removeWithExpiry } from "../utils/localStorageHelper";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api",
@@ -11,7 +12,7 @@ const api = axios.create({
 // Interceptor for including token if available
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = getWithExpiry("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -30,7 +31,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // Clear token and redirect to login if necessary
-      localStorage.removeItem("token");
+      removeWithExpiry("token");
+      removeWithExpiry("user");
       // window.location.href = "/login";
     }
     return Promise.reject(error);

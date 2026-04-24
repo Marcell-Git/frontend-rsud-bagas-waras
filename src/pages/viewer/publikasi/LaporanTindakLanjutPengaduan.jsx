@@ -7,8 +7,11 @@ import { FaFileAlt } from "react-icons/fa";
 import ModalPdfViewer from "../../../components/viewer/ModalPdfViewer";
 
 import { getLaporanTindakLanjut } from "../../../api/pengaduan/laporanTindakLanjut";
+import useTitle from "../../../hooks/useTitle";
 
 const LaporanTindakLanjutPengaduan = () => {
+  useTitle("Laporan Tindak Lanjut Pengaduan");
+
   const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPdf, setSelectedPdf] = useState(null);

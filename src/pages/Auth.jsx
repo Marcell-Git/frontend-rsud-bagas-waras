@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   User,
   Lock,
@@ -7,10 +7,15 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import ReCAPTCHA from "react-google-recaptcha";
 import { login } from "../api/auth";
+import { getWithExpiry } from "../utils/localStorageHelper";
+
+const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
 const Auth = () => {
   const [formData, setFormData] = useState({
@@ -19,15 +24,25 @@ const Auth = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const captchaRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleCaptchaChange = (token) => {
+    setCaptchaToken(token);
+  };
+
+  const handleCaptchaExpired = () => {
+    setCaptchaToken(null);
+  };
+
   React.useEffect(() => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
+    const token = getWithExpiry("token");
+    const user = getWithExpiry("user");
     if (token && user) {
       navigate("/admin");
     }
@@ -40,18 +55,24 @@ const Auth = () => {
       return;
     }
 
+    if (!captchaToken) {
+      toast.warning("Mohon selesaikan verifikasi reCAPTCHA terlebih dahulu.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Use the actual login API function
-      await login(formData);
+      await login({ ...formData, captcha: captchaToken });
       toast.success("Login Berhasil! Selamat datang di Dashboard Admin.");
       navigate("/admin");
     } catch (error) {
       console.error("Login error:", error);
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
       toast.error(
-        error.response?.data?.message || 
-        "Login gagal. Periksa kembali username dan password Anda."
+        error.response?.data?.message ||
+          "Login gagal. Periksa kembali username dan password Anda.",
       );
     } finally {
       setIsLoading(false);
@@ -99,6 +120,7 @@ const Auth = () => {
                 <input
                   type="text"
                   name="username"
+                  id="username"
                   value={formData.username}
                   onChange={handleChange}
                   placeholder="Username"
@@ -119,6 +141,7 @@ const Auth = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  id="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
@@ -134,11 +157,30 @@ const Auth = () => {
               </div>
             </div>
 
+            {/* reCAPTCHA */}
+            <div className="space-y-2">
+              <div className="flex justify-center transition-all">
+                <ReCAPTCHA
+                  ref={captchaRef}
+                  sitekey={RECAPTCHA_SITE_KEY}
+                  onChange={handleCaptchaChange}
+                  onExpired={handleCaptchaExpired}
+                />
+              </div>
+              {captchaToken && (
+                <p className="text-[11px] text-teal-600 font-bold flex items-center gap-1 ml-1">
+                  <ShieldCheck size={12} />
+                  Verifikasi berhasil
+                </p>
+              )}
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
-              className="w-full py-4 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-2xl font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 group shadow-lg shadow-teal-600/20 active:scale-95"
+              id="btn-login"
+              disabled={isLoading || !captchaToken}
+              className="w-full py-4 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-2xl font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 group shadow-lg shadow-teal-600/20 active:scale-95"
             >
               {isLoading ? (
                 <Loader2 className="animate-spin" size={20} />

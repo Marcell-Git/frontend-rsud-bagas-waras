@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2, Target, X, Save } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getMisi,
   createMisi,
@@ -11,6 +12,7 @@ import {
 } from "../../../api/tentang/misi";
 
 const Misi = () => {
+  useTitle("Manajemen Misi");
   const [misiPoints, setMisiPoints] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -106,23 +108,18 @@ const Misi = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-inner">
-            <Target size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Misi RSUD
-            </h1>
-            <p className="text-slate-400 mt-1 italic text-sm font-bold">
-              "Langkah nyata untuk mewujudkan visi institusi."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Misi RSUD
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Langkah nyata untuk mewujudkan visi institusi.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-linear-to-r from-emerald-500 to-teal-500 text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-emerald-500/30 transition-all active:scale-95 shadow-lg shadow-emerald-500/10"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Poin Misi

@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import Pagination from "../../../components/admin/Pagination";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getTarifPelayanan,
   createTarifPelayanan,
@@ -26,6 +27,7 @@ import {
 } from "../../../api/pelayanan/tarifPelayanan";
 
 const TarifPelayanan = () => {
+  useTitle("Manajemen Tarif Pelayanan");
   const [items, setItems] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -188,25 +190,20 @@ const TarifPelayanan = () => {
   return (
     <div className="space-y-8 pb-12 font-sans">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 shadow-inner">
-            <FaMoneyBill size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Tarif Pelayanan
-            </h1>
-            <p className="text-slate-500 mt-1 font-bold text-sm italic opacity-80">
-              Kelola informasi tarif dan biaya pelayanan RSUD Bagas Waras.
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Tarif Pelayanan
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola informasi tarif dan biaya pelayanan RSUD Bagas Waras.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-slate-900/20 transition-all active:scale-95 text-xs uppercase tracking-widest"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
-          <Plus size={18} />
+          <Plus size={20} />
           Tambah Tarif
         </button>
       </div>
@@ -232,7 +229,7 @@ const TarifPelayanan = () => {
               className="group bg-white rounded-[40px] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col"
             >
               {/* Image Area */}
-              <div className="aspect-[4/5] relative overflow-hidden bg-slate-50/50 border-b border-slate-100 p-4">
+              <div className="aspect-4/5 relative overflow-hidden bg-slate-50/50 border-b border-slate-100 p-4">
                 <img
                   src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar_tarif}`}
                   alt="Tarif Pelayanan"

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2, Scale, Save, X, FileText } from "lucide-react";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getLandasanHukum,
   createLandasanHukum,
@@ -10,6 +11,7 @@ import {
 } from "../../../api/tentang/landasanHukum";
 
 const LandasanHukum = () => {
+  useTitle("Landasan Hukum");
   const [hukumData, setHukumData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -107,23 +109,18 @@ const LandasanHukum = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-primary-blue/10 text-primary-blue flex items-center justify-center shadow-inner">
-            <Scale size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Landasan Hukum
-            </h1>
-            <p className="text-slate-500 mt-1 font-medium italic text-sm">
-              "Dasar regulasi operasional RSUD Bagas Waras."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Landasan Hukum
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Dasar regulasi operasional RSUD Bagas Waras.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-900/20"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Landasan Hukum

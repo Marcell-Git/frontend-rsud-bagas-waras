@@ -5,7 +5,11 @@ import hero from "../../../assets/publik/PPID/inf_kecuali.png";
 
 import { getInformasiDikecualikan } from "../../../api/publik/berkasPpid";
 
+import useTitle from "../../../hooks/useTitle";
+
 const InformasiDikecuali = () => {
+  useTitle("Informasi Dikecualikan");
+  
   const [ppidData, setPpidData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -3,7 +3,11 @@ import { Link } from "react-router";
 import { PenBox } from "lucide-react";
 import logoRSUD from "../../../assets/logo-rsud.png";
 
+import useTitle from "../../../hooks/useTitle";
+
 const Pengaduan = () => {
+  useTitle("Pengaduan");
+  
   return (
     <div className="min-h-screen flex flex-col font-secondary text-gray-800 bg-white">
       {/* Navbar Modern Minimalis */}

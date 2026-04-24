@@ -9,7 +9,11 @@ import {
   FaCamera,
 } from "react-icons/fa";
 
+import useTitle from "../../../hooks/useTitle";
+
 const WBS = () => {
+  useTitle("WBS");
+  
   return (
     <div className="font-secondary min-h-screen flex flex-col">
       <NavbarWBS />

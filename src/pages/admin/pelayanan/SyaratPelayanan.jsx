@@ -10,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
 
+import useTitle from "../../../hooks/useTitle";
 import {
   getSyaratPelayanan,
   createSyaratPelayanan,
@@ -17,6 +18,7 @@ import {
 } from "../../../api/pelayanan/syaratPelayanan";
 
 const SyaratPelayanan = () => {
+  useTitle("Manajemen Syarat Pelayanan");
   const [syaratImages, setSyaratImages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,23 +133,18 @@ const SyaratPelayanan = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-teal-50 text-teal-600 flex items-center justify-center shadow-inner">
-            <FileCheck size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Syarat Pelayanan
-            </h1>
-            <p className="text-slate-400 mt-1 italic text-sm font-bold">
-              "Poster panduan syarat & kelengkapan dokumen pasien."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Syarat Pelayanan
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola poster panduan syarat dan kelengkapan dokumen pasien.
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center justify-center gap-2 bg-teal-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-teal-700 transition-all active:scale-95 shadow-lg shadow-teal-600/20"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Unggah Gambar Baru

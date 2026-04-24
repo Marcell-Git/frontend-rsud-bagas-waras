@@ -3,9 +3,11 @@ import Footer from "../../../components/viewer/Footer";
 import Header from "../../../components/viewer/Header";
 import EmergencyCall from "../../../components/viewer/EmergencyCall";
 
-import info1 from "../../../assets/img/info.png"
+import useTitle from "../../../hooks/useTitle";
 
 const Informasi = () => {
+    useTitle("Informasi");
+
     return (
         <div>
             <Navbar />

@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import {
   FaCalendarAlt,
   FaUser,
-  FaSearch,
   FaArrowRight,
   FaChevronLeft,
   FaChevronRight,
@@ -14,7 +13,11 @@ import Footer from "../../components/viewer/Footer";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
 import { getBerita } from "../../api/content/berita";
 
+import useTitle from "../../hooks/useTitle";
+
 const Berita = () => {
+  useTitle("Berita");
+
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +29,7 @@ const Berita = () => {
   });
 
   const fetchBerita = async (page = 1) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setIsLoading(true);
     try {
       const response = await getBerita({
@@ -54,7 +58,6 @@ const Berita = () => {
   const handlePageChange = (page) => {
     if (page >= 1 && page <= pagination.lastPage) {
       fetchBerita(page);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 

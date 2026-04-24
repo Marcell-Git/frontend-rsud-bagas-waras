@@ -25,8 +25,10 @@ import {
   updatePengumuman,
   deletePengumuman,
 } from "../../../api/content/pengumuman";
+import useTitle from "../../../hooks/useTitle";
 
 const Pengumuman = () => {
+  useTitle("Manajemen Pengumuman");
   const [announcements, setAnnouncements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -165,7 +167,7 @@ const Pengumuman = () => {
           className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
-          Buat Pengumuman
+          Tambah Pengumuman
         </button>
       </div>
 

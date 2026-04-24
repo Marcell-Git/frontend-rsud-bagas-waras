@@ -11,7 +11,7 @@ import {
 import { toast } from "react-toastify";
 import Modal from "../../../components/admin/Modal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
-
+import useTitle from "../../../hooks/useTitle";
 import {
   getUsers,
   createUser,
@@ -20,7 +20,9 @@ import {
 } from "../../../api/users/index";
 
 const User = () => {
+  useTitle("Manajemen Pengguna");
   const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     nama_lengkap: "",
     username: "",
@@ -36,12 +38,15 @@ const User = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchUsers = async () => {
+    setIsLoading(true);
     try {
       const response = await getUsers();
       setUsers(response.data.data);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error("Gagal mengambil data user");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -162,18 +167,18 @@ const User = () => {
   return (
     <div className="space-y-8 font-sans">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 font-sans">
-        <div className="font-sans">
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
             Manajemen User
           </h1>
-          <p className="text-slate-500 mt-2 font-medium font-sans">
+          <p className="text-slate-500 text-sm mt-1 font-medium">
             Kelola akses akun administrator dan petugas sistem.
           </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-slate-900/20 transition-all active:scale-95 font-sans"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah User
@@ -201,64 +206,89 @@ const User = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-sans text-sm">
-              {users.map((item) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-slate-50/50 transition-colors font-sans"
-                >
-                  <td className="py-5 px-8 text-slate-600 font-sans">
-                    <div className="flex items-center gap-4 font-sans">
-                      <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black shrink-0 font-sans">
-                        {item.nama_lengkap.charAt(0)}
+              {isLoading ? (
+                [...Array(5)].map((_, idx) => (
+                  <tr key={idx} className="animate-pulse">
+                    <td className="py-5 px-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 rounded-2xl bg-slate-100"></div>
+                        <div className="h-4 bg-slate-100 rounded-full w-32"></div>
                       </div>
-                      <div className="font-sans">
-                        <p className="font-bold text-slate-900 font-sans">
-                          {item.nama_lengkap}
-                        </p>
+                    </td>
+                    <td className="py-5 px-8">
+                      <div className="h-4 bg-slate-100 rounded-full w-24"></div>
+                    </td>
+                    <td className="py-5 px-8">
+                      <div className="h-6 bg-slate-50 rounded-xl w-24"></div>
+                    </td>
+                    <td className="py-5 px-8">
+                      <div className="flex justify-center gap-2">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
+                        <div className="w-10 h-10 rounded-xl bg-slate-50"></div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="py-5 px-8 font-sans">
-                    <div className="flex items-center gap-2 text-slate-700 font-bold font-sans">
-                      <Fingerprint
-                        size={16}
-                        className="text-slate-400 font-sans"
-                      />
-                      {item.username}
-                    </div>
-                  </td>
-                  <td className="py-5 px-8 text-slate-600 font-sans">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border font-sans ${getRoleStyle(item.role)}`}
-                    >
-                      <Shield size={12} className="font-sans" />
-                      {item.role}
-                    </span>
-                  </td>
-                  <td className="py-5 px-8 font-sans">
-                    <div className="flex items-center justify-center gap-2 font-sans">
-                      <button
-                        onClick={() => openModal(item)}
-                        className="p-3 rounded-xl bg-white text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200 transition-all shadow-sm font-sans"
-                        title="Edit User"
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                users.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="hover:bg-slate-50/50 transition-colors font-sans"
+                  >
+                    <td className="py-5 px-8 text-slate-600 font-sans">
+                      <div className="flex items-center gap-4 font-sans">
+                        <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black shrink-0 font-sans">
+                          {item.nama_lengkap.charAt(0)}
+                        </div>
+                        <div className="font-sans">
+                          <p className="font-bold text-slate-900 font-sans">
+                            {item.nama_lengkap}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-5 px-8 font-sans">
+                      <div className="flex items-center gap-2 text-slate-700 font-bold font-sans">
+                        <Fingerprint
+                          size={16}
+                          className="text-slate-400 font-sans"
+                        />
+                        {item.username}
+                      </div>
+                    </td>
+                    <td className="py-5 px-8 text-slate-600 font-sans">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border font-sans ${getRoleStyle(item.role)}`}
                       >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="p-3 rounded-xl bg-white text-slate-400 hover:text-white hover:bg-rose-500 border border-slate-200 transition-all shadow-sm font-sans"
-                        title="Hapus User"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        <Shield size={12} className="font-sans" />
+                        {item.role}
+                      </span>
+                    </td>
+                    <td className="py-5 px-8 font-sans">
+                      <div className="flex items-center justify-center gap-2 font-sans">
+                        <button
+                          onClick={() => openModal(item)}
+                          className="p-3 rounded-xl bg-white text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200 transition-all shadow-sm font-sans"
+                          title="Edit User"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-3 rounded-xl bg-white text-slate-400 hover:text-white hover:bg-rose-500 border border-slate-200 transition-all shadow-sm font-sans"
+                          title="Hapus User"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
 
-          {users.length === 0 && (
+          {!isLoading && users.length === 0 && (
             <div className="py-24 text-center font-sans">
               <div className="w-20 h-20 bg-slate-50 rounded-[28px] flex items-center justify-center mx-auto text-slate-300 mb-6 border border-dashed border-slate-200 font-sans">
                 <UserIcon size={32} className="font-sans" />

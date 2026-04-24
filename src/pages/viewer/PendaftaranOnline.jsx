@@ -1,7 +1,6 @@
 import React from "react";
 import Navbar from "../../components/viewer/Navbar";
 import Footer from "../../components/viewer/Footer";
-import Header from "../../components/viewer/Header";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
 import {
   FaGooglePlay,
@@ -11,9 +10,13 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 
+import useTitle from "../../hooks/useTitle";
+
 import imgPoster from "../../assets/e-registrasi.png";
 
 const PendaftaranOnline = () => {
+  useTitle("Pendaftaran Online");
+
   return (
     <div className="font-secondary min-h-screen flex flex-col bg-slate-50">
       <Navbar />

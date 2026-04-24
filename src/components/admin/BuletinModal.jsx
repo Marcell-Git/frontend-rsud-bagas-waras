@@ -10,6 +10,7 @@ const BuletinModal = ({
   handleImageChange,
   handleSubmit,
   fileInputRef,
+  isSubmitting = false,
 }) => {
   return (
     <Modal
@@ -21,15 +22,20 @@ const BuletinModal = ({
         <div className="flex gap-4 w-full justify-end">
           <button
             onClick={onClose}
-            className="px-8 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-2xl transition-all"
+            disabled={isSubmitting}
+            className="px-8 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-2xl transition-all disabled:opacity-50"
           >
             Batal
           </button>
           <button
             onClick={handleSubmit}
-            className="px-12 py-3 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all active:scale-95"
+            disabled={isSubmitting}
+            className="px-12 py-3 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            Simpan & Terbitkan
+            {isSubmitting ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : null}
+            {isSubmitting ? "Menyimpan..." : "Simpan & Terbitkan"}
           </button>
         </div>
       }

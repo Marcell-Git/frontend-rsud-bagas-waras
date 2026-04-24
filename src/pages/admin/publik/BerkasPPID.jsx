@@ -39,6 +39,7 @@ const BerkasPPID = () => {
     kelompok_dokumen: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -121,6 +122,7 @@ const BerkasPPID = () => {
       data.append("_method", "PUT");
     }
 
+    setIsSubmitting(true);
     try {
       if (editingItem) {
         await updatePPID(editingItem.id, data);
@@ -134,6 +136,8 @@ const BerkasPPID = () => {
     } catch (error) {
       console.error("Error saving PPID:", error);
       toast.error("Gagal menyimpan dokumen PPID");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -364,16 +368,22 @@ const BerkasPPID = () => {
           <div className="flex gap-4 w-full justify-end font-sans">
             <button
               onClick={closeModal}
-              className="px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all text-xs uppercase tracking-widest font-sans"
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all text-xs uppercase tracking-widest font-sans disabled:opacity-50"
             >
               Batal
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-3.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-sans"
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-sans disabled:opacity-50"
             >
-              <Save size={16} />
-              Simpan Dokumen
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <Save size={16} />
+              )}
+              {isSubmitting ? "Menyimpan..." : "Simpan Dokumen"}
             </button>
           </div>
         }

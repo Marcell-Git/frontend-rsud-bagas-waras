@@ -19,6 +19,7 @@ const Buletin = () => {
     gambar: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -68,6 +69,7 @@ const Buletin = () => {
       data.append("_method", "PUT");
     }
 
+    setIsSubmitting(true);
     try {
       if (editingItem) {
         await updateBuletin(editingItem.id, data);
@@ -82,6 +84,8 @@ const Buletin = () => {
     } catch (error) {
       console.error("Error saving buletin:", error);
       toast.error("Gagal menyimpan buletin");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -220,6 +224,7 @@ const Buletin = () => {
         handleImageChange={handleImageChange}
         handleSubmit={handleSubmit}
         fileInputRef={fileInputRef}
+        isSubmitting={isSubmitting}
       />
 
       {/* Confirm Delete Modal */}

@@ -11,6 +11,7 @@ const GaleriModal = ({
   handleImageChange,
   handleSubmit,
   fileInputRef,
+  isSubmitting = false,
 }) => {
   const mediaType = formData.url_video ? "video" : "image";
 
@@ -24,15 +25,20 @@ const GaleriModal = ({
         <div className="flex gap-4 w-full">
           <button
             onClick={onClose}
-            className="flex-1 px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-100 transition-all font-sans"
+            disabled={isSubmitting}
+            className="flex-1 px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-100 transition-all font-sans disabled:opacity-50"
           >
             Batal
           </button>
           <button
             onClick={handleSubmit}
-            className="flex-2 px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all font-sans"
+            disabled={isSubmitting}
+            className="flex-2 px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all font-sans flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            Simpan Media
+            {isSubmitting ? (
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : null}
+            {isSubmitting ? "Menyimpan..." : "Simpan Media"}
           </button>
         </div>
       }

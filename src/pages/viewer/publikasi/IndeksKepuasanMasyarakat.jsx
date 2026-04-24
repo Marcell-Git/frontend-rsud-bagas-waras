@@ -34,13 +34,9 @@ const IndeksKepuasanMasyarakat = () => {
     fetchIkm();
   }, []);
 
-  // Helper untuk mendapatkan icon & label cantik (Triwulan) dari teks "title"
   const processedData = useMemo(() => {
     return items.map((item, index) => {
-      // Menentukan Tahun dari waktu_upload
-      const tahun = new Date(item.waktu_upload).getFullYear();
-      
-      // Deteksi Triwulan dari Judul
+      const tahun = new Date(item.tanggal).getFullYear();
       let triwulan = "";
       const lowerTitle = (item.judul || "").toLowerCase();
       if (lowerTitle.includes("januari - maret") || lowerTitle.includes("jan-mar") || lowerTitle.includes("tw 1") || lowerTitle.includes("triwulan 1")) triwulan = "Triwulan I";

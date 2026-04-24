@@ -113,6 +113,7 @@ const Berita = () => {
       data.append("_method", "PUT");
     }
 
+    setIsSubmitting(true);
     try {
       if (editingBerita) {
         await updateBerita(editingBerita.id, data);
@@ -134,6 +135,8 @@ const Berita = () => {
     } catch (error) {
       console.error("Error saving berita:", error);
       toast.error("Gagal menyimpan berita");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -352,7 +355,6 @@ const Berita = () => {
         )}
       </div>
 
-      {/* Berita Modal Component */}
       <BeritaModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -362,6 +364,7 @@ const Berita = () => {
         handleImageChange={handleImageChange}
         handleSubmit={handleSubmit}
         fileInputRef={fileInputRef}
+        isSubmitting={isSubmitting}
       />
 
       {/* Confirm Delete Modal */}

@@ -8,6 +8,8 @@ import {
   FaUserMd,
   FaArrowRight,
   FaMobileAlt,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
 import sketchRsud from "../../assets/sketch_rsud_blue.png";
 import Navbar from "../../components/viewer/Navbar";
@@ -132,6 +134,14 @@ const Home = () => {
     }
   }, [banners]);
 
+  const nextSlide = () => {
+    setActiveSlide((prev) => (prev >= banners.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setActiveSlide((prev) => (prev <= 0 ? banners.length - 1 : prev - 1));
+  };
+
   const formatDate = (dateString) => {
     const options = {
       year: "numeric",
@@ -164,22 +174,61 @@ const Home = () => {
               />
             )}
 
-            {banners.map((banner, index) => (
-              <div
-                key={banner.id}
-                className={`carousel-slide absolute inset-0 flex items-center justify-center ${
-                  activeSlide === index ? "active" : ""
-                }`}
-              >
-                <img
-                  src={`${import.meta.env.VITE_STORAGE_URL}/${banner.url_gambar}`}
-                  alt={banner.status}
-                  className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
-                />
-                {/* Subtle overlay for depth */}
-                <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
-              </div>
-            ))}
+            {banners.map((banner, index) => {
+              const slideContent = (
+                <>
+                  <img
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${banner.url_gambar}`}
+                    alt={banner.status}
+                    className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
+                  />
+                  {/* Subtle overlay for depth */}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
+                </>
+              );
+
+              return (
+                <div
+                  key={banner.id}
+                  className={`carousel-slide absolute inset-0 flex items-center justify-center ${
+                    activeSlide === index ? "active" : ""
+                  }`}
+                >
+                  {banner.link_url ? (
+                    <a
+                      href={banner.link_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 w-full h-full block cursor-pointer z-10"
+                    >
+                      {slideContent}
+                    </a>
+                  ) : (
+                    slideContent
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Navigation Arrows */}
+            {banners.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/30 hover:bg-white text-white hover:text-primary-blue backdrop-blur-md transition-all duration-300 shadow-lg"
+                  aria-label="Previous slide"
+                >
+                  <FaChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/30 hover:bg-white text-white hover:text-primary-blue backdrop-blur-md transition-all duration-300 shadow-lg"
+                  aria-label="Next slide"
+                >
+                  <FaChevronRight size={20} />
+                </button>
+              </>
+            )}
 
             {/* Navigation Dots */}
             {banners.length > 1 && (

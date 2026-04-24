@@ -7,12 +7,9 @@ import {
   Trash2,
   Megaphone,
   CheckCircle2,
-  XCircle,
   Clock,
   X,
   Calendar,
-  MoreVertical,
-  AlertCircle,
   FileText,
   Upload,
   ExternalLink,
@@ -140,7 +137,9 @@ const Pengumuman = () => {
       setIsModalOpen(false);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Gagal menyimpan pengumuman");
+      toast.error(
+        error.response?.data?.message || "Gagal menyimpan pengumuman",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -169,23 +168,6 @@ const Pengumuman = () => {
           <Plus size={20} />
           Tambah Pengumuman
         </button>
-      </div>
-
-      {/* Filter and Search Section */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-        <div className="relative w-full max-w-md">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-            size={18}
-          />
-          <input
-            type="text"
-            placeholder="Cari kata kunci pengumuman..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary-blue/20 focus:border-primary-blue transition-all outline-none font-medium"
-          />
-        </div>
       </div>
 
       {/* Table Section */}
@@ -280,7 +262,7 @@ const Pengumuman = () => {
                         </p>
                         {item.file_path && (
                           <a
-                            href={`${import.meta.env.VITE_API_URL || ""}/storage/${item.file_path}`}
+                            href={`${import.meta.env.VITE_STORAGE_URL}/${item.file_path}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 mt-2 text-xs text-primary-blue font-bold group/file cursor-pointer w-fit"
@@ -289,7 +271,10 @@ const Pengumuman = () => {
                             <span className="group-hover/file:underline">
                               Lihat Dokumen PDF
                             </span>
-                            <ExternalLink size={12} className="opacity-0 group-hover/file:opacity-100 transition-opacity" />
+                            <ExternalLink
+                              size={12}
+                              className="opacity-0 group-hover/file:opacity-100 transition-opacity"
+                            />
                           </a>
                         )}
                       </div>
@@ -300,7 +285,7 @@ const Pengumuman = () => {
                         {new Date(item.updated_at).toLocaleDateString("id-ID", {
                           day: "numeric",
                           month: "long",
-                          year: "numeric"
+                          year: "numeric",
                         })}
                       </div>
                     </td>
@@ -322,9 +307,21 @@ const Pengumuman = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex justify-end gap-2">
+                        {item.url_file && (
+                          <a
+                            href={`${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-lg transition-all"
+                            title="Lihat Berkas"
+                          >
+                            <FileText size={18} />
+                          </a>
+                        )}
                         <button
                           onClick={() => openModal(item)}
                           className="p-2 text-slate-400 hover:text-primary-blue hover:bg-primary-blue/10 rounded-lg transition-all"
+                          title="Edit"
                         >
                           <Edit2 size={18} />
                         </button>
@@ -340,7 +337,10 @@ const Pengumuman = () => {
                 ))}
                 {filteredItems.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-20 text-center text-slate-400 font-medium">
+                    <td
+                      colSpan={5}
+                      className="py-20 text-center text-slate-400 font-medium"
+                    >
                       Tidak ada data pengumuman yang ditemukan.
                     </td>
                   </tr>
@@ -359,7 +359,7 @@ const Pengumuman = () => {
             onClick={() => !isSubmitting && setIsModalOpen(false)}
           ></div>
 
-          <form 
+          <form
             onSubmit={handleSubmit}
             className="bg-white w-full max-w-2xl rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]"
           >
@@ -373,7 +373,8 @@ const Pengumuman = () => {
                     {editingItem ? "Edit Pengumuman" : "Buat Pengumuman Baru"}
                   </h2>
                   <p className="text-sm text-slate-500 font-medium tracking-tight">
-                    Informasikan pesan penting kepada publik melalui portal resmi.
+                    Informasikan pesan penting kepada publik melalui portal
+                    resmi.
                   </p>
                 </div>
               </div>
@@ -408,11 +409,11 @@ const Pengumuman = () => {
                   Lampiran File (PDF)
                 </label>
                 <label className="block border-2 border-dashed border-slate-200 rounded-[32px] p-10 text-center bg-slate-50/50 hover:border-primary-blue/40 transition-all cursor-pointer group relative">
-                  <input 
-                    type="file" 
-                    className="hidden" 
-                    accept=".pdf" 
-                    onChange={handleFileChange} 
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept=".pdf"
+                    onChange={handleFileChange}
                   />
                   <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary-blue group-hover:scale-110 transition-all shadow-sm">
                     <Upload size={24} />
@@ -424,11 +425,13 @@ const Pengumuman = () => {
                     </div>
                   ) : editingItem?.file_path ? (
                     <div className="flex flex-col items-center gap-1">
-                       <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
+                      <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
                         <CheckCircle2 size={18} />
                         File Tersimpan
                       </div>
-                      <p className="text-[10px] text-slate-400">Klik untuk mengganti dengan file baru</p>
+                      <p className="text-[10px] text-slate-400">
+                        Klik untuk mengganti dengan file baru
+                      </p>
                     </div>
                   ) : (
                     <>

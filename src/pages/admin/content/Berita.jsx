@@ -7,6 +7,7 @@ import {
   Calendar,
   User,
   Clock,
+  Search,
   Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "react-toastify";
@@ -49,6 +50,8 @@ const Berita = () => {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fileInputRef = useRef(null);
 
@@ -168,8 +171,8 @@ const Berita = () => {
       setFormData({
         judul: item.judul || "",
         isi: item.isi || "",
-        tanggal: item.tanggal || "",
-        penulis: item.penulis || item.penulis_id || "",
+        tanggal: item.tanggal ? item.tanggal.substring(0, 10) : "",
+        penulis: typeof item.penulis === 'object' ? (item.penulis?.name || "") : (item.penulis || item.penulis_id || ""),
         gambar: "",
         status: item.status || "published",
       });
@@ -199,13 +202,27 @@ const Berita = () => {
             Kelola artikel, berita, dan tips kesehatan untuk pengunjung website.
           </p>
         </div>
-        <button
-          onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
-        >
-          <Plus size={20} />
-          Tambah Berita
-        </button>
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="relative flex-1 md:w-80 group">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-blue transition-colors">
+              <Search size={18} />
+            </div>
+            <input
+              type="text"
+              placeholder="Cari berita..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-4 focus:ring-primary-blue/10 focus:border-primary-blue transition-all outline-none font-medium text-sm shadow-sm"
+            />
+          </div>
+          <button
+            onClick={() => openModal()}
+            className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none shrink-0"
+          >
+            <Plus size={20} />
+            <span className="hidden sm:inline">Tambah Berita</span>
+          </button>
+        </div>
       </div>
 
       {/* Table Section */}
@@ -262,7 +279,11 @@ const Berita = () => {
                   </tr>
                 ))
               ) : (
-                berita.map((item) => (
+                berita
+                  .filter((item) =>
+                    item.judul.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((item) => (
                   <tr
                     key={item.id}
                     className="hover:bg-slate-50/50 transition-colors group"

@@ -27,6 +27,7 @@ const Banner = () => {
     gambar: "",
     status: "Aktif",
     urutan: "",
+    link_url: "",
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -77,6 +78,7 @@ const Banner = () => {
     data.append("gambar", formData.gambar);
     data.append("status", formData.status);
     data.append("urutan", formData.urutan);
+    data.append("link_url", formData.link_url);
 
     if (editingBanner) {
       data.append("_method", "PUT");
@@ -91,6 +93,7 @@ const Banner = () => {
           gambar: "",
           status: "Aktif",
           urutan: "",
+          link_url: "",
         });
       }
 
@@ -151,6 +154,7 @@ const Banner = () => {
         gambar: "", // Reset so we don't accidentally re-upload old image unless changed
         status: banner.status,
         urutan: banner.urutan,
+        link_url: banner.link_url || "",
       });
     } else {
       setEditingBanner(null);
@@ -158,6 +162,7 @@ const Banner = () => {
         gambar: "",
         status: "Aktif",
         urutan: "",
+        link_url: "",
       });
     }
 
@@ -199,6 +204,9 @@ const Banner = () => {
 
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
                   Urutan
+                </th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                  Link URL
                 </th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">
                   Status
@@ -252,6 +260,11 @@ const Banner = () => {
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm">
                         {banner.urutan}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs text-slate-500 font-medium truncate max-w-[150px] block">
+                        {banner.link_url || "-"}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">

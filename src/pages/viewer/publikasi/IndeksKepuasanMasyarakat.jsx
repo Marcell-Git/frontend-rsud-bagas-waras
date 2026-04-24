@@ -103,7 +103,7 @@ const IndeksKepuasanMasyarakat = () => {
                     {item.badgeLabel}
                   </div>
 
-                  <h3 className="text-sm md:text-base font-bold text-gray-800 leading-snug line-clamp-2">
+                  <h3 className="text-sm md:text-base font-bold text-gray-800 leading-relaxed px-2">
                     {item.judul}
                   </h3>
                 </div>

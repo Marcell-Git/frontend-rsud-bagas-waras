@@ -20,8 +20,11 @@ import { getAllDokter } from "../../api/pelayanan/jadwalDokter";
 import { getBeritaTerbaru } from "../../api/content/berita";
 import { getLinkEksternal } from "../../api/content/linkEksternal";
 import SimRS from "../../api/SimRS";
+import useTitle from "../../hooks/useTitle";
 
 const Home = () => {
+  useTitle("");
+  
   const navigate = useNavigate();
   const { roomSummary, loading, error, refresh } = SimRS();
   const [activeSlide, setActiveSlide] = useState(0);

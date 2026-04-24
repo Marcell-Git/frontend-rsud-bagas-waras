@@ -1,10 +1,11 @@
 import React from "react";
 import { Sun, Moon, Cloud, Calendar, Clock, Activity, ShieldCheck } from "lucide-react";
 import useTitle from "../../hooks/useTitle";
+import { getWithExpiry } from "../../utils/localStorageHelper";
 
 const Admin = () => {
   useTitle("Dashboard Admin");
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getWithExpiry("user") || {};
   const getTimeOfDay = () => {
     const hours = new Date().getHours();
     if (hours < 12) return { text: "Selamat Pagi", icon: Sun, color: "text-amber-500" };

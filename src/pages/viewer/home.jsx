@@ -148,7 +148,7 @@ const Home = () => {
         {/* Carousel Wrapper with Max Width to make it smaller/framed on big screens */}
         <div className="w-full max-w-6xl mx-auto xl:px-8 xl:py-6 relative z-0">
           <div
-            className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 aspect-video md:aspect-[21/9] ${
+            className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 aspect-video md:aspect-21/9 ${
               isLoading ? "animate-pulse" : ""
             }`}
           >

@@ -234,7 +234,7 @@ const TarifPelayanan = () => {
               className="group bg-white rounded-[40px] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col"
             >
               {/* Image Area */}
-              <div className="aspect-[4/5] relative overflow-hidden bg-slate-50/50 border-b border-slate-100 p-4">
+              <div className="aspect-4/5 relative overflow-hidden bg-slate-50/50 border-b border-slate-100 p-4">
                 <img
                   src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar_tarif}`}
                   alt="Tarif Pelayanan"

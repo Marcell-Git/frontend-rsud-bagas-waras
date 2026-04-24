@@ -36,6 +36,7 @@ import {
 import { NavLink, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { FaMoneyBill, FaPeopleGroup } from "react-icons/fa6";
+import { getWithExpiry, removeWithExpiry } from "../../utils/localStorageHelper";
 
 const SidebarItem = ({ icon: Icon, label, to, collapsed, end }) => {
   return (
@@ -76,12 +77,12 @@ const SidebarItem = ({ icon: Icon, label, to, collapsed, end }) => {
 
 const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = getWithExpiry("user") || {};
   const role = user.role;
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    removeWithExpiry("token");
+    removeWithExpiry("user");
     toast.info("Anda telah logout.");
     navigate("/auth");
   };

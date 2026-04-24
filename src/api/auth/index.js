@@ -1,17 +1,21 @@
 import api from "../axios";
+import { setWithExpiry, removeWithExpiry } from "../../utils/localStorageHelper";
+
+const EXPIRY_TIME = 24 * 60 * 60 * 1000; // 24 jam
 
 export const login = async (credentials) => {
   const response = await api.post("/login", credentials);
   if (response.data.access_token) {
-    localStorage.setItem("token", response.data.access_token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
+    setWithExpiry("token", response.data.access_token, EXPIRY_TIME);
+    setWithExpiry("user", response.data.user, EXPIRY_TIME);
   }
   return response.data;
 };
 
 export const logout = async () => {
   await api.post("/logout");
-  localStorage.removeItem("token");
+  removeWithExpiry("token");
+  removeWithExpiry("user");
 };
 
 export const getMe = async () => {

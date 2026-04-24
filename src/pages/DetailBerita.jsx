@@ -5,11 +5,6 @@ import {
   FaUser,
   FaChevronRight,
   FaArrowLeft,
-  FaFacebookF,
-  FaTwitter,
-  FaWhatsapp,
-  FaLink,
-  FaArrowRight,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import Navbar from "../components/viewer/Navbar";

@@ -93,7 +93,7 @@ const TextToSpeech = () => {
   if (!pathname.startsWith("/ppid")) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-[60] flex flex-col gap-3">
+    <div className="fixed bottom-24 right-6 z-60 flex flex-col gap-3">
       {isSpeaking && (
         <button
           onClick={handlePauseResume}

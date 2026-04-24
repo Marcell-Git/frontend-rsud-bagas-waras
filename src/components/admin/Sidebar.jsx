@@ -128,12 +128,6 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       category: "Content",
       to: "/admin/link-eksternal",
     },
-    {
-      label: "Standar Pelayanan",
-      icon: FileCheck,
-      category: "Content",
-      to: "/admin/standar-pelayanan",
-    },
 
     // Tentang RSUD
     {
@@ -230,6 +224,12 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
       category: "Pelayanan",
       to: "/admin/syarat-pelayanan",
     },
+    {
+      label: "Standar Pelayanan",
+      icon: FileCheck,
+      category: "Pelayanan",
+      to: "/admin/standar-pelayanan",
+    },
 
     // Publik 
     {
@@ -247,28 +247,28 @@ const Sidebar = ({ collapsed, onToggle, hideToggle = false }) => {
 
     // Pengaduan
     {
-      label: "Survey Kepuasan",
-      icon: Smile,
-      category: "Pengaduan",
-      to: "/admin/survey-kepuasan",
-    },
-    {
       label: "Index Kepuasan Masyarakat",
       icon: FaPeopleGroup,
       category: "Pengaduan",
       to: "/admin/index-kepuasan-masyarakat",
     },
     {
-      label: "Pengaduan Masyarakat",
-      icon: MessageSquare,
-      category: "Pengaduan",
-      to: "/admin/pengaduan-masyarakat",
-    },
-    {
       label: "Laporan Tindak Lanjut",
       icon: FileCheck,
       category: "Pengaduan",
       to: "/admin/laporan-tindak-lanjut",
+    },
+    {
+      label: "Survey Kepuasan",
+      icon: Smile,
+      category: "Pengaduan",
+      to: "/admin/survey-kepuasan",
+    },
+    {
+      label: "Pengaduan Masyarakat",
+      icon: MessageSquare,
+      category: "Pengaduan",
+      to: "/admin/pengaduan-masyarakat",
     },
     {
       label: "Pengaduan Korupsi",

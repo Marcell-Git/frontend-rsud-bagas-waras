@@ -101,23 +101,17 @@ const LaporanBenturanKepentingan = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-sky-50 text-sky-600 flex items-center justify-center shadow-inner">
-            <HandMetal size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Benturan Kepentingan
-            </h1>
-            <p className="text-slate-500 mt-1 font-medium italic text-sm">
-              "Laporan mengenai situasi konflik kepentingan di lingkungan
-              instansi."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Benturan Kepentingan
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Laporan mengenai situasi konflik kepentingan di lingkungan instansi.
+          </p>
         </div>
-        <div className="flex items-center justify-center gap-2 bg-slate-100 text-slate-500 px-6 py-3 rounded-2xl font-bold border border-slate-200">
-          <Info size={20} className="text-sky-500" />
+        <div className="flex items-center justify-center gap-2 bg-slate-100 text-slate-500 px-6 py-2.5 rounded-xl font-bold border border-slate-200 text-sm">
+          <Info size={18} className="text-sky-500" />
           Akses Pemantauan (Read-Only)
         </div>
       </div>

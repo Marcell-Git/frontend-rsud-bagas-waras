@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
   Edit2,
@@ -116,23 +116,18 @@ const Visi = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-primary-blue/10 text-primary-blue flex items-center justify-center shadow-inner">
-            <Compass size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Visi RSUD
-            </h1>
-            <p className="text-slate-400 mt-1 italic text-sm font-bold">
-              "Mendefinisikan tujuan masa depan institusi kita."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Visi RSUD
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Mendefinisikan tujuan masa depan institusi kita.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-primary-blue/30 transition-all active:scale-95 shadow-lg shadow-primary-blue/10"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Poin Visi

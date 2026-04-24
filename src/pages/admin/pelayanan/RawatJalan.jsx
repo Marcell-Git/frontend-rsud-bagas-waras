@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
   Edit2,
@@ -116,23 +116,18 @@ const RawatJalan = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-teal-50 text-teal-600 flex items-center justify-center shadow-inner">
-            <Activity size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Layanan Rawat Jalan
-            </h1>
-            <p className="text-slate-400 mt-1 italic text-sm font-bold">
-              "Manajemen daftar poliklinik rumah sakit."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Layanan Rawat Jalan
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola daftar poliklinik rumah sakit RSUD Bagas Waras.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-teal-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-teal-700 transition-all active:scale-95 shadow-lg shadow-teal-600/20"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
           <Plus size={20} />
           Tambah Poliklinik

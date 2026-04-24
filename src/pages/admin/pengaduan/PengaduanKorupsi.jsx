@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ShieldAlert,
   Eye,
@@ -103,22 +103,17 @@ const PengaduanKorupsi = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-rose-50 text-rose-600 flex items-center justify-center shadow-inner">
-            <ShieldAlert size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Pengaduan Tipikor
-            </h1>
-            <p className="text-slate-500 mt-1 font-medium italic text-sm">
-              "Kotak masuk pengawasan indikasi tindak pidana korupsi."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Pengaduan Tipikor
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kotak masuk pengawasan indikasi tindak pidana korupsi.
+          </p>
         </div>
-        <div className="flex items-center justify-center gap-2 bg-slate-100 text-slate-500 px-6 py-3 rounded-2xl font-bold border border-slate-200">
-          <ShieldAlert size={20} className="text-rose-500" />
+        <div className="flex items-center justify-center gap-2 bg-slate-100 text-slate-500 px-6 py-2.5 rounded-xl font-bold border border-slate-200 text-sm">
+          <ShieldAlert size={18} className="text-rose-500" />
           Data Bersifat Rahasia
         </div>
       </div>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Edit2,
@@ -190,25 +190,20 @@ const TarifPelayanan = () => {
   return (
     <div className="space-y-8 pb-12 font-sans">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 shadow-inner">
-            <FaMoneyBill size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
-              Tarif Pelayanan
-            </h1>
-            <p className="text-slate-500 mt-1 font-bold text-sm italic opacity-80">
-              Kelola informasi tarif dan biaya pelayanan RSUD Bagas Waras.
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Tarif Pelayanan
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola informasi tarif dan biaya pelayanan RSUD Bagas Waras.
+          </p>
         </div>
         <button
           onClick={() => openModal()}
-          className="flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:shadow-slate-900/20 transition-all active:scale-95 text-xs uppercase tracking-widest"
+          className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-blue to-secondary-blue text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg hover:shadow-primary-blue/30 transition-all outline-none"
         >
-          <Plus size={18} />
+          <Plus size={20} />
           Tambah Tarif
         </button>
       </div>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Eye, 
@@ -93,8 +93,12 @@ const PengaduanMasyarakat = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">Pengaduan Masyarakat</h1>
-          <p className="text-slate-500 text-sm mt-1 font-medium font-sans italic opacity-80">Layanan aspirasi, keluhan, dan aspresiasi langsung dari masyarakat umum.</p>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Pengaduan Masyarakat
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Kelola layanan aspirasi, keluhan, dan apresiasi dari masyarakat umum.
+          </p>
         </div>
       </div>
 

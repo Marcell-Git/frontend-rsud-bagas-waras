@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Smile,
   ThumbsUp,
@@ -113,19 +113,14 @@ const SurveyKepuasan = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-8 pb-12 font-sans">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-100 font-sans">
-        <div className="flex items-center gap-5">
-          <div className="w-14 h-14 rounded-[22px] bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-inner font-sans">
-            <Smile size={30} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight font-sans">
-              Survey Kepuasan Website RSUD
-            </h1>
-            <p className="text-slate-500 mt-1 font-medium italic text-sm font-sans">
-              "Pantau tingkat kepuasan publik terhadap layanan informasi RSUD."
-            </p>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Survey Kepuasan Website RSUD
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 font-medium">
+            Pantau tingkat kepuasan publik terhadap layanan informasi RSUD.
+          </p>
         </div>
       </div>
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
-  Search,
   Edit2,
   Trash2,
   Image as ImageIcon,
@@ -41,7 +40,6 @@ const Galeri = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -176,15 +174,12 @@ const Galeri = () => {
   };
 
   const filteredMedia = media.filter((item) => {
-    const matchesSearch = item.judul
-      ? item.judul.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
     const isVideo = !!item.url_video;
     const matchesTab =
       activeTab === "Semua" ||
       (activeTab === "Gambar" && !isVideo) ||
       (activeTab === "Video" && isVideo);
-    return matchesSearch && matchesTab;
+    return matchesTab;
   });
 
   return (
@@ -227,22 +222,6 @@ const Galeri = () => {
           ))}
         </div>
 
-        {/* Search */}
-        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-          <div className="relative flex-1 sm:w-80">
-            <Search
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-              size={18}
-            />
-            <input
-              type="text"
-              placeholder="Cari judul media..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-4 focus:ring-primary-blue/10 focus:border-primary-blue transition-all outline-none"
-            />
-          </div>
-        </div>
       </div>
 
       {/* Gallery Grid */}

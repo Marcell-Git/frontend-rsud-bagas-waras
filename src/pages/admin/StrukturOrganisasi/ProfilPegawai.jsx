@@ -1,7 +1,6 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
-  Search,
   Edit2,
   Trash2,
   X,
@@ -34,7 +33,6 @@ const ProfilPegawai = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
@@ -126,12 +124,6 @@ const ProfilPegawai = () => {
     }
   };
 
-  const filteredPegawai = pegawai.filter(
-    (item) =>
-      (item.nama || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.jabatan || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (item.pendidikan || "").toLowerCase().includes(searchQuery.toLowerCase()),
-  );
 
   return (
     <div className="space-y-8">
@@ -154,22 +146,6 @@ const ProfilPegawai = () => {
         </button>
       </div>
 
-      {/* Control Bar */}
-      <div className="flex bg-white p-4 rounded-[32px] shadow-sm border border-slate-100">
-        <div className="relative flex-1 w-full text-slate-900">
-          <Search
-            className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-bold"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Cari berdasarkan nama, jabatan, atau pendidikan..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-primary-blue/10 focus:border-primary-blue transition-all outline-none font-bold text-slate-700"
-          />
-        </div>
-      </div>
 
       {/* Table Section */}
       <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden min-h-[400px]">
@@ -230,7 +206,7 @@ const ProfilPegawai = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredPegawai.map((item, index) => (
+                {pegawai.map((item, index) => (
                   <tr
                     key={item.id}
                     className="hover:bg-slate-50/50 transition-colors group"
@@ -285,7 +261,7 @@ const ProfilPegawai = () => {
           </div>
         )}
 
-        {!isLoading && filteredPegawai.length === 0 && (
+        {!isLoading && pegawai.length === 0 && (
           <div className="py-32 flex flex-col items-center justify-center text-center px-4">
             <div className="w-20 h-20 bg-slate-50 rounded-[28px] border border-dashed border-slate-200 flex items-center justify-center text-slate-200 mb-6 font-sans">
               <Users size={32} />

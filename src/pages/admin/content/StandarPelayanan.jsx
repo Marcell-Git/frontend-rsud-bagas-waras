@@ -6,7 +6,6 @@ import {
   Upload,
   X,
   FileText,
-  Search,
   Download,
   Eye,
   File,
@@ -35,7 +34,6 @@ const StandarPelayanan = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     nama_pelayanan: "",
     file: null,
@@ -56,7 +54,6 @@ const StandarPelayanan = () => {
       const response = await getStandarPelayanan({ 
         page, 
         per_page: pagination.itemsPerPage,
-        search: searchTerm 
       });
       setItems(response.data?.data || response.data || []);
       
@@ -75,12 +72,6 @@ const StandarPelayanan = () => {
     }
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchItems(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
 
   useEffect(() => {
     fetchItems(pagination.currentPage);
@@ -204,19 +195,6 @@ const StandarPelayanan = () => {
         </button>
       </div>
 
-      {/* Control Bar */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-[32px] border border-slate-100 shadow-sm">
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input
-            type="text"
-            placeholder="Cari nama pelayanan..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all font-medium text-slate-600"
-          />
-        </div>
-      </div>
 
       {/* Table Section */}
       <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden transition-all duration-500">

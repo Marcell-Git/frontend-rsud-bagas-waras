@@ -68,7 +68,6 @@ const Auth = () => {
       navigate("/admin");
     } catch (error) {
       console.error("Login error:", error);
-      // Reset captcha on failed login
       captchaRef.current?.reset();
       setCaptchaToken(null);
       toast.error(

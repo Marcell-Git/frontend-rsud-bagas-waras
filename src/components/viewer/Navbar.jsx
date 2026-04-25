@@ -26,7 +26,8 @@ const Navbar = () => {
       return (
         pathname.startsWith("/ppid") ||
         pathname.startsWith("/wbs") ||
-        pathname.startsWith("/zona-integritas")
+        pathname.startsWith("/zona-integritas") ||
+        pathname.startsWith("/publik/jdih")
       );
     }
     return pathname === path || pathname.startsWith(path + "/");
@@ -288,7 +289,7 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/publik/jdih"
-                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publikasi/jdih" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publik/jdih" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       JDIH
                     </Link>

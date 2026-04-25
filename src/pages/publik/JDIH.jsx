@@ -4,7 +4,9 @@ import Footer from "../../components/viewer/Footer";
 import Header from "../../components/viewer/Header";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
 import { FaGavel, FaCalendarAlt, FaFilePdf, FaSearch } from "react-icons/fa";
+
 import { getJdih } from "../../api/publik/jdih";
+import ModalPdfViewer from "../../components/viewer/ModalPdfViewer";
 import useTitle from "../../hooks/useTitle";
 
 const JDIH = () => {
@@ -12,6 +14,7 @@ const JDIH = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedPdf, setSelectedPdf] = useState(null);
 
   const fetchJdih = async () => {
     setIsLoading(true);
@@ -89,7 +92,18 @@ const JDIH = () => {
                   key={item.id}
                   className="flex flex-col rounded-2xl border border-gray-100 bg-white hover:border-primary-blue/30 transition-all duration-300 group shadow-sm hover:shadow-lg overflow-hidden"
                 >
-                  <div className="w-full aspect-video bg-gray-100 relative overflow-hidden shrink-0 group-hover:opacity-95 transition-opacity">
+                  <div
+                    className="w-full aspect-video bg-gray-100 relative overflow-hidden shrink-0 group-hover:opacity-95 transition-opacity cursor-pointer"
+                    onClick={() => {
+                      if (item.url_file) {
+                        setSelectedPdf({
+                          nama: item.judul,
+                          pdf: `${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`,
+                          filePdf: item.url_file.split("/").pop() || "file.pdf",
+                        });
+                      }
+                    }}
+                  >
                     <div className="absolute top-3 left-3 bg-primary-blue/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm z-20 flex items-center gap-1.5 uppercase tracking-wider">
                       <FaGavel size={10} /> JDIH
                     </div>
@@ -121,15 +135,21 @@ const JDIH = () => {
                     </div>
 
                     <div className="mt-auto pt-4 border-t border-gray-100/80">
-                      <a
-                        href={`${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => {
+                          if (item.url_file) {
+                            setSelectedPdf({
+                              nama: item.judul,
+                              pdf: `${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`,
+                              filePdf: item.url_file.split("/").pop() || "file.pdf",
+                            });
+                          }
+                        }}
                         className="w-full inline-flex justify-center items-center gap-2 bg-primary-blue text-white hover:bg-dark-blue font-bold py-3 px-4 rounded-xl transition-all active:scale-95 text-sm shadow-md shadow-primary-blue/20"
                       >
                         <FaFilePdf size={14} />
                         <span>Lihat Dokumen</span>
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -149,6 +169,13 @@ const JDIH = () => {
 
       <Footer />
       <EmergencyCall />
+
+      {selectedPdf && (
+        <ModalPdfViewer
+          tarif={selectedPdf}
+          onClose={() => setSelectedPdf(null)}
+        />
+      )}
     </div>
   );
 };

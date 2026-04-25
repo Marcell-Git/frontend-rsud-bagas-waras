@@ -4,8 +4,9 @@ import Footer from "../../components/viewer/Footer";
 import Header from "../../components/viewer/Header";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
 import { FaBullhorn, FaCalendarAlt } from "react-icons/fa";
-import ModalPdfViewer from "../../components/viewer/ModalPdfViewer";
+
 import { getPengumuman } from "../../api/content/pengumuman";
+import ModalPdfViewer from "../../components/viewer/ModalPdfViewer";
 import useTitle from "../../hooks/useTitle";
 
 const Pengumuman = () => {

@@ -39,6 +39,7 @@ import LaporanBenturanKepentingan from "../pages/admin/pengaduan/LaporanBenturan
 import PengaduanMasyarakat from "../pages/admin/pengaduan/PengaduanMasyarakat";
 
 import User from "../pages/admin/userManajemen/User";
+import JDIH from "../pages/admin/publik/JDIH";
 
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
@@ -153,6 +154,10 @@ const adminRoutes = [
       {
         path: "kegiatan-wbkwbbm",
         element: <KegiatanWBKWBBM />
+      },
+      {
+        path: "jdih",
+        element: <JDIH />
       },
       {
         path: "survey-kepuasan",

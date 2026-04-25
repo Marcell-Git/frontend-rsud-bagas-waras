@@ -155,7 +155,16 @@ const Berita = () => {
                       <div className="flex items-center gap-4 mb-4 text-xs font-bold text-gray-400 uppercase tracking-wide">
                         <div className="flex items-center gap-1.5 hover:text-primary-blue transition-colors">
                           <FaCalendarAlt className="text-primary-blue" />
-                          {item.tanggal}
+                          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                            {new Date(item.tanggal).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              },
+                            )}
+                          </div>
                         </div>
                         <div className="flex items-center gap-1.5 hover:text-primary-blue transition-colors">
                           <FaUser className="text-primary-blue" />

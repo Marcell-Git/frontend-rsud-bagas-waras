@@ -580,7 +580,7 @@ const LaporanTindakLanjut = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Laporan Tindak Lanjut"
-        message="Apakah Anda yakin ingin menghapus arsip laporan tindak lanjut ini secara permanen?"
+        message="Apakah Anda yakin ingin menghapus arsip laporan tindak lanjut ini?"
       />
     </div>
   );

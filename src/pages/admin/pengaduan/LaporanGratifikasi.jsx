@@ -402,7 +402,7 @@ const LaporanGratifikasi = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Laporan Gratifikasi"
-        message="Apakah Anda yakin ingin menghapus laporan gratifikasi ini secara permanen? Data yang dihapus tidak dapat dikembalikan."
+        message="Apakah Anda yakin ingin menghapus laporan gratifikasi ini?"
       />
     </div>
   );

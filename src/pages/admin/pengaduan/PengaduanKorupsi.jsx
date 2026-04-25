@@ -142,127 +142,124 @@ const PengaduanKorupsi = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {isLoading ? (
-                // Skeleton Rows
-                [...Array(5)].map((_, index) => (
-                  <tr key={index} className="animate-pulse">
-                    <td className="px-8 py-6">
-                      <div className="h-4 bg-slate-100 rounded w-8"></div>
-                    </td>
-                    <td className="px-8 py-6">
-                      <div className="space-y-2">
-                        <div className="h-4 bg-slate-100 rounded-full w-40"></div>
-                        <div className="h-3 bg-slate-50 rounded-full w-32"></div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-6">
-                      <div className="h-5 bg-slate-50 rounded-full w-full"></div>
-                    </td>
-                    <td className="px-8 py-6">
-                      <div className="h-8 bg-slate-50 rounded-lg w-28"></div>
-                    </td>
-                    <td className="px-8 py-6">
-                      <div className="flex justify-end gap-2">
-                        <div className="w-24 h-10 bg-slate-50 rounded-xl"></div>
-                        <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                dataPengaduan.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="hover:bg-slate-50/50 transition-colors"
-                  >
-                    {/* Nomor */}
-                    <td className="px-8 py-6 align-middle font-bold text-slate-400">
-                      #{item.id}
-                    </td>
+              {isLoading
+                ? // Skeleton Rows
+                  [...Array(5)].map((_, index) => (
+                    <tr key={index} className="animate-pulse">
+                      <td className="px-8 py-6">
+                        <div className="h-4 bg-slate-100 rounded w-8"></div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="space-y-2">
+                          <div className="h-4 bg-slate-100 rounded-full w-40"></div>
+                          <div className="h-3 bg-slate-50 rounded-full w-32"></div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="h-5 bg-slate-50 rounded-full w-full"></div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="h-8 bg-slate-50 rounded-lg w-28"></div>
+                      </td>
+                      <td className="px-8 py-6">
+                        <div className="flex justify-end gap-2">
+                          <div className="w-24 h-10 bg-slate-50 rounded-xl"></div>
+                          <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                : dataPengaduan.map((item, index) => (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-slate-50/50 transition-colors"
+                    >
+                      {/* Nomor */}
+                      <td className="px-8 py-6 align-middle font-bold text-slate-400">
+                        #{item.id}
+                      </td>
 
-                    {/* Pengirim */}
-                    <td className="px-8 py-6 align-middle">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-bold text-slate-800 flex items-center gap-2">
-                          <User size={14} className="text-slate-400" />{" "}
-                          {item.nama_lengkap}
+                      {/* Pengirim */}
+                      <td className="px-8 py-6 align-middle">
+                        <div className="flex flex-col gap-1">
+                          <span className="font-bold text-slate-800 flex items-center gap-2">
+                            <User size={14} className="text-slate-400" />{" "}
+                            {item.nama_lengkap}
+                          </span>
+                          <span className="text-sm font-medium text-slate-500 flex items-center gap-2">
+                            <Mail size={12} className="text-slate-400" />{" "}
+                            {item.email}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Perihal */}
+                      <td className="px-8 py-6 align-middle">
+                        <div className="flex items-start gap-2">
+                          <div className="w-2 h-2 mt-2 rounded-full bg-rose-500 shrink-0"></div>
+                          <p className="font-bold text-slate-700 leading-snug line-clamp-2">
+                            {item.perihal}
+                          </p>
+                        </div>
+                      </td>
+
+                      {/* Tanggal */}
+                      <td className="px-8 py-6 align-middle">
+                        <span className="inline-flex w-fit items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 font-bold text-[10px] uppercase rounded-lg border border-slate-200 tracking-wider">
+                          <CalendarDays size={12} />
+                          {new Date(item.tanggal).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
                         </span>
-                        <span className="text-sm font-medium text-slate-500 flex items-center gap-2">
-                          <Mail size={12} className="text-slate-400" />{" "}
-                          {item.email}
-                        </span>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Perihal */}
-                    <td className="px-8 py-6 align-middle">
-                      <div className="flex items-start gap-2">
-                        <div className="w-2 h-2 mt-2 rounded-full bg-rose-500 shrink-0"></div>
-                        <p className="font-bold text-slate-700 leading-snug line-clamp-2">
-                          {item.perihal}
-                        </p>
-                      </div>
-                    </td>
-
-                    {/* Tanggal */}
-                    <td className="px-8 py-6 align-middle">
-                      <span className="inline-flex w-fit items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-600 font-bold text-[10px] uppercase rounded-lg border border-slate-200 tracking-wider">
-                        <CalendarDays size={12} />
-                        {new Date(item.tanggal).toLocaleDateString("id-ID", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </span>
-                    </td>
-
-                    {/* Aksi */}
-                    <td className="px-8 py-6 align-middle text-right">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => openViewModal(item)}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white font-bold rounded-xl text-xs transition-all border border-rose-100"
-                        >
-                          <Eye size={16} />
-                          Cek Detail
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-2.5 bg-slate-50 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all border border-slate-100"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
+                      {/* Aksi */}
+                      <td className="px-8 py-6 align-middle text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => openViewModal(item)}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white font-bold rounded-xl text-xs transition-all border border-rose-100"
+                          >
+                            <Eye size={16} />
+                            Cek Detail
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="p-2.5 bg-slate-50 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all border border-slate-100"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
           </table>
         </div>
+      </div>
 
-        </div>
-
-        {dataPengaduan.length === 0 && !isLoading && (
-          <div className="py-24 text-center">
-            <div className="w-20 h-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200 flex items-center justify-center mx-auto text-slate-300 mb-6 font-sans">
-              <ShieldCheck size={40} />
-            </div>
-            <p className="text-slate-500 font-bold">
-              Belum ada aduan tindak pidana korupsi.
-            </p>
+      {dataPengaduan.length === 0 && !isLoading && (
+        <div className="py-24 text-center">
+          <div className="w-20 h-20 bg-slate-50 rounded-[32px] border border-dashed border-slate-200 flex items-center justify-center mx-auto text-slate-300 mb-6 font-sans">
+            <ShieldCheck size={40} />
           </div>
-        )}
+          <p className="text-slate-500 font-bold">
+            Belum ada aduan tindak pidana korupsi.
+          </p>
+        </div>
+      )}
 
-        {!isLoading && (
-          <Pagination
-            currentPage={pagination.currentPage}
-            totalPages={pagination.totalPages}
-            onPageChange={handlePageChange}
-            totalItems={pagination.totalItems}
-            itemsPerPage={pagination.itemsPerPage}
-          />
-        )}
+      {!isLoading && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePageChange}
+          totalItems={pagination.totalItems}
+          itemsPerPage={pagination.itemsPerPage}
+        />
+      )}
 
       {/* Read-Only Detail Modal */}
       {viewItem && (
@@ -421,7 +418,7 @@ const PengaduanKorupsi = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Aduan Tipikor"
-        message="Apakah Anda yakin ingin menghapus laporan aduan tindak pidana korupsi ini? Tindakan ini tidak dapat dibatalkan."
+        message="Apakah Anda yakin ingin menghapus laporan aduan tindak pidana korupsi ini?"
       />
     </div>
   );

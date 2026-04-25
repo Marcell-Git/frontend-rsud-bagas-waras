@@ -361,7 +361,7 @@ const SyaratPelayanan = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Syarat Pelayanan"
-        message="Apakah Anda yakin ingin menghapus gambar syarat pelayanan ini? Tindakan ini bersifat permanen."
+        message="Apakah Anda yakin ingin menghapus gambar syarat pelayanan ini?"
       />
     </div>
   );

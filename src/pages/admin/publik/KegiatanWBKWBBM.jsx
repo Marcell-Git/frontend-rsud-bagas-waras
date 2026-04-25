@@ -41,6 +41,7 @@ const KegiatanWBKWBBM = () => {
     deskripsi: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -126,6 +127,7 @@ const KegiatanWBKWBBM = () => {
       data.append("_method", "PUT");
     }
 
+    setIsSubmitting(true);
     try {
       if (editingItem) {
         await updateWBKWBBM(editingItem.id, data);
@@ -139,6 +141,8 @@ const KegiatanWBKWBBM = () => {
     } catch (error) {
       console.error("Error saving kegiatan:", error);
       toast.error("Gagal menyimpan data kegiatan");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -357,16 +361,22 @@ const KegiatanWBKWBBM = () => {
           <div className="flex gap-4 w-full justify-end font-sans">
             <button
               onClick={closeModal}
-              className="px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all text-xs uppercase tracking-widest font-sans"
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all text-xs uppercase tracking-widest font-sans disabled:opacity-50"
             >
               Batal
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-3.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-sans"
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-sans disabled:opacity-50"
             >
-              <Save size={16} />
-              Simpan Data
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <Save size={16} />
+              )}
+              {isSubmitting ? "Menyimpan..." : "Simpan Data"}
             </button>
           </div>
         }
@@ -471,7 +481,7 @@ const KegiatanWBKWBBM = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Log Kegiatan"
-        message="Data dokumentasi kegiatan ini akan dihapus permanen. Lanjutkan?"
+        message="Apakah Anda yakin ingin menghapus log kegiatan ini?"
       />
     </div>
   );

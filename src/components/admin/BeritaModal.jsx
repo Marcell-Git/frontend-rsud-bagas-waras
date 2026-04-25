@@ -11,6 +11,7 @@ const BeritaModal = ({
   handleImageChange,
   handleSubmit,
   fileInputRef,
+  isSubmitting = false,
 }) => {
   return (
     <Modal
@@ -46,19 +47,24 @@ const BeritaModal = ({
           <div className="flex gap-3 w-full sm:w-auto">
             <button
               onClick={onClose}
-              className="px-8 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-2xl transition-all"
+              disabled={isSubmitting}
+              className="px-8 py-3 text-slate-600 font-bold hover:bg-slate-50 rounded-2xl transition-all disabled:opacity-50"
             >
               Batal
             </button>
             <button
               onClick={() => handleSubmit(null, formData.status)}
-              className={`flex-1 sm:flex-none px-12 py-3 rounded-2xl font-bold hover:shadow-xl transition-all ${
+              disabled={isSubmitting}
+              className={`flex-1 sm:flex-none px-12 py-3 rounded-2xl font-bold hover:shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
                 formData.status === "published"
                   ? "bg-linear-to-r from-primary-blue to-secondary-blue text-white hover:shadow-primary-blue/30"
                   : "bg-slate-900 text-white hover:bg-slate-800"
               }`}
             >
-              {formData.status === "published" ? "Simpan & Terbitkan" : "Simpan Draft"}
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : null}
+              {isSubmitting ? "Menyimpan..." : formData.status === "published" ? "Simpan & Terbitkan" : "Simpan Draft"}
             </button>
           </div>
         </div>
@@ -144,31 +150,50 @@ const BeritaModal = ({
             </h3>
             <div
               onClick={() => fileInputRef.current.click()}
-              className={`aspect-video bg-white border-2 border-dashed rounded-[24px] flex flex-col items-center justify-center p-4 text-center group transition-all cursor-pointer ${
-                formData.gambar
+              className={`relative aspect-video bg-white border-2 border-dashed rounded-[24px] flex flex-col items-center justify-center p-2 text-center group transition-all cursor-pointer overflow-hidden ${
+                formData.gambar || (editingBerita && editingBerita.url_gambar)
                   ? "border-emerald-500 bg-emerald-50/30"
                   : "border-slate-200 hover:border-primary-blue/40"
               }`}
             >
-              <Upload
-                size={24}
-                className={
-                  formData.gambar
-                    ? "text-emerald-500 mb-2"
-                    : "text-slate-300 group-hover:text-primary-blue transition-colors mb-2"
-                }
-              />
-              <p
-                className={`text-[10px] font-bold ${
-                  formData.gambar ? "text-emerald-600" : "text-slate-400 group-hover:text-primary-blue"
-                } transition-colors max-w-full truncate px-4`}
-              >
-                {formData.gambar
-                  ? `Terpilih: ${formData.gambar.name}`
-                  : editingBerita?.url_gambar
-                  ? "Gambar sudah ada (Klik untuk ganti)"
-                  : "Pilih gambar utama"}
-              </p>
+              {formData.gambar ? (
+                <div className="w-full h-full relative group/img">
+                  <img
+                    src={formData.gambar instanceof File ? URL.createObjectURL(formData.gambar) : `${import.meta.env.VITE_STORAGE_URL}/${formData.gambar}`}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-2xl shadow-sm"
+                  />
+                  <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity rounded-2xl">
+                    <Upload size={32} className="text-white drop-shadow-lg" />
+                  </div>
+                </div>
+              ) : editingBerita?.url_gambar ? (
+                 <div className="w-full h-full relative group/img">
+                  <img
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${editingBerita.url_gambar}`}
+                    alt="Current"
+                    className="w-full h-full object-cover rounded-2xl shadow-sm"
+                  />
+                  <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity rounded-2xl">
+                    <Upload size={32} className="text-white drop-shadow-lg" />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <Upload
+                      size={24}
+                      className="text-slate-300 group-hover:text-primary-blue transition-colors"
+                    />
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-400 group-hover:text-primary-blue transition-colors uppercase tracking-widest">
+                    Pilih Gambar Utama
+                  </p>
+                  <p className="text-[9px] text-slate-300 mt-1 italic">
+                    Format: JPG, PNG, WEBP (Maks 5MB)
+                  </p>
+                </>
+              )}
               <input
                 type="file"
                 name="gambar"

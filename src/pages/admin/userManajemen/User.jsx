@@ -23,6 +23,7 @@ const User = () => {
   useTitle("Manajemen Pengguna");
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     nama_lengkap: "",
     username: "",
@@ -74,6 +75,7 @@ const User = () => {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       if (editingItem) {
         const dataToSend = { ...formData };
@@ -90,6 +92,8 @@ const User = () => {
     } catch (error) {
       console.error("Error saving user:", error);
       toast.error("Gagal menyimpan data user");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -311,16 +315,22 @@ const User = () => {
           <div className="flex gap-4 w-full justify-end font-sans">
             <button
               onClick={closeModal}
-              className="px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all text-xs uppercase tracking-widest font-sans"
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-50 transition-all text-xs uppercase tracking-widest font-sans disabled:opacity-50"
             >
               Batal
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-sans"
+              disabled={isSubmitting}
+              className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-sans disabled:opacity-50"
             >
-              <Save size={16} />
-              Simpan User
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <Save size={16} />
+              )}
+              {isSubmitting ? "Menyimpan..." : "Simpan User"}
             </button>
           </div>
         }
@@ -422,7 +432,7 @@ const User = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Akun User"
-        message="Akun ini tidak akan bisa login lagi ke dashboard. Lanjutkan penghapusan?"
+        message="Apakah Anda yakin ingin menghapus akun user ini?"
       />
     </div>
   );

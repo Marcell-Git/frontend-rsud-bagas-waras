@@ -47,6 +47,21 @@ const BannerModal = ({
       }
     >
       <div className="space-y-6">
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 ml-1">
+            Link URL (Optional)
+          </label>
+          <input
+            type="text"
+            name="link_url"
+            value={formData.link_url}
+            onChange={handleChange}
+            placeholder="https://example.com"
+            disabled={isLoading}
+            className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary-blue/20 focus:border-primary-blue transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 ml-1">

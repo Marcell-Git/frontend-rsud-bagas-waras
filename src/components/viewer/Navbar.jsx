@@ -26,7 +26,8 @@ const Navbar = () => {
       return (
         pathname.startsWith("/ppid") ||
         pathname.startsWith("/wbs") ||
-        pathname.startsWith("/zona-integritas")
+        pathname.startsWith("/zona-integritas") ||
+        pathname.startsWith("/publik/jdih")
       );
     }
     return pathname === path || pathname.startsWith(path + "/");
@@ -285,6 +286,14 @@ const Navbar = () => {
                       SP4N Lapor
                     </a>
                   </li>
+                  <li>
+                    <Link
+                      to="/publik/jdih"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publik/jdih" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
+                    >
+                      JDIH
+                    </Link>
+                  </li>
                 </div>
               </ul>
             </li>
@@ -336,14 +345,14 @@ const Navbar = () => {
                       Buletin
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       to="/publikasi/informasi"
                       className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/publikasi/informasi" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >
                       Informasi
                     </Link>
-                  </li>
+                  </li> */}
                 </div>
               </ul>
             </li>

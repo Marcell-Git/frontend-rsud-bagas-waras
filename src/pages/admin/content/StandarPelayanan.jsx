@@ -428,7 +428,7 @@ const StandarPelayanan = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Standar Pelayanan"
-        message="Apakah Anda yakin ingin menghapus data standar pelayanan ini? Tindakan ini tidak dapat dibatalkan."
+        message="Apakah Anda yakin ingin menghapus data standar pelayanan ini?"
       />
     </div>
   );

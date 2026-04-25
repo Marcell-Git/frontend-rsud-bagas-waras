@@ -348,7 +348,7 @@ const LandasanHukum = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Landasan Hukum"
-        message="Apakah Anda yakin ingin menghapus data landasan hukum ini? Tindakan ini tidak dapat dibatalkan."
+        message="Apakah Anda yakin ingin menghapus data landasan hukum ini?"
       />
     </div>
   );

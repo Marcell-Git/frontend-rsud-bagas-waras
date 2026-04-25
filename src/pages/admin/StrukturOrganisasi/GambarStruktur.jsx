@@ -360,7 +360,7 @@ const GambarStruktur = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Gambar Struktur"
-        message="Apakah Anda yakin ingin menghapus bagan struktur organisasi ini secara permanen?"
+        message="Apakah Anda yakin ingin menghapus bagan struktur organisasi ini?"
       />
     </div>
   );

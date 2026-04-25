@@ -288,7 +288,7 @@ const Misi = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Poin Misi"
-        message="Apakah Anda yakin ingin menghapus poin misi ini? Data yang terhapus tidak dapat dikembalikan."
+        message="Apakah Anda yakin ingin menghapus poin misi ini?"
       />
     </div>
   );

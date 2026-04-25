@@ -19,6 +19,7 @@ const Buletin = () => {
     gambar: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -68,6 +69,7 @@ const Buletin = () => {
       data.append("_method", "PUT");
     }
 
+    setIsSubmitting(true);
     try {
       if (editingItem) {
         await updateBuletin(editingItem.id, data);
@@ -82,6 +84,8 @@ const Buletin = () => {
     } catch (error) {
       console.error("Error saving buletin:", error);
       toast.error("Gagal menyimpan buletin");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -186,7 +190,7 @@ const Buletin = () => {
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-50 text-slate-600 font-bold text-[10px] uppercase tracking-widest hover:bg-primary-blue hover:text-white transition-all border border-slate-100 font-sans"
                 >
                   <Edit2 size={14} />
-                  Ganti Kover
+                  Ganti Cover
                 </button>
                 <button
                   onClick={() => handleDelete(item.id)}
@@ -220,6 +224,7 @@ const Buletin = () => {
         handleImageChange={handleImageChange}
         handleSubmit={handleSubmit}
         fileInputRef={fileInputRef}
+        isSubmitting={isSubmitting}
       />
 
       {/* Confirm Delete Modal */}
@@ -229,7 +234,7 @@ const Buletin = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Buletin"
-        message="Apakah Anda yakin ingin menghapus kover buletin ini?"
+        message="Apakah Anda yakin ingin menghapus cover buletin ini?"
       />
     </div>
   );

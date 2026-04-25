@@ -359,7 +359,7 @@ const LaporanBenturanKepentingan = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Laporan"
-        message="Apakah Anda yakin ingin menghapus laporan benturan kepentingan ini secara permanen? Data yang dihapus tidak dapat dikembalikan."
+        message="Apakah Anda yakin ingin menghapus laporan benturan kepentingan ini?"
       />
     </div>
   );

@@ -37,6 +37,7 @@ const Galeri = () => {
     itemsPerPage: 12,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -110,6 +111,7 @@ const Galeri = () => {
       data.append("_method", "PUT");
     }
 
+    setIsSubmitting(true);
     try {
       if (editingItem) {
         await updateGaleri(editingItem.id, data);
@@ -124,6 +126,8 @@ const Galeri = () => {
     } catch (error) {
       console.error("Error saving galeri:", error);
       toast.error("Gagal menyimpan data galeri");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -362,6 +366,7 @@ const Galeri = () => {
         handleImageChange={handleImageChange}
         handleSubmit={handleSubmit}
         fileInputRef={fileInputRef}
+        isSubmitting={isSubmitting}
       />
 
       {/* Confirm Delete Modal */}

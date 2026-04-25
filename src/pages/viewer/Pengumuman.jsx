@@ -3,9 +3,10 @@ import Navbar from "../../components/viewer/Navbar";
 import Footer from "../../components/viewer/Footer";
 import Header from "../../components/viewer/Header";
 import EmergencyCall from "../../components/viewer/EmergencyCall";
-import { FaBullhorn } from "react-icons/fa";
-import ModalPdfViewer from "../../components/viewer/ModalPdfViewer";
+import { FaBullhorn, FaCalendarAlt } from "react-icons/fa";
+
 import { getPengumuman } from "../../api/content/pengumuman";
+import ModalPdfViewer from "../../components/viewer/ModalPdfViewer";
 import useTitle from "../../hooks/useTitle";
 
 const Pengumuman = () => {
@@ -73,13 +74,15 @@ const Pengumuman = () => {
                 >
                   <div
                     className="w-full aspect-3/4 bg-gray-200 relative overflow-hidden shrink-0 cursor-pointer group-hover:opacity-90 transition-opacity"
-                    onClick={() =>
-                      setSelectedPdf({
-                        nama: item.judul,
-                        pdf: `${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`,
-                        filePdf: item.url_file.split('/').pop(),
-                      })
-                    }
+                    onClick={() => {
+                      if (item.url_file) {
+                        setSelectedPdf({
+                          nama: item.judul,
+                          pdf: `${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`,
+                          filePdf: item.url_file.split("/").pop() || "file.pdf",
+                        });
+                      }
+                    }}
                   >
                     <div className="absolute top-3 left-3 bg-cyan-700/90 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm z-20 flex items-center gap-1.5">
                       <FaBullhorn /> Pengumuman
@@ -102,16 +105,32 @@ const Pengumuman = () => {
                       {item.judul}
                     </h3>
 
+                    <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                      <FaCalendarAlt className="text-cyan-600" />
+                      {new Date(item.updated_at).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                      })}
+                    </div>
+
                     <div className="mt-auto pt-4 border-t border-gray-100/80">
                       <button
-                        onClick={() =>
-                          setSelectedPdf({
-                            nama: item.judul,
-                            pdf: `${import.meta.env.VITE_STORAGE_URL}/${item.file}`,
-                            filePdf: item.file.split('/').pop(),
-                          })
-                        }
-                        className="w-full inline-flex justify-center items-center gap-2 bg-cyan-50 text-cyan-700 hover:bg-cyan-600 hover:text-white font-bold py-2.5 px-4 rounded-xl transition-all active:scale-95 text-sm cursor-pointer shadow-sm"
+                        onClick={() => {
+                          if (item.url_file) {
+                            setSelectedPdf({
+                              nama: item.judul,
+                              pdf: `${import.meta.env.VITE_STORAGE_URL}/${item.url_file}`,
+                              filePdf: item.url_file.split("/").pop() || "file.pdf",
+                            });
+                          }
+                        }}
+                        disabled={!item.url_file}
+                        className={`w-full inline-flex justify-center items-center gap-2 font-bold py-3 px-4 rounded-xl transition-all active:scale-95 text-sm shadow-sm ${
+                          item.url_file
+                            ? "bg-cyan-600 text-white hover:bg-cyan-700 shadow-cyan-600/20"
+                            : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                        }`}
                       >
                         <span>Lihat Berkas</span>
                       </button>

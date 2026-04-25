@@ -505,7 +505,7 @@ const BerkasPPID = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Dokumen PPID"
-        message="Dokumen akan dihapus permanen dari server publik. Lanjutkan?"
+        message="Apakah Anda yakin ingin menghapus dokumen PPID ini?"
       />
     </div>
   );

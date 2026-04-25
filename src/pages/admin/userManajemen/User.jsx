@@ -432,7 +432,7 @@ const User = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Akun User"
-        message="Akun ini tidak akan bisa login lagi ke dashboard. Lanjutkan penghapusan?"
+        message="Apakah Anda yakin ingin menghapus akun user ini?"
       />
     </div>
   );

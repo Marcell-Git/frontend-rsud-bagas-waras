@@ -412,7 +412,7 @@ const ProfilPegawai = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Profil Pegawai"
-        message="Apakah Anda yakin ingin menghapus data pegawai ini? Data yang terhapus tidak dapat dikembalikan."
+        message="Apakah Anda yakin ingin menghapus data pegawai ini?"
       />
     </div>
   );

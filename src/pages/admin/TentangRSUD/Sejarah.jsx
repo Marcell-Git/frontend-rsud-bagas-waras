@@ -129,7 +129,6 @@ const Sejarah = () => {
       {/* Table Section */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
         {isLoading ? (
-          // Skeleton Loader (Non-Circular)
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -314,7 +313,7 @@ const Sejarah = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Momen Sejarah"
-        message="Apakah Anda yakin ingin menghapus momen bersejarah ini? Tindakan ini bersifat permanen."
+        message="Apakah Anda yakin ingin menghapus momen bersejarah ini?"
       />
     </div>
   );

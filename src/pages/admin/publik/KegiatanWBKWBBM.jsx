@@ -481,7 +481,7 @@ const KegiatanWBKWBBM = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Log Kegiatan"
-        message="Data dokumentasi kegiatan ini akan dihapus permanen. Lanjutkan?"
+        message="Apakah Anda yakin ingin menghapus log kegiatan ini?"
       />
     </div>
   );

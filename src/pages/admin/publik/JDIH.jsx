@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2, Scale, FileText, Download, ExternalLink } from "lu
 import { toast } from "react-toastify";
 import JdihModal from "../../../components/admin/JdihModal";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
+
 import { getJdih, createJdih, updateJdih, deleteJdih } from "../../../api/publik/jdih";
 import useTitle from "../../../hooks/useTitle";
 
@@ -239,7 +240,7 @@ const JDIH = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Data JDIH"
-        message="Apakah Anda yakin ingin menghapus data ini? Data yang dihapus akan dipindahkan ke tempat sampah (Soft Delete)."
+        message="Apakah Anda yakin ingin menghapus data ini?"
       />
     </div>
   );

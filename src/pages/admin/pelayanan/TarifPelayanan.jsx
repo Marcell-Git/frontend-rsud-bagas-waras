@@ -455,7 +455,7 @@ const TarifPelayanan = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Tarif Pelayanan"
-        message="Apakah Anda yakin ingin menghapus data tarif pelayanan ini? Poster dan dokumen akan dihapus permanen."
+        message="Apakah Anda yakin ingin menghapus data tarif pelayanan ini?"
       />
     </div>
   );

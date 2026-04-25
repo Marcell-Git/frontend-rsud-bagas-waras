@@ -298,7 +298,7 @@ const FungsiRSUD = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Fungsi RSUD"
-        message="Apakah Anda yakin ingin menghapus poin fungsi ini? Data yang terhapus tidak dapat dikembalikan."
+        message="Apakah Anda yakin ingin menghapus poin fungsi ini?"
       />
     </div>
   );

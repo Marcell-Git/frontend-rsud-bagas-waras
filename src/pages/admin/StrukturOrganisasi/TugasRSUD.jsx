@@ -285,7 +285,7 @@ const TugasRSUD = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Tugas RSUD"
-        message="Apakah Anda yakin ingin menghapus poin tugas ini? Data yang terhapus tidak dapat dikembalikan."
+        message="Apakah Anda yakin ingin menghapus poin tugas ini?"
       />
     </div>
   );

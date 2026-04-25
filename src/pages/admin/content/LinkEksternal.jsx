@@ -443,7 +443,7 @@ const LinkEksternal = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Link Eksternal"
-        message="Apakah Anda yakin ingin menghapus link eksternal ini secara permanen?"
+        message="Apakah Anda yakin ingin menghapus link eksternal ini?"
       />
     </div>
   );

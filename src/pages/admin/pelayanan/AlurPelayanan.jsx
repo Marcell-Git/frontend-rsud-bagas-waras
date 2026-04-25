@@ -369,7 +369,7 @@ const AlurPelayanan = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Alur Pelayanan"
-        message="Apakah Anda yakin ingin menghapus gambar alur pelayanan ini secara permanen?"
+        message="Apakah Anda yakin ingin menghapus gambar alur pelayanan ini?"
       />
     </div>
   );

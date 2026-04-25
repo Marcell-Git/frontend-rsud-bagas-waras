@@ -501,7 +501,7 @@ const Pengumuman = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Pengumuman"
-        message="Apakah Anda yakin ingin menghapus pengumuman ini secara permanen? Tindakan ini tidak dapat dibatalkan."
+        message="Apakah Anda yakin ingin menghapus pengumuman ini?"
       />
     </div>
   );

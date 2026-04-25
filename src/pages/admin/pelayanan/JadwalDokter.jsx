@@ -461,7 +461,7 @@ const JadwalDokter = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Jadwal Dokter"
-        message="Apakah Anda yakin ingin menghapus jadwal praktek dokter ini secara permanen?"
+        message="Apakah Anda yakin ingin menghapus jadwal praktek dokter ini?"
       />
     </div>
   );

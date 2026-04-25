@@ -315,7 +315,7 @@ const PengaduanMasyarakat = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Pengaduan"
-        message="Anda akan menghapus pengaduan ini secara permanen. Tindakan ini tidak dapat dibatalkan."
+        message="Apakah Anda yakin ingin menghapus pengaduan masyarakat ini?"
       />
     </div>
   );

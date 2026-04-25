@@ -310,7 +310,7 @@ const Visi = () => {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
         title="Hapus Poin Visi"
-        message="Apakah Anda yakin ingin menghapus poin visi ini? Data yang terhapus tidak dapat dikembalikan."
+        message="Apakah Anda yakin ingin menghapus poin visi ini?"
       />
     </div>
   );

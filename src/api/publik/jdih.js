@@ -8,9 +8,9 @@ export const createJdih = (data) =>
     },
   });
 export const updateJdih = (id, data) =>
-  api.post("/jdih/${id}", data, {
+  api.post(`/jdih/${id}`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
-export const deleteJdih = (id) => api.delete("/jdih/${id}");
+export const deleteJdih = (id) => api.delete(`/jdih/${id}`);

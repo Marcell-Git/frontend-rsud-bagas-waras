@@ -81,7 +81,7 @@ const LaporanTindakLanjutPengaduan = () => {
                         {report.judul}
                       </h3>
                       <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-wider">
-                         {new Date(report.waktu_upload).toLocaleDateString("id-ID", { month: 'long', year: 'numeric' })}
+                         {new Date(report.waktu).toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' })}
                       </p>
                     </div>
                   </div>

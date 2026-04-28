@@ -16,12 +16,12 @@ const JdihModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div 
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+      <div
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
-      
-      <form 
+
+      <form
         onSubmit={handleSubmit}
         className="bg-white w-full max-w-2xl rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]"
       >
@@ -40,7 +40,7 @@ const JdihModal = ({
               </p>
             </div>
           </div>
-          <button 
+          <button
             type="button"
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-all"
@@ -73,15 +73,18 @@ const JdihModal = ({
               Tanggal Dokumen
             </label>
             <div className="relative">
-                <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                    type="date"
-                    name="tanggal"
-                    value={formData.tanggal}
-                    onChange={handleChange}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-14 pr-6 text-slate-700 font-bold outline-none focus:bg-white focus:border-primary-blue focus:ring-4 focus:ring-primary-blue/5 transition-all"
-                    required
-                />
+              <Calendar
+                className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"
+                size={18}
+              />
+              <input
+                type="date"
+                name="tanggal"
+                value={formData.tanggal}
+                onChange={handleChange}
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-14 pr-6 text-slate-700 font-bold outline-none focus:bg-white focus:border-primary-blue focus:ring-4 focus:ring-primary-blue/5 transition-all"
+                required
+              />
             </div>
           </div>
 
@@ -91,10 +94,10 @@ const JdihModal = ({
               File Dokumen (PDF/Doc)
             </label>
             <label className="block border-2 border-dashed border-slate-200 rounded-[32px] p-10 text-center bg-slate-50/50 hover:border-primary-blue/40 transition-all cursor-pointer group relative">
-              <input 
-                type="file" 
-                className="hidden" 
-                accept=".pdf,.doc,.docx,.xls,.xlsx,image/*" 
+              <input
+                type="file"
+                className="hidden"
+                accept=".pdf,.doc,.docx,.xls,.xlsx,image/*"
                 onChange={handleFileChange}
                 ref={fileInputRef}
               />
@@ -103,30 +106,33 @@ const JdihModal = ({
               </div>
               {formData.file ? (
                 <div className="flex flex-col items-center gap-1">
-                   <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
+                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
                     <CheckCircle2 size={18} />
                     File Terpilih: {formData.file.name}
                   </div>
-                  <p className="text-[10px] text-slate-400">Klik untuk mengganti file</p>
+                  <p className="text-[10px] text-slate-400">
+                    Klik untuk mengganti file
+                  </p>
                 </div>
               ) : editingItem?.url_file ? (
                 <div className="flex flex-col items-center gap-1">
-                   <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
+                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
                     <CheckCircle2 size={18} />
                     Dokumen Sudah Ada
                   </div>
                   <p className="text-[10px] text-slate-400 text-center px-4">
-                    {editingItem.url_file.split('/').pop()}<br/>
+                    {editingItem.url_file.split("/").pop()}
+                    <br />
                     Klik untuk mengganti dengan file baru
                   </p>
                 </div>
               ) : (
                 <>
                   <p className="text-sm font-black text-slate-700 mb-1">
-                    Pilih File atau Drag & Drop
+                    Pilih File
                   </p>
                   <p className="text-xs text-slate-400 font-medium">
-                    PDF, DOC, JPG (Maks. 5MB)
+                    PDF, DOC, JPG
                   </p>
                 </>
               )}
@@ -148,7 +154,11 @@ const JdihModal = ({
             disabled={isLoading}
             className="bg-linear-to-r from-primary-blue to-secondary-blue text-white px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:shadow-lg hover:shadow-primary-blue/30 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100"
           >
-            {isLoading ? "Menyimpan..." : editingItem ? "Simpan Perubahan" : "Tambah Data"}
+            {isLoading
+              ? "Menyimpan..."
+              : editingItem
+                ? "Simpan Perubahan"
+                : "Tambah Data"}
           </button>
         </div>
       </form>

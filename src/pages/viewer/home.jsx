@@ -165,14 +165,12 @@ const Home = () => {
 
       {/* Hero / Carousel Section */}
       <main>
-        {/* Carousel Wrapper with Max Width to make it smaller/framed on big screens */}
         <div className="w-full max-w-6xl mx-auto xl:px-8 xl:py-6 relative z-0">
           <div
             className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 aspect-video md:aspect-21/9 ${
               isLoading ? "animate-pulse" : ""
             }`}
           >
-            {/* Ghost image defining aspect ratio */}
             {banners.length > 0 && (
               <img
                 src={`${import.meta.env.VITE_STORAGE_URL}/${banners[0].url_gambar}`}
@@ -189,7 +187,6 @@ const Home = () => {
                     alt={banner.status}
                     className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
                   />
-                  {/* Subtle overlay for depth */}
                   <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
                 </>
               );

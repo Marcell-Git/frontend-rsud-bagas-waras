@@ -9,6 +9,7 @@ import {
   FaPhoneAlt,
 } from "react-icons/fa";
 import logoRsud from "../../assets/logo-rsud.png";
+import logoBw from "../../assets/bw.png";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -109,12 +110,16 @@ const Navbar = () => {
       <nav className="w-full sticky top-0 transition-all duration-300 z-40 bg-primary-blue py-3">
         <div className="max-w-7xl mx-auto px-6 flex justify-between lg:justify-center items-center relative gap-4">
           {/* Logo - Mobile Only */}
-          <Link to="/" className="lg:hidden shrink-0">
+          <Link to="/" className="lg:hidden flex items-center gap-2 shrink-0">
             <img
-              src={logoRsud}
+              src={logoBw}
               alt="Logo RSUD Bagas Waras"
               className="h-10 w-auto object-contain"
             />
+            <div className="flex flex-col text-white">
+              <span className="text-[13px] font-bold leading-none">RSUD Bagas Waras</span>
+              <span className="text-[11px] font-bold leading-none">Kab. Klaten</span>
+            </div>
           </Link>
           <ul
             className={`${isMobileMenuOpen ? "flex" : "hidden"} flex-col absolute top-full left-0 w-full bg-primary-blue pb-6 px-6 shadow-xl gap-4 z-50 lg:flex! lg:flex-row lg:static lg:w-auto lg:bg-transparent lg:pb-0 lg:px-0 lg:shadow-none lg:gap-7 items-start lg:items-center list-none m-0 text-[13px] xl:text-[14px] font-bold text-white uppercase tracking-wider`}

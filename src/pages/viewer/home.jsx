@@ -10,6 +10,7 @@ import {
   FaMobileAlt,
   FaChevronLeft,
   FaChevronRight,
+  FaArrowUp,
 } from "react-icons/fa";
 import sketchRsud from "../../assets/sketch_rsud_blue.png";
 import Navbar from "../../components/viewer/Navbar";
@@ -26,7 +27,7 @@ import useTitle from "../../hooks/useTitle";
 
 const Home = () => {
   useTitle("");
-  
+
   const navigate = useNavigate();
   const { roomSummary, loading, error, refresh } = SimRS();
   const [activeSlide, setActiveSlide] = useState(0);
@@ -39,6 +40,7 @@ const Home = () => {
   const [berita, setBerita] = useState([]);
   const [linkEksternal, setLinkEksternal] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
   const fetchBanner = async () => {
     try {
@@ -104,6 +106,12 @@ const Home = () => {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+      
+      const section = document.getElementById("informasi-layanan");
+      if (section) {
+        // Show button after passing the top of the section
+        setShowScrollButton(window.scrollY > section.offsetTop + 100);
+      }
     };
 
     const galleryTimer = setInterval(() => {
@@ -151,21 +159,18 @@ const Home = () => {
     return new Date(dateString).toLocaleDateString("id-ID", options);
   };
 
-
   return (
     <div className="bg-gray-50 min-h-screen text-gray-700 font-secondary">
       <Navbar />
 
       {/* Hero / Carousel Section */}
       <main>
-        {/* Carousel Wrapper with Max Width to make it smaller/framed on big screens */}
         <div className="w-full max-w-6xl mx-auto xl:px-8 xl:py-6 relative z-0">
           <div
             className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 aspect-video md:aspect-21/9 ${
               isLoading ? "animate-pulse" : ""
             }`}
           >
-            {/* Ghost image defining aspect ratio */}
             {banners.length > 0 && (
               <img
                 src={`${import.meta.env.VITE_STORAGE_URL}/${banners[0].url_gambar}`}
@@ -182,7 +187,6 @@ const Home = () => {
                     alt={banner.status}
                     className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
                   />
-                  {/* Subtle overlay for depth */}
                   <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
                 </>
               );
@@ -311,6 +315,7 @@ const Home = () => {
         </div>
 
         <section
+          id="informasi-layanan"
           className="py-24 relative bg-fixed bg-cover bg-center"
           style={{ backgroundImage: `url(${sketchRsud})` }}
         >
@@ -658,6 +663,25 @@ const Home = () => {
       </main>
 
       <EmergencyCall />
+
+      {/* Scroll to Section Button (Bottom Left) - Show only after passing the section */}
+      {showScrollButton && (
+        <button
+          onClick={() => {
+            const section = document.getElementById("informasi-layanan");
+            if (section) {
+              section.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+          className="fixed bottom-6 left-6 z-9999 bg-primary-blue hover:bg-secondary-blue text-white p-3 rounded-full shadow-[0_4px_20px_rgba(2,138,162,0.5)] transition-all group hover:-translate-y-1 flex items-center justify-center animate-[fadeIn_0.3s_ease-out]"
+          title="Kembali ke Informasi Layanan"
+          aria-label="Kembali ke Informasi Layanan"
+        >
+          <div className="bg-white text-primary-blue rounded-full p-2 flex items-center justify-center relative">
+            <FaArrowUp className="text-lg relative z-10 group-hover:scale-110 transition-transform" />
+          </div>
+        </button>
+      )}
     </div>
   );
 };

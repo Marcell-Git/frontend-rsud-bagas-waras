@@ -106,7 +106,7 @@ const Home = () => {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
-      
+
       const section = document.getElementById("informasi-layanan");
       if (section) {
         // Show button after passing the top of the section
@@ -165,15 +165,16 @@ const Home = () => {
 
       {/* Hero / Carousel Section */}
       <main>
-        <div className="w-full max-w-6xl mx-auto xl:px-8 xl:py-6 relative z-0">
+        <div className="w-full relative z-0">
           <div
-            className={`relative w-full bg-slate-200 overflow-hidden group xl:rounded-3xl shadow-2xl border border-slate-100 aspect-video md:aspect-21/9 ${
-              isLoading ? "animate-pulse" : ""
+            className={`relative w-full bg-slate-950 overflow-hidden group shadow-2xl transition-all duration-700 ease-in-out ${
+              isLoading ? "animate-pulse min-h-[300px]" : ""
             }`}
           >
+            {/* Dynamic Phantom Image to drive container height auto-resize */}
             {banners.length > 0 && (
               <img
-                src={`${import.meta.env.VITE_STORAGE_URL}/${banners[0].url_gambar}`}
+                src={`${import.meta.env.VITE_STORAGE_URL}/${banners[activeSlide]?.url_gambar}`}
                 alt=""
                 className="w-full h-auto invisible pointer-events-none"
               />
@@ -181,14 +182,19 @@ const Home = () => {
 
             {banners.map((banner, index) => {
               const slideContent = (
-                <>
+                <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-black">
+                  <img
+                    src={`${import.meta.env.VITE_STORAGE_URL}/${banner.url_gambar}`}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-50 z-0"
+                  />
+
                   <img
                     src={`${import.meta.env.VITE_STORAGE_URL}/${banner.url_gambar}`}
                     alt={banner.status}
-                    className="carousel-bg absolute inset-0 w-full h-full object-cover z-0"
+                    className="relative z-10 w-full h-full object-contain"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent"></div>
-                </>
+                </div>
               );
 
               return (
@@ -203,7 +209,7 @@ const Home = () => {
                       href={banner.link_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="absolute inset-0 w-full h-full block cursor-pointer z-10"
+                      className="absolute inset-0 w-full h-full block cursor-pointer z-20"
                     >
                       {slideContent}
                     </a>
@@ -219,14 +225,14 @@ const Home = () => {
               <>
                 <button
                   onClick={prevSlide}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/30 hover:bg-white text-white hover:text-primary-blue backdrop-blur-md transition-all duration-300 shadow-lg"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-primary-blue hover:bg-dark-blue text-white transition-all duration-300 shadow-xl"
                   aria-label="Previous slide"
                 >
                   <FaChevronLeft size={20} />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-white/30 hover:bg-white text-white hover:text-primary-blue backdrop-blur-md transition-all duration-300 shadow-lg"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-primary-blue hover:bg-dark-blue text-white transition-all duration-300 shadow-xl"
                   aria-label="Next slide"
                 >
                   <FaChevronRight size={20} />
@@ -254,60 +260,60 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 relative z-40 -mt-12">
-          <div className="bg-white rounded-2xl shadow-xl p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 border border-gray-100">
+        <div className="w-full relative z-40">
+          <div className="bg-white/95 backdrop-blur-md shadow-2xl py-6 px-6 md:px-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border-y border-gray-100">
             <Link
-              className="group relative flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 border border-transparent hover:bg-light-blue hover:border-primary-blue hover:shadow-lg hover:-translate-y-2 transition-all cursor-pointer"
+              className="group relative flex flex-row items-center gap-4 p-4 rounded-xl hover:bg-light-blue transition-all cursor-pointer"
               to="https://skm.klaten.go.id/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <div className="w-16 h-16 rounded-full bg-primary-blue text-white flex items-center justify-center mb-4 group-hover:bg-white group-hover:text-primary-blue transition-colors">
-                <FaClipboardList className="text-3xl" />
+              <div className="w-12 h-12 shrink-0 rounded-full bg-primary-blue text-white flex items-center justify-center group-hover:bg-white group-hover:text-primary-blue transition-colors shadow-sm">
+                <FaClipboardList className="text-xl" />
               </div>
-              <div className="font-primary font-semibold text-dark-blue text-lg">
+              <div className="font-primary font-semibold text-dark-blue text-base leading-tight">
                 Survey Kepuasan Pasien
               </div>
             </Link>
 
             {/* Alur Pelayanan */}
             <Link
-              className="group relative flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 border border-transparent hover:bg-light-blue hover:border-primary-blue hover:shadow-lg hover:-translate-y-2 transition-all cursor-pointer"
+              className="group relative flex flex-row items-center gap-4 p-4 rounded-xl hover:bg-light-blue transition-all cursor-pointer"
               to="/alur-pelayanan"
             >
-              <div className="w-16 h-16 rounded-full bg-primary-blue text-white flex items-center justify-center mb-4 group-hover:bg-white group-hover:text-primary-blue transition-colors">
-                <FaRoute className="text-3xl" />
+              <div className="w-12 h-12 shrink-0 rounded-full bg-primary-blue text-white flex items-center justify-center group-hover:bg-white group-hover:text-primary-blue transition-colors shadow-sm">
+                <FaRoute className="text-xl" />
               </div>
-              <div className="font-primary font-semibold text-dark-blue text-lg">
+              <div className="font-primary font-semibold text-dark-blue text-base leading-tight">
                 Alur Pelayanan
               </div>
             </Link>
 
             {/* Form Pengaduan */}
             <Link
-              className="group relative flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 border border-transparent hover:bg-light-blue hover:border-primary-blue hover:shadow-lg hover:-translate-y-2 transition-all cursor-pointer"
+              className="group relative flex flex-row items-center gap-4 p-4 rounded-xl hover:bg-light-blue transition-all cursor-pointer"
               to="/pengaduan"
             >
-              <div className="w-16 h-16 rounded-full bg-primary-blue text-white flex items-center justify-center mb-4 group-hover:bg-white group-hover:text-primary-blue transition-colors">
-                <FaExclamationCircle className="text-3xl" />
+              <div className="w-12 h-12 shrink-0 rounded-full bg-primary-blue text-white flex items-center justify-center group-hover:bg-white group-hover:text-primary-blue transition-colors shadow-sm">
+                <FaExclamationCircle className="text-xl" />
               </div>
-              <div className="font-primary font-semibold text-dark-blue text-lg">
+              <div className="font-primary font-semibold text-dark-blue text-base leading-tight">
                 Form Pengaduan
               </div>
             </Link>
 
             {/* Pendaftaran Online */}
             <Link
-              className="group relative flex flex-col items-center text-center p-6 rounded-xl bg-gray-50 border border-transparent hover:bg-light-blue hover:border-primary-blue hover:shadow-lg hover:-translate-y-2 transition-all cursor-pointer"
+              className="group relative flex flex-row items-center gap-4 p-4 rounded-xl hover:bg-light-blue transition-all cursor-pointer"
               to="/pendaftaran-online"
             >
-              <span className="badge-new absolute -top-3 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+              <span className="badge-new absolute -top-1 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10">
                 NEW
               </span>
-              <div className="w-16 h-16 rounded-full bg-primary-blue text-white flex items-center justify-center mb-4 group-hover:bg-white group-hover:text-primary-blue transition-colors">
-                <FaMobileAlt className="text-3xl" />
+              <div className="w-12 h-12 shrink-0 rounded-full bg-primary-blue text-white flex items-center justify-center group-hover:bg-white group-hover:text-primary-blue transition-colors shadow-sm">
+                <FaMobileAlt className="text-xl" />
               </div>
-              <div className="font-primary font-semibold text-dark-blue text-lg">
+              <div className="font-primary font-semibold text-dark-blue text-base leading-tight">
                 Pendaftaran Online
               </div>
             </Link>

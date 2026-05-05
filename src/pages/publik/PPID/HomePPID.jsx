@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import NavbarPPID from "../../../components/publik/PPID/NavbarPPID";
 import FooterPPID from "../../../components/publik/PPID/FooterPPID";
+import { Link } from "react-router";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 // Data images
@@ -35,25 +36,25 @@ const PPID = () => {
       title: "Informasi Berkala",
       desc: "Berikut adalah daftar Informasi Berkala yang disediakan oleh PPID pembantu RSD Bagas Waras:",
       icon: icon1,
-      link: "/publik/ppid/informasi-berkala",
+      link: "/ppid/informasi-berkala",
     },
     {
       title: "Informasi Serta Merta",
       desc: "Berikut adalah daftar Informasi Serta Merta yang disediakan oleh PPID pembantu RSD Bagas Waras:",
       icon: icon2,
-      link: "/publik/ppid/informasi-serta-merta",
+      link: "/ppid/informasi-serta-merta",
     },
     {
       title: "Informasi Setiap Saat",
       desc: "Berikut adalah daftar Informasi Setiap Saat yang disediakan oleh PPID pembantu RSD Bagas Waras:",
       icon: icon3,
-      link: "/publik/ppid/informasi-setiap-saat",
+      link: "/ppid/informasi-setiap-saat",
     },
     {
       title: "Informasi Dikecualikan",
       desc: "Berikut adalah daftar Informasi Dikecualikan yang disediakan oleh PPID pembantu RSD Bagas Waras:",
       icon: icon4,
-      link: "/publik/ppid/informasi-dikecualikan",
+      link: "/ppid/informasi-dikecualikan",
     },
   ];
 
@@ -159,13 +160,13 @@ const PPID = () => {
                 <p className="text-sm md:text-base text-gray-500 leading-relaxed mb-8 grow">
                   {card.desc}
                 </p>
-                <a
-                  href={card.link}
+                <Link
+                  to={card.link}
                   className="w-full py-3.5 px-4 bg-gray-50 hover:bg-gray-900 text-gray-700 hover:text-amber-400 font-bold rounded-2xl transition-all duration-300 border border-gray-100 hover:border-gray-900 flex items-center justify-center gap-2 mt-auto"
                 >
                   Selengkapnya
                   <FaChevronRight className="text-[10px] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                </a>
+                </Link>
               </div>
             ))}
           </div>

@@ -13,7 +13,7 @@ const NavbarPPID = () => {
         <div className="flex justify-between items-center h-16 md:h-20">
           <div className="flex shrink-0 items-center">
             <Link
-              to="/publik/ppid"
+              to="/ppid"
               className="font-primary font-bold text-lg md:text-xl text-amber-400 leading-snug tracking-wide"
             >
               PPID PEMBANTU

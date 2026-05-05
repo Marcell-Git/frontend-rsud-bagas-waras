@@ -35,7 +35,7 @@ const TextToSpeech = () => {
       const rvElements = document.querySelectorAll('script[src*="responsivevoice"], #rv-container, .responsivevoice-widget');
       rvElements.forEach(el => el.remove());
     };
-  }, [pathname]);
+  }, []);
 
   const handleSpeech = () => {
     if (!window.responsiveVoice) {

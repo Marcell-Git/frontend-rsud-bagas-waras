@@ -218,6 +218,14 @@ const Navbar = () => {
                   </li>
                   <li>
                     <Link
+                      to="/pelayanan/jadwal-dokter"
+                      className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/pelayanan/jadwal-dokter" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
+                    >
+                      Jadwal Dokter
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       to="/pelayanan/layanan-informasi"
                       className={`block px-6 py-2.5 text-sm capitalize font-bold transition-colors ${pathname === "/pelayanan/layanan-informasi" ? "bg-light-blue text-primary-blue" : "text-gray-700 hover:bg-light-blue hover:text-primary-blue"}`}
                     >

@@ -20,6 +20,7 @@ import RawatJalan from "../pages/viewer/pelayanan/rawatJalan";
 import RawatInap from "../pages/viewer/pelayanan/rawatInap";
 import LayananInformasi from "../pages/viewer/pelayanan/layananInformasi";
 import TarifPelayanan from "../pages/viewer/pelayanan/tarifPelayanan";
+import JadwalDokter from "../pages/viewer/pelayanan/jadwalDokter";
 
 import PPID from "../pages/publik/PPID/HomePPID";
 import InformasiBerkala from "../pages/publik/PPID/InformasiBerkala";
@@ -141,6 +142,10 @@ const router = createBrowserRouter([
           {
             path: "tarif-pelayanan",
             element: <TarifPelayanan />,
+          },
+          {
+            path: "jadwal-dokter",
+            element: <JadwalDokter />,
           },
         ],
       },

@@ -19,7 +19,7 @@ import EmergencyCall from "../../components/viewer/EmergencyCall";
 
 import { getBannerActive } from "../../api/content/banner";
 import { getGaleriGambar } from "../../api/content/galeri";
-import { getAllDokter } from "../../api/pelayanan/jadwalDokter";
+import { getJadwalDokterHariIni } from "../../api/pelayanan/jadwalDokter";
 import { getBeritaTerbaru } from "../../api/content/berita";
 import { getLinkEksternal } from "../../api/content/linkEksternal";
 import SimRS from "../../api/SimRS";
@@ -62,7 +62,7 @@ const Home = () => {
 
   const fetchDokter = async () => {
     try {
-      const response = await getAllDokter();
+      const response = await getJadwalDokterHariIni();
       setDokter(response.data);
     } catch (error) {
       console.log(error);
@@ -355,48 +355,24 @@ const Home = () => {
               <div className="overflow-x-auto max-h-80 overflow-y-auto custom-scrollbar">
                 <table className="w-full text-left border-collapse relative">
                   <thead className="sticky top-0 z-10 bg-gray-50 shadow-sm">
-                    <tr className="border-b-2 border-gray-200 text-sm font-primary font-bold text-gray-600 uppercase tracking-wider">
+                    <tr className="border-b-2 border-gray-200 text-[11px] md:text-sm font-primary font-bold text-gray-600 uppercase tracking-wider">
                       {activeTab === "ruangan" ? (
                         <>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            No
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Nama Ruangan
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Kelas
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Kapasitas
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Terisi
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Kosong
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Status
-                          </th>
+                          <th className="hidden md:table-cell px-4 py-3 md:px-6 md:py-4">No</th>
+                          <th className="px-3 py-3 md:px-6 md:py-4">Nama Ruangan</th>
+                          <th className="px-2 py-3 md:px-6 md:py-4">Kelas</th>
+                          <th className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 text-center">Kapasitas</th>
+                          <th className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-4 text-center">Terisi</th>
+                          <th className="px-2 py-3 md:px-6 md:py-4 text-center">Kosong</th>
+                          <th className="px-3 py-3 md:px-6 md:py-4">Status</th>
                         </>
                       ) : (
                         <>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            No
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Nama Dokter
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Spesialisasi
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Hari Praktik
-                          </th>
-                          <th className="px-4 py-3 md:px-6 md:py-4 whitespace-nowrap">
-                            Jam Praktik
-                          </th>
+                          <th className="hidden md:table-cell px-4 py-3 md:px-6 md:py-4">No</th>
+                          <th className="px-3 py-3 md:px-6 md:py-4">Nama Dokter</th>
+                          <th className="px-2 py-3 md:px-6 md:py-4">Spesialisasi</th>
+                          <th className="px-2 py-3 md:px-6 md:py-4">Hari</th>
+                          <th className="px-3 py-3 md:px-6 md:py-4">Jam</th>
                         </>
                       )}
                     </tr>
@@ -405,64 +381,32 @@ const Home = () => {
                     {isLoading || loading
                       ? [...Array(4)].map((_, idx) => (
                           <tr key={idx} className="animate-pulse">
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <div className="h-4 bg-gray-200 rounded w-4"></div>
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <div className="h-4 bg-gray-200 rounded w-32"></div>
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <div className="h-4 bg-gray-200 rounded w-20"></div>
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <div className="h-4 bg-gray-200 rounded w-20"></div>
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <div className="h-4 bg-gray-200 rounded w-24"></div>
-                            </td>
-                            <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                              <div className="h-4 bg-gray-200 rounded w-16"></div>
-                            </td>
-                            {activeTab === "ruangan" && (
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                <div className="h-4 bg-gray-200 rounded w-16"></div>
-                              </td>
-                            )}
+                            <td className="hidden md:table-cell px-4 py-3 md:px-6 md:py-5"><div className="h-4 bg-gray-200 rounded w-4"></div></td>
+                            <td className="px-3 py-3 md:px-6 md:py-5"><div className="h-4 bg-gray-200 rounded w-32"></div></td>
+                            <td className="px-2 py-3 md:px-6 md:py-5"><div className="h-4 bg-gray-200 rounded w-20"></div></td>
+                            <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-5"><div className="h-4 bg-gray-200 rounded w-12 mx-auto"></div></td>
+                            <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-5"><div className="h-4 bg-gray-200 rounded w-12 mx-auto"></div></td>
+                            <td className="px-2 py-3 md:px-6 md:py-5"><div className="h-4 bg-gray-200 rounded w-12 mx-auto"></div></td>
+                            <td className="px-3 py-3 md:px-6 md:py-5"><div className="h-4 bg-gray-200 rounded w-16"></div></td>
                           </tr>
                         ))
                       : activeTab === "ruangan"
                         ? roomSummary.map((item, index) => (
                             <tr
                               key={index}
-                              className="hover:bg-light-blue transition-colors text-sm md:text-base"
+                              className="hover:bg-light-blue transition-colors text-xs md:text-base"
                             >
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                {index + 1}
+                              <td className="hidden md:table-cell px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">{index + 1}</td>
+                              <td className="px-3 py-3 md:px-6 md:py-5 font-semibold text-gray-800 min-w-[120px] md:min-w-0">{item.room}</td>
+                              <td className="px-2 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                <span className="bg-light-blue text-primary-blue px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase">{item.class}</span>
                               </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
-                                {item.room}
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                <span className="bg-light-blue text-primary-blue px-3 py-1 rounded-full text-xs font-bold">
-                                  {item.class}
-                                </span>
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                {item.total}
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                {item.filled}
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 text-primary-blue font-bold whitespace-nowrap">
-                                {item.total - item.filled}
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                <span
-                                  className={`px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-semibold ${item.total - item.filled > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
-                                >
-                                  {item.total - item.filled > 0
-                                    ? "Tersedia"
-                                    : "Penuh"}
+                              <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-5 text-center">{item.total}</td>
+                              <td className="hidden sm:table-cell px-2 py-3 md:px-6 md:py-5 text-center">{item.filled}</td>
+                              <td className="px-2 py-3 md:px-6 md:py-5 text-center text-primary-blue font-bold">{item.total - item.filled}</td>
+                              <td className="px-3 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                <span className={`px-2 py-1 md:px-4 md:py-1.5 rounded-full text-[10px] md:text-sm font-semibold ${item.total - item.filled > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                                  {item.total - item.filled > 0 ? "Tersedia" : "Penuh"}
                                 </span>
                               </td>
                             </tr>
@@ -470,30 +414,30 @@ const Home = () => {
                         : dokter.map((item, index) => (
                             <tr
                               key={index}
-                              className="hover:bg-light-blue transition-colors text-sm md:text-base"
+                              className="hover:bg-light-blue transition-colors text-xs md:text-base"
                             >
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                {index + 1}
+                              <td className="hidden md:table-cell px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">{index + 1}</td>
+                              <td className="px-3 py-3 md:px-6 md:py-5 font-semibold text-gray-800 min-w-[140px] md:min-w-0">{item.nama_dokter}</td>
+                              <td className="px-2 py-3 md:px-6 md:py-5 whitespace-nowrap">
+                                <span className="bg-light-blue text-primary-blue px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-xs font-bold uppercase">{item.spesialisasi}</span>
                               </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 font-semibold text-gray-800 whitespace-nowrap">
-                                {item.nama_dokter}
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                <span className="bg-light-blue text-primary-blue px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold">
-                                  {item.spesialisasi}
-                                </span>
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap">
-                                {item.hari}
-                              </td>
-                              <td className="px-4 py-3 md:px-6 md:py-5 whitespace-nowrap font-bold text-primary-blue">
-                                {item.jam}
-                              </td>
+                              <td className="px-2 py-3 md:px-6 md:py-5 whitespace-nowrap">{item.hari}</td>
+                              <td className="px-3 py-3 md:px-6 md:py-5 whitespace-nowrap font-bold text-primary-blue">{item.jam}</td>
                             </tr>
                           ))}
                   </tbody>
                 </table>
               </div>
+              {activeTab === "dokter" && (
+                <div className="p-6 text-center border-t border-gray-100 bg-gray-50/50">
+                  <Link
+                    to="/pelayanan/jadwal-dokter"
+                    className="inline-flex items-center gap-2 text-primary-blue font-bold hover:gap-3 transition-all"
+                  >
+                    Lihat Selengkapnya <FaArrowRight />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </section>

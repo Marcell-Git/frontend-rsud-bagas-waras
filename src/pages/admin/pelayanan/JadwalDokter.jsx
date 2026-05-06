@@ -140,7 +140,9 @@ const JadwalDokter = () => {
       setIsModalOpen(false);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Gagal menyimpan jadwal dokter");
+      toast.error(
+        error.response?.data?.message || "Gagal menyimpan jadwal dokter",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -151,9 +153,7 @@ const JadwalDokter = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">
-            Jadwal Dokter
-          </h1>
+          <h1 className="text-2xl font-bold text-slate-900">Jadwal Dokter</h1>
           <p className="text-slate-500 text-sm mt-1 font-medium">
             Kelola jadwal praktek tenaga medis di RSUD Bagas Waras.
           </p>
@@ -175,27 +175,49 @@ const JadwalDokter = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/50 border-b border-slate-100">
-                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest text-center w-16">No</th>
-                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest w-1/3">Nama Dokter</th>
-                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest w-1/4">Poli / Spesialis</th>
-                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">Hari Praktek</th>
-                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">Jam Praktek</th>
-                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest text-right w-32">Aksi</th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest text-center w-16">
+                    No
+                  </th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest w-1/3">
+                    Nama Dokter
+                  </th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest w-1/4">
+                    Poli / Spesialis
+                  </th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                    Hari Praktek
+                  </th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest">
+                    Jam Praktek
+                  </th>
+                  <th className="px-8 py-5 text-xs font-bold text-slate-500 uppercase tracking-widest text-right w-32">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {[...Array(4)].map((_, index) => (
                   <tr key={index} className="animate-pulse">
-                    <td className="px-8 py-6 text-center"><div className="w-6 h-6 bg-slate-100 rounded mx-auto"></div></td>
+                    <td className="px-8 py-6 text-center">
+                      <div className="w-6 h-6 bg-slate-100 rounded mx-auto"></div>
+                    </td>
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center"><Stethoscope size={18} className="text-slate-200" /></div>
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
+                          <Stethoscope size={18} className="text-slate-200" />
+                        </div>
                         <div className="h-5 bg-slate-100 rounded-full w-40"></div>
                       </div>
                     </td>
-                    <td className="px-8 py-6"><div className="h-7 bg-slate-50 rounded-xl w-32"></div></td>
-                    <td className="px-8 py-6"><div className="h-4 bg-slate-50 rounded-full w-24"></div></td>
-                    <td className="px-8 py-6"><div className="h-4 bg-slate-50 rounded-full w-20"></div></td>
+                    <td className="px-8 py-6">
+                      <div className="h-7 bg-slate-50 rounded-xl w-32"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="h-4 bg-slate-50 rounded-full w-24"></div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div className="h-4 bg-slate-50 rounded-full w-20"></div>
+                    </td>
                     <td className="px-8 py-6 text-right">
                       <div className="flex justify-end gap-2">
                         <div className="w-10 h-10 bg-slate-50 rounded-xl"></div>
@@ -239,7 +261,9 @@ const JadwalDokter = () => {
                     className="hover:bg-slate-50/50 transition-colors"
                   >
                     <td className="px-8 py-6 align-middle text-center font-bold text-slate-400 text-sm">
-                      #{(pagination.currentPage - 1) * pagination.itemsPerPage + (index + 1)}
+                      #
+                      {(pagination.currentPage - 1) * pagination.itemsPerPage +
+                        (index + 1)}
                     </td>
                     <td className="px-8 py-6 align-middle">
                       <div className="flex items-center gap-4">
@@ -396,7 +420,7 @@ const JadwalDokter = () => {
                     value={formData.hari}
                     onChange={handleChange}
                     required
-                    placeholder="Contoh: Senin - Rabu"
+                    placeholder="Contoh: Senin"
                     className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all outline-none font-bold text-slate-700 text-sm"
                   />
                 </div>
@@ -428,25 +452,22 @@ const JadwalDokter = () => {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="flex-1 px-8 py-4 bg-white border border-slate-200 text-slate-600 rounded-2xl font-bold hover:bg-slate-100 transition-all text-sm"
+                className="flex-1 h-12 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold hover:bg-slate-50 transition-all text-sm flex items-center justify-center"
                 disabled={isSubmitting}
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="flex-2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 shadow-xl shadow-slate-900/20 transition-all active:scale-95 text-xs uppercase tracking-widest"
+                className="flex-1 h-12 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 shadow-lg shadow-slate-900/20 transition-all active:scale-95 text-sm flex items-center justify-center gap-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    Menyimpan...
-                  </>
+                  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                 ) : (
                   <>
-                    <Save size={20} />
-                    {editingItem ? "Update Jadwal" : "Simpan Jadwal"}
+                    <Save size={18} />
+                    <span>{editingItem ? "Update" : "Simpan"} Jadwal</span>
                   </>
                 )}
               </button>

@@ -90,8 +90,8 @@ const LaporanTindakLanjutPengaduan = () => {
                     onClick={() =>
                       setSelectedPdf({
                         nama: report.judul,
-                        pdf: `${import.meta.env.VITE_STORAGE_URL}/${report.file_path}`,
-                        filePdf: report.file_path.split('/').pop(),
+                        pdf: `${import.meta.env.VITE_STORAGE_URL}/${report.url_file}`,
+                        filePdf: report.url_file.split('/').pop(),
                       })
                     }
                     className="w-full sm:w-auto shrink-0 inline-flex justify-center items-center gap-2 bg-gray-50 text-cyan-600 border border-gray-200 hover:bg-cyan-600 hover:text-white hover:border-cyan-600 font-bold py-2.5 px-5 rounded-xl transition-all active:scale-95 text-sm shadow-sm cursor-pointer"

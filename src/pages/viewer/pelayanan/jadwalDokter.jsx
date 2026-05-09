@@ -11,9 +11,8 @@ import Navbar from "../../../components/viewer/Navbar";
 import EmergencyCall from "../../../components/viewer/EmergencyCall";
 import Footer from "../../../components/viewer/Footer";
 import Header from "../../../components/viewer/Header";
-import { getAllDokter } from "../../../api/pelayanan/jadwalDokter";
+import { getDokter } from "../../../api/pelayanan/dokter";
 import useTitle from "../../../hooks/useTitle";
-import sketchRsud from "../../../assets/sketch_rsud_blue.png";
 
 const JadwalDokter = () => {
   useTitle("Jadwal Dokter");
@@ -38,11 +37,11 @@ const JadwalDokter = () => {
   ];
 
   useEffect(() => {
-    const fetchSchedules = async () => {
+    const fetchDoctors = async () => {
       try {
         setLoading(true);
-        const response = await getAllDokter();
-        const data = response.data;
+        const response = await getDokter();
+        const data = response.data || [];
         setSchedules(data);
         setFilteredSchedules(data);
 
@@ -59,7 +58,7 @@ const JadwalDokter = () => {
       }
     };
 
-    fetchSchedules();
+    fetchDoctors();
   }, []);
 
   useEffect(() => {
@@ -74,7 +73,9 @@ const JadwalDokter = () => {
     }
 
     if (selectedDay !== "Semua") {
-      filtered = filtered.filter((s) => s.hari === selectedDay);
+      filtered = filtered.filter((doc) => 
+        doc.jadwals?.some((s) => s.hari === selectedDay)
+      );
     }
 
     if (selectedSpecialization !== "Semua") {
@@ -235,57 +236,65 @@ const JadwalDokter = () => {
               ))}
             </div>
           ) : filteredSchedules.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredSchedules.map((doctor, index) => (
                 <div
-                  key={index}
-                  className="group bg-white rounded-2xl shadow-md hover:shadow-2xl border border-gray-100 p-6 transition-all duration-500 hover:-translate-y-2 relative overflow-hidden"
+                  key={doctor.id}
+                  className="bg-white rounded-[32px] overflow-hidden shadow-lg border border-slate-100 flex flex-row group hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 h-[280px]"
                 >
-                  {/* Decorative element */}
-                  <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary-blue/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
-
-                  <div className="flex items-center gap-5 mb-6 relative">
-                    <div className="w-16 h-16 rounded-full bg-light-blue flex items-center justify-center text-primary-blue shadow-inner group-hover:bg-primary-blue group-hover:text-white transition-colors duration-500">
-                      <FaUserMd size={32} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-primary font-bold text-dark-blue group-hover:text-primary-blue transition-colors leading-tight mb-1">
-                        {doctor.nama_dokter}
-                      </h3>
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-light-blue text-primary-blue text-[11px] font-bold uppercase tracking-wider">
-                        <FaStethoscope size={10} />
-                        {doctor.spesialisasi}
+                  {/* Left Side: Portrait Image - Compact */}
+                  <div className="w-[120px] sm:w-[140px] shrink-0 relative overflow-hidden bg-slate-50 border-r border-slate-50">
+                    {doctor.gambar ? (
+                      <img
+                        src={`${import.meta.env.VITE_STORAGE_URL}/${doctor.gambar}`}
+                        alt={doctor.nama_dokter}
+                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                        <FaUserMd size={40} className="opacity-20" />
                       </div>
-                    </div>
+                    )}
                   </div>
 
-                  <div className="space-y-3 relative">
-                    <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl border border-gray-100 group-hover:bg-white transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-primary-blue">
-                          <FaCalendarAlt size={14} />
-                        </div>
-                        <span className="text-sm font-bold text-gray-600">
-                          Hari Praktek
-                        </span>
+                  {/* Right Side: Doctor Info - Compact */}
+                  <div className="flex-1 p-5 flex flex-col min-w-0">
+                    <div className="mb-4 shrink-0">
+                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-teal-50 text-teal-600 text-[9px] font-black uppercase tracking-widest mb-2 border border-teal-100">
+                        {doctor.spesialisasi}
                       </div>
-                      <span className="text-sm font-bold text-dark-blue">
-                        {doctor.hari}
-                      </span>
+                      <h3 className="text-base font-primary font-bold text-slate-900 group-hover:text-primary-blue transition-colors leading-tight truncate" title={doctor.nama_dokter}>
+                        {doctor.nama_dokter}
+                      </h3>
                     </div>
 
-                    <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl border border-gray-100 group-hover:bg-white transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-secondary-blue">
-                          <FaClock size={14} />
-                        </div>
-                        <span className="text-sm font-bold text-gray-600">
-                          Jam Praktek
-                        </span>
+                    <div className="flex-1 flex flex-col min-h-0">
+                      <div className="flex items-center gap-1.5 text-slate-400 mb-2 shrink-0">
+                        <FaCalendarAlt size={10} />
+                        <span className="text-[9px] font-black uppercase tracking-widest">Jadwal Praktek</span>
                       </div>
-                      <span className="text-sm font-bold text-primary-blue">
-                        {doctor.jam}
-                      </span>
+                      
+                      <div className="overflow-y-auto pr-1 flex-1 custom-scrollbar space-y-2">
+                        {doctor.jadwals && doctor.jadwals.length > 0 ? (
+                          doctor.jadwals
+                            .filter(s => selectedDay === "Semua" || s.hari === selectedDay)
+                            .map((schedule, sIdx) => (
+                              <div key={sIdx} className="flex items-center justify-between p-2 bg-slate-50 rounded-xl border border-slate-100 group-hover:bg-white transition-all duration-300">
+                                <span className="text-xs font-bold text-slate-600">{schedule.hari}</span>
+                                <div className="flex items-center gap-1.5 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-xs">
+                                  <span className="text-[10px] font-bold text-primary-blue font-mono">
+                                    {schedule.jam_mulai}-{schedule.jam_selesai}
+                                  </span>
+                                </div>
+                              </div>
+                            ))
+                        ) : (
+                          <div className="h-full flex items-center justify-center text-slate-300 italic py-4 text-[10px]">
+                            Belum ada jadwal.
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

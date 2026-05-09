@@ -27,11 +27,11 @@ const ImageModal = ({ isOpen, imageUrl, onClose, title ="Dokumen Gambar" }) => {
         </div>
 
         {/* Modal Body / Fully Scrollable Image */}
-        <div className="overflow-auto p-4 md:p-8 bg-gray-200/50 flex grow custom-scrollbar items-start justify-center">
+        <div className="overflow-auto p-4 md:p-6 bg-gray-200/50 flex grow custom-scrollbar items-start justify-center">
           <img
             src={imageUrl}
             alt="Detail"
-            className="max-w-none w-auto h-auto shadow-lg rounded-xl bg-white block"
+            className="max-w-full h-auto shadow-lg rounded-xl bg-white block mx-auto"
           />
         </div>
       </div>

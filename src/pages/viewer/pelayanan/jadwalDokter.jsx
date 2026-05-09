@@ -245,8 +245,16 @@ const JadwalDokter = () => {
                   <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary-blue/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
 
                   <div className="flex items-center gap-5 mb-6 relative">
-                    <div className="w-16 h-16 rounded-full bg-light-blue flex items-center justify-center text-primary-blue shadow-inner group-hover:bg-primary-blue group-hover:text-white transition-colors duration-500">
-                      <FaUserMd size={32} />
+                    <div className="w-20 h-20 rounded-full bg-light-blue flex items-center justify-center text-primary-blue shadow-inner group-hover:bg-primary-blue group-hover:text-white transition-all duration-500 overflow-hidden border-2 border-white group-hover:border-primary-blue/20">
+                      {doctor.gambar ? (
+                        <img
+                          src={`${import.meta.env.VITE_STORAGE_URL}/${doctor.gambar}`}
+                          alt={doctor.nama_dokter}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FaUserMd size={32} />
+                      )}
                     </div>
                     <div>
                       <h3 className="text-lg font-primary font-bold text-dark-blue group-hover:text-primary-blue transition-colors leading-tight mb-1">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Plus,
   Edit2,
@@ -8,6 +8,8 @@ import {
   X,
   Stethoscope,
   Clock,
+  Upload,
+  ImageIcon,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../../components/admin/ConfirmModal";
@@ -30,7 +32,11 @@ const JadwalDokter = () => {
     spesialisasi: "",
     hari: "",
     jam: "",
+    gambar: null,
   });
+
+  const [previewImage, setPreviewImage] = useState(null);
+  const imageInputRef = useRef(null);
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -109,7 +115,13 @@ const JadwalDokter = () => {
         spesialisasi: item.spesialisasi || "",
         hari: item.hari || "",
         jam: item.jam || "",
+        gambar: null,
       });
+      if (item.gambar) {
+        setPreviewImage(`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`);
+      } else {
+        setPreviewImage(null);
+      }
     } else {
       setEditingItem(null);
       setFormData({
@@ -117,9 +129,19 @@ const JadwalDokter = () => {
         spesialisasi: "",
         hari: "",
         jam: "",
+        gambar: null,
       });
+      setPreviewImage(null);
     }
     setIsModalOpen(true);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, gambar: file }));
+      setPreviewImage(URL.createObjectURL(file));
+    }
   };
 
   const handleChange = (e) => {
@@ -129,12 +151,23 @@ const JadwalDokter = () => {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     setIsSubmitting(true);
+
+    const data = new FormData();
+    data.append("nama_dokter", formData.nama_dokter);
+    data.append("spesialisasi", formData.spesialisasi);
+    data.append("hari", formData.hari);
+    data.append("jam", formData.jam);
+    if (formData.gambar) {
+      data.append("gambar", formData.gambar);
+    }
+
     try {
       if (editingItem) {
-        await updateJadwalDokter(editingItem.id, formData);
+        data.append("_method", "PUT");
+        await updateJadwalDokter(editingItem.id, data);
         toast.success("Jadwal dokter berhasil diperbarui");
       } else {
-        await createJadwalDokter(formData);
+        await createJadwalDokter(data);
         toast.success("Jadwal dokter berhasil ditambahkan");
       }
       setIsModalOpen(false);
@@ -267,8 +300,16 @@ const JadwalDokter = () => {
                     </td>
                     <td className="px-8 py-6 align-middle">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
-                          <Stethoscope size={18} />
+                        <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden border border-teal-100 shadow-sm">
+                          {item.gambar ? (
+                            <img
+                              src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
+                              alt={item.nama_dokter}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Stethoscope size={20} />
+                          )}
                         </div>
                         <span className="font-bold text-slate-800">
                           {item.nama_dokter}
@@ -444,6 +485,48 @@ const JadwalDokter = () => {
                     placeholder="Contoh: 08:00 - 14:00"
                     className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all outline-none font-bold text-slate-700"
                   />
+                </div>
+              </div>
+
+              {/* Image Upload */}
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                  Foto Dokter (JPG/PNG)
+                </label>
+                <div
+                  onClick={() => imageInputRef.current?.click()}
+                  className="aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-[32px] flex flex-col items-center justify-center p-4 text-center group hover:border-teal-500/30 hover:bg-teal-50 transition-all cursor-pointer relative overflow-hidden"
+                >
+                  <input
+                    type="file"
+                    ref={imageInputRef}
+                    onChange={handleImageChange}
+                    className="hidden"
+                    accept="image/*"
+                  />
+                  {previewImage ? (
+                    <>
+                      <img
+                        src={previewImage}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        alt="Preview"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                        <span className="bg-white px-6 py-2 rounded-xl text-[10px] font-black uppercase text-slate-900 shadow-xl">
+                          Ganti Foto
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-slate-300 mb-3 shadow-sm group-hover:scale-110 transition-all">
+                        <ImageIcon size={24} />
+                      </div>
+                      <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                        Pilih Foto Dokter
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

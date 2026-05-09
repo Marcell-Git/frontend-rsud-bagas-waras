@@ -300,15 +300,15 @@ const JadwalDokter = () => {
                     </td>
                     <td className="px-8 py-6 align-middle">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden border border-teal-100 shadow-sm">
+                        <div className="w-24 h-24 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden border-2 border-white shadow-md ring-4 ring-slate-50">
                           {item.gambar ? (
                             <img
                               src={`${import.meta.env.VITE_STORAGE_URL}/${item.gambar}`}
                               alt={item.nama_dokter}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover object-top rounded-2xl"
                             />
                           ) : (
-                            <Stethoscope size={20} />
+                            <Stethoscope size={32} />
                           )}
                         </div>
                         <span className="font-bold text-slate-800">
@@ -508,7 +508,7 @@ const JadwalDokter = () => {
                     <>
                       <img
                         src={previewImage}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        className="absolute inset-0 w-full h-full object-cover object-top"
                         alt="Preview"
                       />
                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">

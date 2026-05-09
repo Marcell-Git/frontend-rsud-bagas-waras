@@ -245,15 +245,15 @@ const JadwalDokter = () => {
                   <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary-blue/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
 
                   <div className="flex items-center gap-5 mb-6 relative">
-                    <div className="w-20 h-20 rounded-full bg-light-blue flex items-center justify-center text-primary-blue shadow-inner group-hover:bg-primary-blue group-hover:text-white transition-all duration-500 overflow-hidden border-2 border-white group-hover:border-primary-blue/20">
+                    <div className="w-32 h-32 rounded-full bg-light-blue flex items-center justify-center text-primary-blue shadow-lg group-hover:bg-primary-blue group-hover:text-white transition-all duration-500 overflow-hidden border-4 border-white ring-8 ring-slate-50/50 group-hover:border-primary-blue/20 shrink-0">
                       {doctor.gambar ? (
                         <img
                           src={`${import.meta.env.VITE_STORAGE_URL}/${doctor.gambar}`}
                           alt={doctor.nama_dokter}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover object-top rounded-full"
                         />
                       ) : (
-                        <FaUserMd size={32} />
+                        <FaUserMd size={48} />
                       )}
                     </div>
                     <div>

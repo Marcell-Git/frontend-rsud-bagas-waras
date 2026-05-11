@@ -80,19 +80,19 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-6 bg-slate-50 font-sans relative overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center p-6 bg-linear-to-br from-white to-light-blue/30 font-sans relative overflow-hidden">
       {/* Background decoration to match dashboard feel */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-teal-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-blue/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary-blue/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo Section */}
         <div className="flex flex-col items-center mb-10">
-          <div className="w-16 h-16 bg-teal-600 rounded-[22px] flex items-center justify-center shadow-xl shadow-teal-600/20 mb-4">
+          <div className="w-16 h-16 bg-primary-blue rounded-[22px] flex items-center justify-center shadow-xl shadow-primary-blue/20 mb-4">
             <Stethoscope className="text-white" size={32} />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight text-center">
-            RSUD <span className="text-teal-600">Bagas Waras</span>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight text-center font-primary">
+            RSUD <span className="text-primary-blue">Bagas Waras</span>
           </h1>
           <p className="text-slate-400 font-medium text-sm mt-1 uppercase tracking-widest text-[10px]">
             Portal Administrator
@@ -114,7 +114,7 @@ const Auth = () => {
                 Username
               </label>
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-600 transition-colors">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary-blue transition-colors">
                   <User size={18} />
                 </div>
                 <input
@@ -124,7 +124,7 @@ const Auth = () => {
                   value={formData.username}
                   onChange={handleChange}
                   placeholder="Username"
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 text-slate-700 font-bold outline-none focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all"
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-14 pr-6 text-slate-700 font-bold outline-none focus:bg-white focus:border-primary-blue focus:ring-4 focus:ring-primary-blue/5 transition-all"
                 />
               </div>
             </div>
@@ -135,7 +135,7 @@ const Auth = () => {
                 Password
               </label>
               <div className="relative group">
-                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-600 transition-colors">
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary-blue transition-colors">
                   <Lock size={18} />
                 </div>
                 <input
@@ -145,7 +145,7 @@ const Auth = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-14 pr-14 text-slate-700 font-bold outline-none focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all"
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-14 pr-14 text-slate-700 font-bold outline-none focus:bg-white focus:border-primary-blue focus:ring-4 focus:ring-primary-blue/5 transition-all"
                 />
                 <button
                   type="button"
@@ -168,7 +168,7 @@ const Auth = () => {
                 />
               </div>
               {captchaToken && (
-                <p className="text-[11px] text-teal-600 font-bold flex items-center gap-1 ml-1">
+                <p className="text-[11px] text-primary-blue font-bold flex items-center gap-1 ml-1">
                   <ShieldCheck size={12} />
                   Verifikasi berhasil
                 </p>
@@ -180,7 +180,7 @@ const Auth = () => {
               type="submit"
               id="btn-login"
               disabled={isLoading || !captchaToken}
-              className="w-full py-4 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-2xl font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 group shadow-lg shadow-teal-600/20 active:scale-95"
+              className="w-full py-4 bg-primary-blue hover:bg-dark-blue disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-2xl font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 group shadow-lg shadow-primary-blue/20 active:scale-95"
             >
               {isLoading ? (
                 <Loader2 className="animate-spin" size={20} />

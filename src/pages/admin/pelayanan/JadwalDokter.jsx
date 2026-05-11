@@ -296,7 +296,7 @@ const DokterManager = () => {
                       </div>
                     </td>
                     <td className="px-8 py-6 align-middle">
-                      <span className="px-3 py-1 bg-teal-50 text-teal-600 text-[11px] font-black uppercase rounded-lg border border-teal-100">
+                      <span className="inline-flex items-center px-3 py-1 bg-primary-blue/10 text-primary-blue text-[10px] font-black uppercase rounded-full border border-primary-blue/20 tracking-wider">
                         {item.spesialisasi}
                       </span>
                     </td>
@@ -340,7 +340,7 @@ const DokterManager = () => {
                         </button>
                         <button
                           onClick={() => openDokterModal(item)}
-                          className="p-2.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all"
+                          className="p-2.5 text-slate-400 hover:text-primary-blue hover:bg-primary-blue/5 rounded-xl transition-all"
                           title="Edit Dokter"
                         >
                           <Edit2 size={18} />

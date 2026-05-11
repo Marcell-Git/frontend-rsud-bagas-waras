@@ -242,7 +242,6 @@ const JadwalDokter = () => {
                   key={doctor.id}
                   className="bg-white rounded-[32px] overflow-hidden shadow-lg border border-slate-100 flex flex-row group hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 h-[280px]"
                 >
-                  {/* Left Side: Portrait Image - Compact */}
                   <div className="w-[120px] sm:w-[140px] shrink-0 relative overflow-hidden bg-slate-50 border-r border-slate-50">
                     {doctor.gambar ? (
                       <img
@@ -261,10 +260,10 @@ const JadwalDokter = () => {
                   {/* Right Side: Doctor Info - Compact */}
                   <div className="flex-1 p-5 flex flex-col min-w-0">
                     <div className="mb-4 shrink-0">
-                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-teal-50 text-teal-600 text-[9px] font-black uppercase tracking-widest mb-2 border border-teal-100">
+                      <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary-blue/5 text-primary-blue text-[9px] font-black uppercase tracking-widest mb-2 border border-primary-blue/10">
                         {doctor.spesialisasi}
                       </div>
-                      <h3 className="text-base font-primary font-bold text-slate-900 group-hover:text-primary-blue transition-colors leading-tight truncate" title={doctor.nama_dokter}>
+                      <h3 className="text-base font-primary font-bold text-slate-900 group-hover:text-primary-blue transition-colors leading-tight" title={doctor.nama_dokter}>
                         {doctor.nama_dokter}
                       </h3>
                     </div>
